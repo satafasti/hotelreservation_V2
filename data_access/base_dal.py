@@ -1,47 +1,56 @@
+import os
+
 import sqlite3
-from typing import List, Dict, Any, Optional
 
-class BaseDAL:
-    def __init__(self, db_path: str):
-        self.__dbpath = db_path
-        self.__connection = None
-        self.__cursor = None
 
-    def connect(self):
-        self.__connection = sqlite3.connect(self.__dbpath)
-        self.__cursor = self.__connection.cursor()
+class BaseDataAccess:
+    def __init__(self, db_connection_str: str = None):
+        if db_connection_str is None:
+            self.__db_connection_str = os.environ.get("DB_FILE")
+            if self.__db_connection_str is None:
+                raise Exception("DB_FILE environment variable and parameter path is not set.")
+        else:
+            self.__db_connection_str = db_connection_str
 
-    def disconnect(self):
-        if self.__connection:
-            self.__connection.close()
+    def _connect(self):
+        return sqlite3.connect(self.__db_connection_str, detect_types=sqlite3.PARSE_DECLTYPES)
 
-    def execute(self, query: str, params: tuple = ()):
-        self.__cursor.execute(query, params)
-        self.__connection.commit()
-        return self.__cursor.fetchall()
+    def fetchone(self, sql: str, params: tuple | None = ()):
+        with self._connect() as conn:
+            try:
+                cur = conn.cursor()
+                cur.execute(sql, params)
+                result = cur.fetchone()
+            except sqlite3.Error as e:
+                conn.rollback()
+                raise e
+            finally:
+                cur.close()
+        return result
 
-    def execute_query(self, query: str, params: tuple = ()) -> None:
-        try:
-            self.__cursor.execute(query, params)
-            self.__connection.commit()
-        except sqlite3.Error as e:
-            print(f"Fehler beim Ausführen der Abfrage: {e}")
-            self.__connection.rollback()
-            raise
+    def fetchall(self, sql: str, params: tuple | None = ()) -> list:
+        with self._connect() as conn:
+            try:
+                cur = conn.cursor()
+                cur.execute(sql, params)
+                result = cur.fetchall()
+            except sqlite3.Error as e:
+                conn.rollback()
+                raise e
+            finally:
+                cur.close()
+        return result
 
-    def fetch_one(self, query: str, params: tuple = ()) -> Optional[tuple]:
-        try:
-            self.__cursor.execute(query, params)
-            return self.__cursor.fetchone()
-        except sqlite3.Error as e:
-            print(f"Fehler beim Abrufen eines Datensatzes: {e}")
-            raise
-
-    def fetch_all(self, query: str, params: tuple = ()) -> List[tuple]:
-        try:
-            self.__cursor.execute(query, params)
-            return self.__cursor.fetchall()
-        except sqlite3.Error as e:
-            print(f"Fehler beim Abrufen aller Datensätze: {e}")
-            raise
-
+    def execute(self, sql: str, params: tuple | None = ()) -> (int, int):
+        with self._connect() as conn:
+            try:
+                cur = conn.cursor()
+                cur.execute(sql, params)
+            except sqlite3.Error as e:
+                conn.rollback()
+                raise e
+            else:
+                conn.commit()
+            finally:
+                cur.close()
+        return cur.lastrowid, cur.rowcount
