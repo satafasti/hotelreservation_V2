@@ -1,53 +1,49 @@
+from __future__ import annotations
+
 import model
-from data_access.base_dal import BaseDAL
+from data_access.base_dal import BaseDal
+from model import Room_Type
 
 
-class RoomDAL(BaseDAL):
+#TODO Code für Projekt ergänzen
+### Code gemäss Referenzprojekt
+class RoomDAL(BaseDal):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
-    def create_room(self, room: model.Room):
+    def create_new_room(self, hotel_id: int, room_number: int, type_id: Room_Type, price_per_night: float, hotel: model.Hotel = None) -> model.Room: #TODO Verknüpfungen prüfen
         sql = """
-        INSERT INTO Room (room_id, room_number, price_per_night) VALUES ( ?, ?, ?)
+        INSERT INTO Room(hotel_id, room_number, type_id, price_per_night) VALUES (?, ?, ?, ?)
         """
-        params = (room.room_id if room else None, room.room_number, room.price_per_night, room.hotel_id, room.type_id
-                  )
-        self.execute(sql, params)
+        params = (hotel_id, room_number, type_id, price_per_night,
+            hotel.hotel_id if hotel else None,
+        )
 
-    def show_room_by_id(self, room_id : int):
+        last_row_id, row_count = self.execute(sql, params)
+        return model.Room(last_row_id, hotel_id, room_number, type_id, price_per_night)
+
+    def read_room_by_id(self, room_id: int) -> model.Room | None: #TODO Code prüfen
         sql = """
-        SELECT * FROM Room WHERE room_id = ?
+        SELECT room_id FROM Room WHERE room_id = ?
         """
-        params = (room_id,)
-        result = self.fetch_one(sql, params)
+        params = tuple([room_id])
+        result = self.fetchone(sql, params)
         if result:
-            room_id, room_number, price_per_night = result
-            return model.Room(room_id, room_number, price_per_night)
+            room_id = result
+            return model.Room(room_id)
         else:
             return None
 
-    def update_room(self, room: model.Room):
+    def read_rooms_by_hotel(self, hotel: model.Hotel) -> list[model.Room]:
         sql = """
-        UPDATE Room SET room_number = ?, price_per_night = ? WHERE room_id = ?
+        SELECT room_id FROM Room WHERE hotel_id = ?
         """
-        params = (room.room_number, room.price_per_night, room.room_id)
-        self.execute(sql, params)
+        if hotel is None:
+            raise ValueError("hotel kann nicht leer sein.")
 
-    def delete_room(self, room: model.Room):
-        sql = """
-        DELETE FROM Room WHERE room_id = ?
-        """
-        params = (room.room_id,)
-        self.execute(sql, params)
-
-    def show_all_rooms(self):
-        sql = "SELECT * FROM Room"
-        results = self.fetch_all(sql)  # kommt aus BaseDAL
-        rooms = []
-
-        for row in results:
-            room_id, hotel_id, room_number, type_id, price_per_night = row
-            rooms.append(model.Room(room_id, hotel_id, room_number, type_id, price_per_night))
-        return rooms
-
-
+        params = tuple([hotel.hotel_id])
+        rooms = self.fetchall(sql, params)
+        return [
+            model.Room(room_id, hotel)
+            for room_id in rooms
+        ]
