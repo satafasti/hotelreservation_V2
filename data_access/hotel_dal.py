@@ -1,58 +1,85 @@
-from __future__ import annotations
+from unittest import result
+import pandas as pd
 import model
-from data_access.base_dal import BaseDAL
+import data_access
 
-
-
-class HotelDAL(BaseDAL):
+#TODO Code für Projekt ergänzen
+### Code gemäss Referenzprojekt
+class HotelDAL(data_access.BaseDal):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
-    def create_hotel(self, hotel: model.Hotel):
+    def create_new_hotel(self, name:str, stars: int, address_id: int) -> model.Hotel:
+        if name is None:
+            raise ValueError("Hotelname wird benötigt.")
+
         sql = """
-        INSERT INTO Hotel(hotel_id, name, stars, address_id) VALUES (?, ?, ?, ?)
+        INSERT INTO Hotel (name, stars, address_id) VALUES (?, ?, ?)
         """
-        params = (hotel.hotel_id if hotel else None, hotel.name, hotel.stars, hotel.address_id)
-        self.execute(sql, params)
+        params = tuple([name, stars, address_id])
+        last_row_id, row_count = self.execute(sql, params)
+        return model.Hotel(hotel_id=last_row_id, name=name, stars=stars, address_id=address_id)
 
+    def read_hotels_by_id(self, hotel_id: int) -> model.Hotel | None:
+        if hotel_id is None:
+            raise ValueError("hotel_id wird benötigt.")
 
-    def show_all_hotels(self):
-        sql = "SELECT * FROM Hotel"
-        results = self.fetch_all(sql)  # kommt aus BaseDAL
-        hotels = []
-
-        for row in results:
-            hotel_id, name, stars, address_id = row
-            address = self.get_address_by_id(address_id) #Tanja: hier hats jetzt neue error drin, weil get_address_by_id und rooms nirgends definiert ist
-            rooms = self.get_rooms_by_hotel(hotel_id)  # brauchst du auch
-
-            hotel = model.Hotel(hotel_id, name, stars, address, rooms, address_id)
-            hotels.append(hotel)
-
-        return hotels
-
-    def update_hotel(self, hotel_id : int, name:str, stars: int, address_id: int):
         sql = """
-        UPDATE Hotel SET name = ? AND stars = ? WHERE hotel_id = ?
+        SELECT hotel_id = ?, name = ?, stars = ?, address_id = ? FROM Hotel WHERE hotel_id = ?
         """
-        params = (name, stars, hotel_id, address_id)
-        self.execute(sql, params)
+        params = tuple([hotel_id])
+        result = self.fetchone(sql, params)
+        if result:
+            hotel_id, name, stars, address_id = result
+            return model.Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id)
+        else:
+            return None
 
-    def delete_hotel(self, hotel: model.Hotel):
+    def read_all_hotels(self) -> list[model.Hotel]:
+        sql = """
+        SELECT hotel_id = ?, name = ?, stars = ?, address_id = ? FROM Hotel
+        """
+        hotels = self.fetchall(sql)
+
+        return [model.Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id) for hotel_id, name, stars, address_id in hotels]
+
+    def read_all_hotels_as_df(self) -> pd.DataFrame:
+        sql = """
+        SELECT hotel_id = ?, name = ?, stars = ?, address_id = ? FROM Hotel
+        """
+        return pd.read_sql(sql, self.get_connection(), index_col='hotel_id')
+
+    def read_hotels_like_name(self, name: str) -> list[model.Hotel]:
+        sql = """
+        SELECT hotel_id = ?, name = ? FROM Hotel WHERE name LIKE ?
+        """
+        params = tuple([f"%{name}%"])
+        hotels = self.fetchall(sql, params)
+        return [model.Hotel(hotel_id=hotel_id, name=name) for hotel_id, name in hotels]
+
+    def read_hotels_like_name_as_df(self, name: str) -> pd.DataFrame:
+        sql = """
+                SELECT hotel_id = ?, name = ? FROM Hotel WHERE name LIKE ?
+                """
+        params = tuple([f"%{name}%"])
+        return pd.read_sql(sql, self.get_connection(), params=params, index_col='hotel_id')
+
+    def update_hotel(self, hotel: model.Hotel) -> None:
+        if hotel is None:
+            raise ValueError("Hotel kann nicht leer sein.")
+
+        sql = """
+        UPDATE Hotel SET name = ?, stars = ?, address_id = ? WHERE hotel_id = ?
+        """
+        params = tuple([hotel.name, hotel.name, hotel.address_id, hotel.hotel_id])
+        last_row_id, row_count = self.execute(sql, params)
+
+    def delete_hotel(self, hotel: model.Hotel) -> None:
+        if hotel is None:
+            raise ValueError("Hotel kann nicht leer sein.")
+
         sql = """
         DELETE FROM Hotel WHERE hotel_id = ?
         """
-        params = (hotel.hotel_id,)
-        self.execute(sql, params)
-
-    def show_hotel_by_id(self, hotel_id : int):
-        sql = """
-        SELECT * FROM Hotel WHERE hotel_id = ?
-        """
-        params = (hotel_id,)
-        result = self.fetch_one(sql, params)
-        if result:
-            hotel_id, name, stars, address_id = result
-            return model.Hotel(hotel_id, name, stars, address_id)
-        else:
-            return None
+        params = tuple([hotel.hotel_id])
+        last_row_id, row_count = self.execute(sql, params)
