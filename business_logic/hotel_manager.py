@@ -1,14 +1,42 @@
+import os
+import pandas as pd
+import model
 import data_access
-from model import Room
-from model import Room_Type
 
-
+### Code gemäss Referenzprojekt
 class HotelManager:
-    def __init__(self) -> None:
+    def __init__(self):
         self.__hotel_dal = data_access.HotelDAL()
-        self.__room_dal = data_access.RoomDAL()
-        self.__rooms = []
 
+    def create_hotel(self, name: str, stars: int, address_id: int): #TODO address_id wie lösen?
+        return self.__hotel_dal.create_hotel(name, stars, address_id)
+
+    def read_hotel(self, hotel_id: int):
+        return self.__hotel_dal.read_hotel_by_id(hotel_id)
+
+    def read_all_hotels(self) -> list[model.Hotel]:
+        return self.__hotel_dal.read_all_hotels()
+
+    def read_all_hotels_as_df(self) -> pd.DataFrame:
+        return self.__hotel_dal.read_all_hotels_as_df()
+
+    def read_hotels_by_similar_name(self, name: str) -> list[model.Hotel]:
+        return self.__hotel_dal.read_hotels_like_name(name)
+
+    def read_hotels_by_similar_name_as_df(self, name: str) -> pd.DataFrame:
+        return self.__hotel_dal.read_hotels_like_name_as_df(name)
+
+    def update_hotel(self, hotel: model.Hotel) -> None:
+        self.__hotel_dal.update_hotel(hotel)
+
+    def delete_hotel(self, hotel: model.Hotel) -> None:
+        self.__hotel_dal.delete_hotel(hotel)
+
+
+
+
+
+"""
     def get_hotel_details(self, hotel_id : int):
         hotel = self.__hotel_dal.show_hotel_by_id(hotel_id)
         if hotel:
@@ -87,4 +115,4 @@ class HotelManager:
         #    self.__address.append(address)
     #    hotel.address = self
 ###
-
+"""
