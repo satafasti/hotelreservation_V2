@@ -3,6 +3,7 @@ import pandas as pd
 import model
 import data_access
 
+#TODO Code für Projekt ergänzen
 ### Code gemäss Referenzprojekt
 class HotelDAL(data_access.BaseDal):
     def __init__(self, db_path: str = None):

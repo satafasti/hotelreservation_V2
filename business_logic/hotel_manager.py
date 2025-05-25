@@ -3,6 +3,7 @@ import pandas as pd
 import model
 import data_access
 
+#TODO Code für Projekt ergänzen
 ### Code gemäss Referenzprojekt
 class HotelManager:
     def __init__(self):
