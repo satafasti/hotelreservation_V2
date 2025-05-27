@@ -6,13 +6,13 @@ class Room_Type:
         #if not isinstance(type_id, int):
            # raise TypeError("type_id must be a int") wird durch autoincrement gesetzt und kann daher nur int sein
         if not description:
-            raise ValueError("Description fehlt")
+            raise ValueError("Description is required")
         if not isinstance(description, str):
-            raise TypeError("Description muss ein string sein")
+            raise TypeError("Description must be a string")
         if not max_guests:
-            raise ValueError("max_guests fehlt")
+            raise ValueError("max_guests is required")
         if not isinstance(max_guests, int):
-            raise TypeError("max_guests muss ein int sein")
+            raise TypeError("max_guests must be an integer")
 
         self.__type_id = type_id
         self.__description = description #z.B. Einzelzimmer
