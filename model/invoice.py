@@ -1,8 +1,7 @@
-from typing import List
-from model.booking import Booking
+from typing import Optional
 
 class Invoice:
-    def __init__(self, invoice_id: int, booking_id: int, issue_date: str, total_amount: float):
+    def __init__(self, invoice_id: Optional[int], booking_id: int, issue_date: str, total_amount: float):
         if invoice_id is not None and invoice_id <= 0:
             raise ValueError("invoice_id must be positive or None")
         if not issue_date:
@@ -14,7 +13,7 @@ class Invoice:
         self.__total_amount = total_amount
 
     @property
-    def invoice_id(self) -> int:
+    def invoice_id(self) -> Optional[int]:
         return self.__invoice_id
 
     @property
