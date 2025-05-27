@@ -1,7 +1,7 @@
 class Address:
     def __init__(self, address_id: int, street: str, city: str, zip_code: str):
 
-        if not address_id:
+        if address_id is None:
             raise ValueError("Address ID is required")
         if not isinstance(address_id, int):
             raise TypeError("Address ID must be an integer")
@@ -20,7 +20,7 @@ class Address:
             raise ValueError("zip_code must be provided")
         if not isinstance(zip_code, str):
             raise TypeError("zip_code must be a string")
-        self.__zip_code: str = zip_code
+
             
         self.__address_id: int = address_id
         self.__street: str = street
