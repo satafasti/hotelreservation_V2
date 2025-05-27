@@ -10,21 +10,21 @@ class Hotel:
     def __init__(self, hotel_id: int, name:str, stars: int, address_id: int):
         # Ensure values for not nullable attributes
         if not hotel_id:
-            raise ValueError("hotel_id wird benötigt.") #wird das benötigt? sollte eigentlich automatisch erstellt werden durch DB.
+            raise ValueError("hotel_id is required.") #wird das benötigt? sollte eigentlich automatisch erstellt werden durch DB.
         if not isinstance(hotel_id, int):
-            raise ValueError("hotel_id muss integer sein.")
+            raise ValueError("hotel_id is required.")
         if not name:
-            raise ValueError("name wird benötigt.")
+            raise ValueError("name is required.")
         if not isinstance(name, str):
-            raise ValueError("name muss string sein.")
+            raise ValueError("name must be a string.")
         if not stars:
-            raise ValueError("stars wird benötigt.")
+            raise ValueError("stars is required.")
         if not isinstance(stars, int):
-            raise ValueError("stars muss integer sein.")
+            raise ValueError("stars must be an integer.")
         if not address_id:
-            raise ValueError("address_id wird benötigt.") #TODO wie wird address_id übergeben.
+            raise ValueError("address_id is required.") #TODO wie wird address_id übergeben.
         if not isinstance(address_id, int):
-            raise ValueError("address_id muss integer sein.")
+            raise ValueError("address_id must be an integer.")
 
         self.__hotel_id: int = hotel_id
         self.__name: str = name
@@ -46,9 +46,9 @@ class Hotel:
     @name.setter
     def name(self, name: str) -> None:
         if not name:
-            raise ValueError("name wird benötigt.")
+            raise ValueError("name is required.")
         if not isinstance(name, str):
-            raise ValueError("name muss string sein.")
+            raise ValueError("name must be a string.")
         self.__name = name
 
     @property
@@ -60,9 +60,9 @@ class Hotel:
         from model import Room
 
         if not room:
-            raise ValueError("room wird benötigt.")
+            raise ValueError("room is required.")
         if not isinstance(room, Room):
-            raise ValueError("room muss Bestandteil von Hotel sein.")
+            raise ValueError("room must be part of a hotel.")
         if room not in self.__rooms:
             self.__rooms.append(room)
             room.hotel = self
@@ -71,9 +71,9 @@ class Hotel:
         from model.room import Room
 
         if not room:
-            raise ValueError("room wird benötigt.")
+            raise ValueError("room is required.")
         if not isinstance(room, Room):
-            raise ValueError("room muss Bestandteil von Hotel sein.")
+            raise ValueError("room must be part of a hotel.")
         if room in self.__rooms:
             self.__rooms.remove(room)
             room.hotel = None
