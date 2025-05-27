@@ -1,8 +1,8 @@
 from datetime import date, datetime
 import sqlite3
 
-from .base_dal import BaseDAL
-from .address_dal import AddressDAL
+from .base_dal import BaseDataAccess
+from .address_dal import AddressDataAccess
 from .booking_dal import BookingDAL
 from .facilities_dal import FacilitiesDAL
 from .guest_dal import GuestDAL

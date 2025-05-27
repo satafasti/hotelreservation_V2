@@ -15,7 +15,7 @@ class Booking:
     ):
         if booking_id <= 0:
             raise ValueError("booking_id must be a positive integer")
-        if not booking_id:
+        if booking_id is None:
             raise ValueError("booking_id is required")
         if not isinstance(booking_id, int):
             raise ValueError("booking_id must be an integer")
