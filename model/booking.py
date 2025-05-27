@@ -1,5 +1,5 @@
-from model import guest, room
-
+# from model import guest, room
+from datetime import datetime, date
 
 class Booking:
 
@@ -15,16 +15,42 @@ class Booking:
     ):
         if booking_id <= 0:
             raise ValueError("booking_id must be a positive integer")
+        if not booking_id:
+            raise ValueError("booking_id is required")
+        if not isinstance(booking_id, int):
+            raise ValueError("booking_id must be an integer")
+
         if not check_in_date:
             raise ValueError("check_in_date must not be empty")
+        if not isinstance(check_in_date, str):
+            raise ValueError("check_in_date must be an string")
+
         if not check_out_date:
             raise ValueError("check_out_date must not be empty")
+        if not isinstance(check_out_date, str):
+            raise ValueError("check_out_date must be an string")
+
         if total_amount < 0:
             raise ValueError("total_amount must be non-negative")
+        if not total_amount:
+            raise ValueError("total_amount is required")
+        if not isinstance(total_amount, float):
+            raise TypeError("total_amount must be an float")
+
         if guest_id <= 0:
             raise ValueError("guest_id must be a positive integer")
+        if not guest_id:
+            raise ValueError("guest_id is required")
+        if not isinstance(guest_id, int):
+            raise ValueError("guest_id must be an integer")
+
         if room_id <= 0:
             raise ValueError("room_id must be a positive integer")
+        if not room_id:
+            raise ValueError("room_id is required")
+        if not isinstance(room_id, int):
+            raise ValueError("room_id must be an integer")
+
         if not isinstance(is_cancelled, bool):
             raise TypeError("is_cancelled must be a boolean")
 
@@ -35,25 +61,55 @@ class Booking:
         self.__total_amount = total_amount
         self.__guest_id = guest_id
         self.__room_id = room_id
-        self.__invoice = None
-        self.__guest = None
-        self.__room = None
+#        self.__invoice = None
+#        self.__guest = None
+ #       self.__room = None
 
     @property
     def booking_id(self) -> int:
         return self.__booking_id
 
+
+
     @property
     def check_in_date(self) -> str:
         return self.__check_in_date
+
+    @check_in_date.setter
+    def check_in_date(self, check_in_date) -> None:
+        if isinstance(check_in_date, str):
+            try:
+                datetime.strptime(check_in_date, '%Y-%m-%d')
+                self.__check_in_date = check_in_date
+            except ValueError:
+                raise ValueError("Datum muss im Format YYYY-MM-DD sein")
+        elif isinstance(check_in_date, (date, datetime)):
+            self.__check_in_date = check_in_date.strftime('%Y-%m-%d')
+        else:
+            raise TypeError("Datum muss ein String, date oder datetime Objekt sein")
 
     @property
     def check_out_date(self) -> str:
         return self.__check_out_date
 
+    @check_out_date.setter
+    def check_out_date(self, check_out_date) -> None:
+        if isinstance(check_out_date, str):
+            try:
+                datetime.strptime(check_out_date, '%Y-%m-%d')
+                self.__check_out_date = check_out_date
+            except ValueError:
+                raise ValueError("Datum muss im Format YYYY-MM-DD sein")
+        elif isinstance(check_out_date, (date, datetime)):
+            self.__check_out_date = check_out_date.strftime('%Y-%m-%d')
+        else:
+            raise TypeError("Datum muss ein String, date oder datetime Objekt sein")
+
     @property
     def is_cancelled(self) -> bool:
         return self.__is_cancelled
+
+
 
     @is_cancelled.setter
     def is_cancelled(self, value: bool):
@@ -79,22 +135,20 @@ class Booking:
     def room_id(self) -> int:
         return self.__room_id
 
-    @property
-    def invoice(self):
-        return self.__invoice
 
-    def add_invoice(self, invoice: 'invoice'):
-        if not isinstance(invoice, invoice):
-            raise TypeError("invoice must be an instance of Invoice")
-        self.__invoice = invoice
-        invoice.add_booking(self)
 
-    def add_guest(self, guest: 'guest'):
-        if not isinstance(guest, guest):
-            raise TypeError("guest must be an instance of Guest")
-        self.__guest = guest
+ ####   def add_invoice(self, invoice: 'invoice'):
+ ###       if not isinstance(invoice, invoice):
+  ##          raise TypeError("invoice must be an instance of Invoice")
+  #      self.__invoice = invoice
+  #      invoice.add_booking(self)
 
-    def add_room(self, room: 'room'):
-        if not isinstance(room, room):
-            raise TypeError("room must be an instance of Room")
-        self.__room = room
+  #  def add_guest(self, guest: 'guest'):
+  #      if not isinstance(guest, guest):
+ #           raise TypeError("guest must be an instance of Guest")
+ #       self.__guest = guest
+
+ #  def add_room(self, room: 'room'):
+ #       if not isinstance(room, room):
+   #         raise TypeError("room must be an instance of Room")
+   #     self.__room = room
