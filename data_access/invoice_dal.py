@@ -62,4 +62,18 @@ class InvoiceDAL(BaseDataAccess):
             for invoice_id, booking_id, issue_date, total_amount in results
         ]
 
+    def read_invoice_by_booking_id(self, booking_id: int) -> Optional[model.Invoice]:
+        if booking_id is None:
+            raise ValueError("booking_id wird benötigt.")
+
+        sql = """
+        SELECT invoice_id, booking_id, issue_date, total_amount
+        FROM Invoice
+        WHERE booking_id = ?
+        """
+        result = self.fetchone(sql, (booking_id,))
+        if result:
+            invoice_id, booking_id, issue_date, total_amount = result
+            return model.Invoice(invoice_id, booking_id, issue_date, total_amount)
+        return None
 
