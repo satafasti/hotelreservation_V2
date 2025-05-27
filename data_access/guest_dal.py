@@ -1,10 +1,9 @@
-from __future__ import annotations
-
 import model
-from data_access.base_dal import BaseDAL
+from data_access.base_dal import BaseDataAccess
+from typing import Optional
 
 
-class GuestDAL(BaseDAL):
+class GuestDAL(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
@@ -15,23 +14,19 @@ class GuestDAL(BaseDAL):
         params = (guest.guest_id if guest else None, guest.first_name, guest.last_name, guest.email, guest.address_id)
         self.execute(sql, params)
 
-    def show_guest_by_id(self, guest: model.Guest):
-        sql = """
-        SELECT * FROM Guest WHERE guest_id = ?
-        """
-        params = (guest.guest_id,)
-        result = self.fetch_one(sql, params)
+    def read_guest_by_id(self, guest_id: int) -> Optional[model.Guest]:
+        sql = "SELECT guest_id, first_name, last_name, email, address_id FROM Guest WHERE guest_id = ?"
+        result = self.fetchone(sql, (guest_id,))
         if result:
-            guest_id, first_name, last_name, email, address_id = result
-            return model.Guest(guest_id, first_name, last_name, email, address_id)
+            return model.Guest(*result)
         else:
             return None
 
     def update_guest(self, guest: model.Guest):
         sql = """
-        UPDATE Guest SET first_name = ? AND last_name = ? WHERE guest_id = ?
+        UPDATE Guest SET first_name = ?, last_name = ?, email = ?, address_id = ? WHERE guest_id = ?
         """
-        params = (guest.first_name, guest.last_name, guest.guest_id)
+        params = ( guest.first_name, guest.last_name, guest.email, guest.address_id, guest.guest_id)
         self.execute(sql, params)
 
     def delete_guest(self, guest: model.Guest):
@@ -40,15 +35,13 @@ class GuestDAL(BaseDAL):
         """
         params = (guest.guest_id,)
         self.execute(sql, params)
+        _, rowcount = self.execute(sql, params)
+        if rowcount == 0:
+            raise LookupError(f"No guest found with id {guest.guest_id}")
 
-    def show_all_guests(self):
-        sql = "SELECT * FROM Guest"
-        results = self.fetch_all(sql)  # kommt aus BaseDAL
-        guests = []
+    def read_all_guests(self) -> list[model.Guest]:
+        sql = "SELECT guest_id, first_name, last_name, email, address_id FROM Guest"
+        results = self.fetchall(sql)
+        return [model.Guest(*row) for row in results]
 
-        for row in results:
-            guest_id, first_name, last_name, email, address_id = row
-            guests.append(model.Guest(guest_id, first_name, last_name, email, address_id))
-
-        return guests
 
