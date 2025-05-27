@@ -43,6 +43,6 @@ class BookingManager:
     def cancel_booking(self, booking_id: int):
         booking = self.__dal.read_booking_by_id(booking_id)
         if booking is None:
-            raise ValueError("Buchung nicht gefunden.")
+            raise ValueError("Booking not found.")
         booking.is_cancelled = True
         self.__dal.update_booking(booking)
