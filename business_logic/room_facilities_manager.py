@@ -1,8 +1,26 @@
-# def update_room_type(room_types, type_id, new_description=None, new_max_guests=None):
-#     rt = next((r for r in room_types if r.type_id == type_id), None)
-#     if rt:
-#         if new_description: rt.description = new_description
-#         if new_max_guests: rt.max_guests = new_max_guests
-#         print(f"Zimmertyp {type_id} aktualisiert: {rt.description}, max Gäste: {rt.max_guests}")
-#     else:
-#         print("Zimmertyp nicht gefunden.")
+from data_access.room_facilities_dal import RoomFacilitiesDAL
+from model.room import Room
+from model.facilities import Facilities
+from typing import List
+
+class RoomFacilitiesManager:
+    def __init__(self, db_path: str = None):
+        self.__dal = RoomFacilitiesDAL(db_path)
+
+    def add_facility_to_room(self, room: Room, facility: Facilities):
+        self.__dal.create_facility_to_room(room, facility)
+
+    def remove_facility_from_room(self, room: Room, facility: Facilities):
+        self.__dal.delete_facility_from_room(room, facility)
+
+    def read_facilities_by_room(self, room: Room) -> List[Facilities]:
+        return self.__dal.read_facilities_by_room_id(room)
+
+    def read_rooms_by_facility(self, facility: Facilities) -> List[Room]:
+        return self.__dal.read_rooms_by_facility_id(facility)
+
+    def has_facility(self, room: Room, facility: Facilities) -> bool:
+        return self.__dal.has_facility(room, facility)
+
+    def delete_facilities_from_room(self, room: Room):
+        self.__dal.delete_room_facilities(room)
