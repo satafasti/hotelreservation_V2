@@ -28,6 +28,15 @@ class BookingManager:
 
         return self.__dal.create_booking(booking)
 
+    def calculate_dynamic_price(base_price: float, check_in: str) -> float:
+        month = datetime.strptime(check_in, "%Y-%m-%d").month
+        if month in [6, 7, 8, 12]:
+            return base_price * 1.3  # Hochsaison
+        elif month in [1, 2, 3, 11]:
+            return base_price * 0.9  # Nebensaison
+        else:
+            return base_price
+
     def read_booking_by_id(self, booking_id: int) -> Optional[Booking]:
         return self.__dal.read_booking_by_id(booking_id)
 
