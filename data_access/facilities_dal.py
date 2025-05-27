@@ -1,45 +1,52 @@
 from __future__ import annotations
 
 import model
-from data_access.base_dal import BaseDAL
+from data_access.base_dal import BaseDataAccess
 
-
-class FacilitiesDAL(BaseDAL):
+class FacilityDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
+    def create_new_facility(self, facility_id: int, facility_name: str) -> model.Facilities:
+        if facility_id is None:
+            raise ValueError("Facility ID wird benötigt")
+        if not facility_name:
+            raise ValueError("Facility name wird benötigt")
 
-    def create_facilities(self, facilities: model.Facilities):
         sql = """
-        INSERT INTO Facilities (facility_id, facility_name) VALUES (?, ?)
-        """
-        params = (facilities.facility_id if facilities else None, facilities.facility_name)
+              INSERT INTO Facilities (facility_id, facility_name)
+              VALUES (?, ?) \
+              """
+        params = (facility_id, facility_name)
+
         self.execute(sql, params)
 
-    def show_facilities_by_id(self, facilities: model.Facilities):
+        return model.Facilities(facility_id=facility_id, facility_name=facility_name)
+
+    def read_facility_by_id(self, facility_id: int) -> model.Facilities | None:
+        if facility_id is None:
+            raise ValueError("Facility ID wird benötigt")
+
         sql = """
-        SELECT * FROM Facilities WHERE facility_id = ?
+        SELECT facility_id, facility_name
+        FROM Facilities
+        WHERE facility_id = ?
         """
-        params = (facilities.facility_id,)
-        result = self.fetch_one(sql, params)
+        result = self.fetchone(sql, (facility_id,))
         if result:
-            facility_id, facility_name = result
-            return model.Facilities(facility_id, facility_name)
+            (facility_id, facility_name) = result
+            return model.Facilities(facility_id=facility_id, facility_name=facility_name)
         else:
             return None
 
-    def update_facilities(self, facilities: model.Facilities):
+    def read_all_facilities(self) -> list[model.Facilities]:
         sql = """
-        UPDATE Facilities SET facility_name = ? WHERE facility_id = ?
-        """
-        params = (facilities.facility_name,facilities.facility_id)
-        self.execute(sql, params)
+              SELECT facility_id, facility_name
+              FROM Facilities \
+              """
+        results = self.fetchall(sql)
 
-    def delete_facilities(self, facilities: model.Facilities):
-        sql = """
-        DELETE FROM Facilities WHERE facility_id = ?
-        """
-        params = (facilities.facility_id,)
-        self.execute(sql, params)
-
-
+        return [
+            model.Facilities(facility_id=facility_id, facility_name=facility_name)
+            for facility_id, facility_name in results
+        ]

@@ -1,7 +1,8 @@
 import model
-from data_access.base_dal import BaseDAL
 
-class RoomTypeDAL(BaseDAL):
+from data_access.base_dal import BaseDataAccess
+
+class RoomTypeDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
