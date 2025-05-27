@@ -20,7 +20,7 @@ class InvoiceDAL(BaseDataAccess):
         invoice._Invoice__invoice_id = invoice_id
         return invoice
 
-    def show_invoice_by_id(self, invoice_id: int) -> Optional[model.Invoice]:
+    def read_invoice_by_id(self, invoice_id: int) -> Optional[model.Invoice]:
         sql = """
         SELECT invoice_id, booking_id, issue_date, total_amount
         FROM Invoice
@@ -54,7 +54,7 @@ class InvoiceDAL(BaseDataAccess):
         if row_count == 0:
             raise LookupError(f"No invoice found with id {invoice.invoice_id} and booking_id {invoice.booking_id}")
 
-    def show_all_invoices(self):
+    def read_all_invoices(self):
         sql = "SELECT invoice_id, booking_id, issue_date, total_amount FROM Invoice"
         results = self.fetchall(sql)
         return [
