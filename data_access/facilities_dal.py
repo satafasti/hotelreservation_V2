@@ -2,14 +2,15 @@ from __future__ import annotations
 
 import model
 from data_access.base_dal import BaseDataAccess
+from typing import Optional
 
 class FacilityDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
     def create_new_facility(self, facility_id: int, facility_name: str) -> model.Facilities:
-        if facility_id is None:
-            raise ValueError("Facility ID wird benötigt")
+        #if facility_id is None:
+           # raise ValueError("Facility ID wird benötigt") -> sollte nicht passieren da autoincrement
         if not facility_name:
             raise ValueError("Facility name wird benötigt")
 
@@ -23,7 +24,7 @@ class FacilityDataAccess(BaseDataAccess):
 
         return model.Facilities(facility_id=facility_id, facility_name=facility_name)
 
-    def read_facility_by_id(self, facility_id: int) -> model.Facilities | None:
+    def read_facility_by_id(self, facility_id: int) -> Optional[model.Facilities]:
         if facility_id is None:
             raise ValueError("Facility ID wird benötigt")
 
@@ -50,3 +51,26 @@ class FacilityDataAccess(BaseDataAccess):
             model.Facilities(facility_id=facility_id, facility_name=facility_name)
             for facility_id, facility_name in results
         ]
+
+    def update_facility(self, facility_id: int, facility_name: str) -> model.Facilities:
+        if facility_id is None:
+           raise ValueError("Facility ID wird benötigt")
+
+        sql = """
+        UPDATE Facilities \
+        SET facility_name = ?
+        WHERE facility_id = ?
+        """
+        params = (facility_name, facility_id)
+        self.execute(sql, params)
+
+    def delete_facility(self, facility_id: int):
+        if facility_id is None:
+            raise ValueError("Facility ID wird benötigt")
+
+        sql = """
+              DELETE \
+              FROM Facilities \
+              WHERE facility_id = ? \
+              """
+        self.execute(sql, (facility_id,))
