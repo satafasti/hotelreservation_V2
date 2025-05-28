@@ -1,10 +1,10 @@
 import model
-from data_access.base_dal import BaseDAL
+from data_access.base_dal import BaseDAL, BaseDataAccess
 from model.booking import Booking
 from typing import Optional, List
 
 
-class BookingDAL(BaseDAL):
+class BookingDataAccess(BaseDataAccess):
     def __init__(self, db_path: str):
         super().__init__(db_path)
 

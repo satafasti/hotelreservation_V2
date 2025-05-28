@@ -3,7 +3,7 @@ import sqlite3
 
 from .base_dal import BaseDataAccess
 from .address_dal import AddressDataAccess
-from .booking_dal import BookingDAL
+from .booking_dal import BookingDataAccess
 from .facilities_dal import FacilityDataAccess
 from .guest_dal import GuestDAL
 from .hotel_dal import HotelDAL
