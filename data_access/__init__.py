@@ -3,14 +3,14 @@ import sqlite3
 
 from .base_dal import BaseDataAccess
 from .address_dal import AddressDataAccess
-from .booking_dal import BookingDAL
+from .booking_dal import BookingDataAccess
 from .facilities_dal import FacilityDataAccess
-from .guest_dal import GuestDAL
-from .hotel_dal import HotelDAL
-from .invoice_dal import InvoiceDAL
-from .room_dal import RoomDAL
+from .guest_dal import GuestDataAccess
+from .hotel_dal import HotelDataAccess
+from .invoice_dal import InvoiceDataAccess
+from .room_dal import RoomDataAccess
 from .room_type_dal import RoomTypeDataAccess
-from .room_facilities_dal import RoomFacilitiesDAL
+from .room_facilities_dal import RoomFacilitiesDataAccess
 
 # Adapter: Wandelt `date`-Objekt in `TEXT` um
 sqlite3.register_adapter(date, lambda d: d.isoformat())

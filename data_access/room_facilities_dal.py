@@ -2,7 +2,7 @@ import model
 from data_access.base_dal import BaseDataAccess
 
 
-class RoomFacilitiesDAL(BaseDataAccess):
+class RoomFacilitiesDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 

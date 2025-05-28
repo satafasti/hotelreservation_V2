@@ -3,7 +3,7 @@ from data_access.base_dal import BaseDataAccess
 from typing import Optional
 
 
-class GuestDAL(BaseDataAccess):
+class GuestDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
