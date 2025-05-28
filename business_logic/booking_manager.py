@@ -1,14 +1,16 @@
 from datetime import datetime
+
+from data_access import BookingDataAccess
 from model.booking import Booking
 
-from data_access.booking_dal import BookingDAL
+from data_access.booking_dal import BookingDataAccess
 from model.booking import Booking
 from typing import Optional, List
 from datetime import datetime
 
 class BookingManager:
     def __init__(self, db_path: str = None):
-        self.__dal = BookingDAL(db_path)
+        self.__dal = BookingDataAccess(db_path)
 
     def create_booking(self, guest_id: int, room_id: int, check_in_date: str, check_out_date: str, price_per_night: float) -> Booking:
         check_in = datetime.strptime(check_in_date, "%Y-%m-%d")
