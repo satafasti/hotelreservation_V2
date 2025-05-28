@@ -5,7 +5,7 @@ import data_access
 
 #TODO Code für Projekt ergänzen
 ### Code gemäss Referenzprojekt
-class HotelDAL(data_access.BaseDal):
+class HotelDataAccess(data_access.BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
