@@ -6,7 +6,7 @@ from .address_dal import AddressDataAccess
 from .booking_dal import BookingDataAccess
 from .facilities_dal import FacilityDataAccess
 from .guest_dal import GuestDataAccess
-from .hotel_dal import HotelDataAccess
+#from .hotel_dal import HotelDataAccess
 from .invoice_dal import InvoiceDataAccess
 from .room_dal import RoomDataAccess
 from .room_type_dal import RoomTypeDataAccess

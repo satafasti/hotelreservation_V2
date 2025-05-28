@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import model
-from data_access.base_dal import BaseDal, BaseDataAccess
+from data_access.base_dal import BaseDataAccess
 from model import Room_Type
 
 
