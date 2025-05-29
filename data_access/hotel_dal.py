@@ -8,16 +8,29 @@ class HotelDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
-    def create_new_hotel(self, name:str, stars: int, address_id: int) -> model.Hotel:
-        if name is None:
-            raise ValueError("Hotelname wird benötigt.")
+    def create_new_hotel(self, hotel: model.Hotel, address: model.Address, room: model.Room) -> model.Hotel:
+        address_sql = """
+                      INSERT INTO Address (street, city, zip_code) \
+                      VALUES (?, ?, ?) \
+                      """
+        address_params = (address.street, address.city, address.zip_code)
+        address_id, _ = self.execute(address_sql, address_params)
 
-        sql = """
-        INSERT INTO Hotel (name, stars, address_id) VALUES (?, ?, ?)
-        """
-        params = tuple([name, stars, address_id])
-        last_row_id, row_count = self.execute(sql, params)
-        return model.Hotel(hotel_id=last_row_id, name=name, stars=stars, address_id=address_id)
+        hotel_sql = """
+                    INSERT INTO Hotel (name, stars, address_id) \
+                    VALUES (?, ?, ?) \
+                    """
+        hotel_params = (hotel.name, hotel.stars, address_id)
+        hotel_id, _ = self.execute(hotel_sql, hotel_params)
+
+        room_sql = """
+                   INSERT INTO Room (hotel_id, room_number, description, max_guests, price_per_night)
+                   VALUES (?, ?, ?, ?, ?) \
+                   """
+        room_params = (hotel_id, room.room_number, room.description, room.max_guests, room.price_per_night)
+        self.execute(room_sql, room_params)
+
+        return model.Hotel(hotel_id=hotel_id, name=hotel.name, stars=hotel.stars, address_id=address_id)
 
     def read_hotels_by_id(self, hotel_id: int) -> model.Hotel | None:
         if hotel_id is None:
