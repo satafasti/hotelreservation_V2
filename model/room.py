@@ -22,8 +22,8 @@ class Room:
             raise ValueError("price_per_night muss float sein.")
         if not room_type:
             raise ValueError("room_type wird benötigt.")
-        if not isinstance(room_type, Room_Type):
-            raise ValueError("room_type muss Instanz von Room_Type sein.")
+        #if not isinstance(room_type, Room_Type):
+        #    raise ValueError("room_type muss Instanz von Room_Type sein.")
 
         self.__room_id: int = room_id
         self.__room_number: str = room_number
