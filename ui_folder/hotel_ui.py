@@ -17,7 +17,7 @@ def user_search_hotel():
 
     manager = HotelManager()
 
-    results = manager.search_hotels(city, stars, guests, check_in, check_out)
+    results = manager.search_hotel(city, stars, guests, check_in, check_out)
 
     if not results:
         print("Keine passenden Hotels gefunden.")
@@ -38,11 +38,12 @@ def admin_create_hotel():
     city = input("Gib den Ort des Hotels ein: ")
     zip_code = input("Gib den Zip-Code des Hotels ein: ")
     name = input("Gib den Hotelname ein: ")
-    stars = input("Enter Hotel stars: ")
-    room_number = input("Enter room number: ")
-    description = input("Enter room type description: ")
-    max_guests = input("Enter max guests: ")
-    price_per_night = input("Enter price per night for the room: ")
+    stars = input("Gib die Anzahl Hotelsterne ein: ")
+    print("Du musst ein Zimmer erstellen.")
+    room_number = input("Gib eine Zimmernummer ein: ")
+    description = input("Gib den Zimmertyp an: ")
+    max_guests = input("Maximale Anzahl Gäste für das Zimmer: ")
+    price_per_night = input("Gib den Preis pro Nacht für das Zimmer an: ")
 
 
 
