@@ -1,13 +1,13 @@
 import os
-import pandas as pd
+#import pandas as pd
 import model
-import data_access
+from data_access.hotel_dal import HotelDataAccess
 
 #TODO Code für Projekt ergänzen
 ### Code gemäss Referenzprojekt
 class HotelManager:
-    def __init__(self):
-        self.__hotel_dal = data_access.HotelDAL()
+    def __init__(self, db_path: str = None):
+        self.__hotel_dal = HotelDataAccess(db_path)
 
     def create_hotel(self, name: str, stars: int, address_id: int): #TODO address_id wie lösen?
         return self.__hotel_dal.create_hotel(name, stars, address_id)
@@ -33,6 +33,8 @@ class HotelManager:
     def delete_hotel(self, hotel: model.Hotel) -> None:
         self.__hotel_dal.delete_hotel(hotel)
 
+    def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
+        return self.__hotel_dal.search_hotel(hotel)
 
 
 
