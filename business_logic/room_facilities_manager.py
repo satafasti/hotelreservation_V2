@@ -1,11 +1,11 @@
-from data_access.room_facilities_dal import RoomFacilitiesDAL
+from data_access.room_facilities_dal import RoomFacilitiesDataAccess
 from model.room import Room
 from model.facilities import Facilities
 from typing import List
 
 class RoomFacilitiesManager:
     def __init__(self, db_path: str = None):
-        self.__dal = RoomFacilitiesDAL(db_path)
+        self.__dal = RoomFacilitiesDataAccess(db_path)
 
     def add_facility_to_room(self, room: Room, facility: Facilities):
         self.__dal.create_facility_to_room(room, facility)
