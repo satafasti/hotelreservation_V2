@@ -1,10 +1,10 @@
-from data_access.invoice_dal import InvoiceDAL
+from data_access.invoice_dal import InvoiceDataAccess
 from model.invoice import Invoice
 from typing import Optional, List
 
 class InvoiceManager:
     def __init__(self, db_path: str = None):
-        self.__dal = InvoiceDAL(db_path)
+        self.__dal = InvoiceDataAccess(db_path)
 
     def create_invoice(self, booking_id: int, issue_date: str, total_amount: float) -> Invoice:
         invoice = Invoice(None, booking_id, issue_date, total_amount)
