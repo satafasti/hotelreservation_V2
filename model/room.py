@@ -6,8 +6,6 @@ from model.facilities import Facilities
 if TYPE_CHECKING:
     from model.hotel import Hotel
 
-#TODO Code für Projekt ergänzen
-### Code gemäss Referenzprojekt
 class Room:
     def __init__(self, room_id: int, hotel: Hotel, room_number: str, room_type: Room_Type, price_per_night: float):
         if not room_id:
@@ -25,15 +23,17 @@ class Room:
         if not room_type:
             raise ValueError("room_type wird benötigt.")
         if not isinstance(room_type, Room_Type):
-            raise ValueError("room_type muss integer sein.")
+            raise ValueError("room_type muss Instanz von Room_Type sein.")
 
         self.__room_id: int = room_id
         self.__room_number: str = room_number
         self.__hotel: Hotel = hotel
+        self.__price_per_night: float = price_per_night
+        self.__room_type: Room_Type = room_type
+        self.__facilities: list[Facilities] = []
+
         if hotel is not None:
             hotel.add_room(self)
-        self.__facilities: list[Facilities] = []
-        self.__room_type: Room_Type = room_type
 
     def __repr__(self):
         return f"Room(id={self.__room_id!r}, room_number={self.__room_number!r}, hotel={self.__hotel!r})"
@@ -55,14 +55,31 @@ class Room:
         self.__room_number = room_number
 
     @property
+    def price_per_night(self) -> float:
+        return self.__price_per_night
+
+    @price_per_night.setter
+    def price_per_night(self, price_per_night: float) -> None:
+        if not price_per_night:
+            raise ValueError("price_per_night wird benötigt.")
+        if not isinstance(price_per_night, float):
+            raise ValueError("price_per_night muss float sein.")
+        self.__price_per_night = price_per_night
+
+    @property
+    def room_type(self) -> Room_Type:
+        return self.__room_type
+
+
+    @property
     def hotel(self) -> Hotel:
         return self.__hotel
 
     @hotel.setter
     def hotel(self, hotel: Hotel) -> None:
-        from model import Hotel
+        from model.hotel import Hotel
         if hotel is not None and not isinstance(hotel, Hotel):
-            raise ValueError("hotel muss Bestandteil von Hotel sein.")
+            raise ValueError("hotel muss Instanz von Hotel sein.")
         if self.__hotel is not hotel:
             if self.__hotel is not None:
                 self.__hotel.remove_room(self)
