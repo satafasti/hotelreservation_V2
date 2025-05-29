@@ -9,8 +9,8 @@ class HotelManager:
     def __init__(self, db_path: str = None):
         self.__hotel_dal = HotelDataAccess(db_path)
 
-    def create_hotel(self, name: str, stars: int, address_id: int): #TODO address_id wie lösen?
-        return self.__hotel_dal.create_hotel(name, stars, address_id)
+    def create_hotel(self, hotel: model.Hotel, address: model.Address, room: model.Room):
+        return self.__hotel_dal.create_new_hotel(hotel, address, room)
 
     def read_hotel(self, hotel_id: int):
         return self.__hotel_dal.read_hotel_by_id(hotel_id)
