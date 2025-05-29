@@ -63,7 +63,7 @@ class RoomFacilitiesDataAccess(BaseDataAccess):
 
         return result[0] > 0 if result else False
 
-    def delete_room_facilities(self, room: model.room):
+    def delete_room_facilities(self, room: model.Room):
         sql = """
               DELETE FROM Room_Facilities WHERE room_id = ?
               """
