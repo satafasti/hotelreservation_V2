@@ -67,7 +67,7 @@ class Room:
             if self.__hotel is not None:
                 self.__hotel.remove_room(self)
             self.__hotel = hotel
-            if hotel is not None and self not in hotel.room:
+            if hotel is not None and self not in hotel:
                 hotel.add_room(self)
 
     @property
