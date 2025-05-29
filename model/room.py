@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from model.hotel import Hotel
     from model.room_type import Room_Type
-    from model.room_facilities import Room_Facilities
+    from model.facilities import Facilities
 
 #TODO Code für Projekt ergänzen
 ### Code gemäss Referenzprojekt
@@ -22,13 +22,18 @@ class Room:
             raise ValueError("price_per_night wird benötigt.")
         if not isinstance(price_per_night, float):
             raise ValueError("price_per_night muss float sein.")
+        if not room_type:
+            raise ValueError("room_type wird benötigt.")
+        if not isinstance(room_type, Room_Type):
+            raise ValueError("room_type muss integer sein.")
 
         self.__room_id: int = room_id
         self.__room_number: str = room_number
         self.__hotel: Hotel = hotel
         if hotel is not None:
             hotel.add_room(self)
-        self.__room_facilities: list[Room_Facilities] = [] #TODO Room_Facilities erstellen
+        self.__facilities: list[Facilities] = []
+        self.__room_type: Room_Type = room_type
 
     def __repr__(self):
         return f"Room(id={self.__room_id!r}, room_number={self.__room_number!r}, hotel={self.__hotel!r})"
@@ -66,27 +71,25 @@ class Room:
                 hotel.add_room(self)
 
     @property
-    def room_facilities(self) -> list[Room_Facilities]:
-        return self.__room_facilities.copy()
+    def facilities(self) -> list[Facilities]:
+        return self.__facilities.copy()
 
-    def add_room_facilities(self, room_facilities: Room_Facilities) -> None:
-        from model import Room_Facilities
+    def add_room_facilities(self, facilities: Facilities) -> None:
 
-        if not room_facilities:
+        if not facilities:
+            raise ValueError("facilities wird benötigt.")
+        if not isinstance(facilities, Facilities):
+            raise ValueError("facilities muss Bestandteil von Facilities sein.")
+        if facilities not in self.__facilities:
+            self.__facilities.append(facilities)
+            facilities.room = self
+
+    def remove_room_facilities(self, facilities: Facilities) -> None:
+
+        if not facilities:
             raise ValueError("room_facilities wird benötigt.")
-        if not isinstance(room_facilities, Room_Facilities):
+        if not isinstance(facilities, Facilities):
             raise ValueError("room_facilities muss Bestandteil von Room_Facilities sein.")
-        if room_facilities not in self.__room_facilities:
-            self.__room_facilities.append(room_facilities)
-            room_facilities.room = self
-
-    def remove_room_facilities(self, room_facilities: Room_Facilities) -> None:
-        from model import Room_Facilities
-
-        if not room_facilities:
-            raise ValueError("room_facilities wird benötigt.")
-        if not isinstance(room_facilities, Room_Facilities):
-            raise ValueError("room_facilities muss Bestandteil von Room_Facilities sein.")
-        if room_facilities in self.__room_facilities:
-            self.__room_facilities.remove(room_facilities)
-            room_facilities.room = None
+        if facilities in self.__facilities:
+            self.__facilities.remove(facilities)
+            facilities.room = None
