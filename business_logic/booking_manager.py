@@ -1,8 +1,3 @@
-from datetime import datetime
-
-from data_access import BookingDataAccess
-from model.booking import Booking
-
 from data_access.booking_dal import BookingDataAccess
 from model.booking import Booking
 from typing import Optional, List
