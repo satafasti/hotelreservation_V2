@@ -22,7 +22,7 @@ class Room_Type:
     def type_id(self):
         return self.__type_id
 
-    @room_type_id.setter
+    @type_id.setter
     def type_id(self,new_type_id):
         self.__type_id = new_type_id
 
