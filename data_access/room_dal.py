@@ -44,6 +44,7 @@ class RoomDataAccess(BaseDataAccess):
         params = tuple([hotel.hotel_id])
         rooms = self.fetchall(sql, params)
         return [
-            model.Room(room_id, hotel)
-            for room_id in rooms
+            model.Room(row[0], hotel)
+            for row in rooms
         ]
+

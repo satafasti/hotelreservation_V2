@@ -40,8 +40,6 @@ class GuestDataAccess(BaseDataAccess):
             raise LookupError(f"No guest found with id {guest.guest_id}")
 
     def read_all_guests(self) -> list[model.Guest]:
-        sql = "SELECT guest_id, first_name, last_name, email, address_id FROM Guest"
+        sql = """SELECT guest_id, first_name, last_name, email, address_id FROM Guest"""
         results = self.fetchall(sql)
         return [model.Guest(*row) for row in results]
-
-

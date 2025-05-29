@@ -1,11 +1,11 @@
-from data_access.guest_dal import GuestDAL
+from data_access.guest_dal import GuestDataAccess
 from model.guest import Guest
 from typing import Optional, List
 
 
 class GuestManager:
     def __init__(self, db_path: str = None):
-        self.__dal = GuestDAL(db_path)
+        self.__dal = GuestDataAccess(db_path)
 
     def create_guest(self, first_name: str, last_name: str, email: str, address_id: int) -> Guest:
         guest = Guest(None, first_name, last_name, email, address_id)

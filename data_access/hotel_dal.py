@@ -1,11 +1,10 @@
-from unittest import result
-#import pandas as pd
 import model
-import data_access
+from data_access.base_dal import BaseDataAccess
+from typing import Optional
 
 #TODO Code für Projekt ergänzen
 ### Code gemäss Referenzprojekt
-class HotelDataAccess(data_access.BaseDataAccess):
+class HotelDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
@@ -43,11 +42,11 @@ class HotelDataAccess(data_access.BaseDataAccess):
 
         return [model.Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id) for hotel_id, name, stars, address_id in hotels]
 
-    def read_all_hotels_as_df(self) -> pd.DataFrame:
-        sql = """
-        SELECT hotel_id = ?, name = ?, stars = ?, address_id = ? FROM Hotel
-        """
-        return pd.read_sql(sql, self.get_connection(), index_col='hotel_id')
+    #def read_all_hotels_as_df(self) -> pd.DataFrame:
+    #    sql = """
+    #    SELECT hotel_id = ?, name = ?, stars = ?, address_id = ? FROM Hotel
+    #    """
+    #    return pd.read_sql(sql, self.get_connection(), index_col='hotel_id')
 
     def read_hotels_like_name(self, name: str) -> list[model.Hotel]:
         sql = """
@@ -57,12 +56,12 @@ class HotelDataAccess(data_access.BaseDataAccess):
         hotels = self.fetchall(sql, params)
         return [model.Hotel(hotel_id=hotel_id, name=name) for hotel_id, name in hotels]
 
-    def read_hotels_like_name_as_df(self, name: str) -> pd.DataFrame:
-        sql = """
-                SELECT hotel_id = ?, name = ? FROM Hotel WHERE name LIKE ?
-                """
-        params = tuple([f"%{name}%"])
-        return pd.read_sql(sql, self.get_connection(), params=params, index_col='hotel_id')
+    #def read_hotels_like_name_as_df(self, name: str) -> pd.DataFrame:
+    #    sql = """
+    #            SELECT hotel_id = ?, name = ? FROM Hotel WHERE name LIKE ?
+    #            """
+    #    params = tuple([f"%{name}%"])
+    #    return pd.read_sql(sql, self.get_connection(), params=params, index_col='hotel_id')
 
     def update_hotel(self, hotel: model.Hotel) -> None:
         if hotel is None:
@@ -83,3 +82,8 @@ class HotelDataAccess(data_access.BaseDataAccess):
         """
         params = tuple([hotel.hotel_id])
         last_row_id, row_count = self.execute(sql, params)
+
+    #def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
+    #    sql = """
+    #    SELECT name FROM Hotel WHERE
+    #    """
