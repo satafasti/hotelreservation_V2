@@ -70,6 +70,13 @@ class Room:
     def room_type(self) -> Room_Type:
         return self.__room_type
 
+    @room_type.setter
+    def room_type(self, room_type: Room_Type) -> None:
+        if not room_type:
+            raise ValueError("room_type wird benötigt.")
+        if not isinstance(room_type, Room_Type):
+            raise ValueError("room_type muss Room_Type Instanz sein.")
+        self.__room_type = room_type
 
     @property
     def hotel(self) -> Hotel:
