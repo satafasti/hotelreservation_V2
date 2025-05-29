@@ -6,7 +6,7 @@ import data_access
 ### Code gemäss Referenzprojekt
 class RoomManager():
     def __init__(self) -> None:
-        self.__room_dal = data_access.RoomDAL()
+        self.__room_dal = data_access.RoomDataccess()
 
     def create_room(self, hotel_id: int, room_number: str, type_id: int, price_per_night: float, hotel: model.Hotel = None) -> model.Room:
         return self.__room_dal.create_room(hotel_id, room_number, type_id, price_per_night, hotel)

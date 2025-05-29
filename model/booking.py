@@ -14,45 +14,45 @@ class Booking:
         room_id: int
     ):
         if booking_id <= 0:
-            raise ValueError("booking_id must be a positive integer")
+            raise ValueError("booking_id muss eine positive Ganzzahl sein")
         if booking_id is None:
-            raise ValueError("booking_id is required")
+            raise ValueError("booking_id ist erforderlich")
         if not isinstance(booking_id, int):
-            raise ValueError("booking_id must be an integer")
+            raise ValueError("booking_id muss eine Ganzzahl sein")
 
         if not check_in_date:
-            raise ValueError("check_in_date must not be empty")
+            raise ValueError("check_in_date darf nicht leer sein")
         if not isinstance(check_in_date, str):
-            raise ValueError("check_in_date must be an string")
+            raise ValueError("check_in_date muss ein String sein")
 
         if not check_out_date:
-            raise ValueError("check_out_date must not be empty")
+            raise ValueError("check_out_date darf nicht leer sein")
         if not isinstance(check_out_date, str):
-            raise ValueError("check_out_date must be an string")
+            raise ValueError("check_out_date muss ein String sein")
 
         if total_amount < 0:
-            raise ValueError("total_amount must be non-negative")
+            raise ValueError("total_amount darf nicht negativ sein")
         if not total_amount:
-            raise ValueError("total_amount is required")
+            raise ValueError("total_amount ist erforderlich")
         if not isinstance(total_amount, float):
-            raise TypeError("total_amount must be an float")
+            raise TypeError("total_amount muss ein Gleitkommawert sein")
 
         if guest_id <= 0:
-            raise ValueError("guest_id must be a positive integer")
+            raise ValueError("guest_id muss eine positive Ganzzahl sein")
         if not guest_id:
-            raise ValueError("guest_id is required")
+            raise ValueError("guest_id ist erforderlich")
         if not isinstance(guest_id, int):
-            raise ValueError("guest_id must be an integer")
+            raise ValueError("guest_id muss eine Ganzzahl sein")
 
         if room_id <= 0:
-            raise ValueError("room_id must be a positive integer")
+            raise ValueError("room_id muss eine positive Ganzzahl sein")
         if not room_id:
-            raise ValueError("room_id is required")
+            raise ValueError("room_id ist erforderlich")
         if not isinstance(room_id, int):
-            raise ValueError("room_id must be an integer")
+            raise ValueError("room_id muss eine Ganzzahl sein")
 
         if not isinstance(is_cancelled, bool):
-            raise TypeError("is_cancelled must be a boolean")
+            raise TypeError("is_cancelled muss ein boolescher Wert sein")
 
         self.__booking_id = booking_id
         self.__check_in_date = check_in_date
@@ -114,7 +114,7 @@ class Booking:
     @is_cancelled.setter
     def is_cancelled(self, value: bool):
         if not isinstance(value, bool):
-            raise TypeError("is_cancelled must be a boolean")
+            raise TypeError("is_cancelled muss ein boolescher Wert sein")
         self.__is_cancelled = value
 
     @property
@@ -124,7 +124,7 @@ class Booking:
     @total_amount.setter
     def total_amount(self, value: float):
         if value < 0:
-            raise ValueError("total_amount must be non-negative")
+            raise ValueError("total_amount darf nicht negativ sein")
         self.__total_amount = value
 
     @property

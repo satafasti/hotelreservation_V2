@@ -6,24 +6,21 @@ class BookingDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
-    def create_new_booking(
-            self,
-            booking: model.Booking
-    ) -> model.Booking:
+    def create_new_booking( self, booking: model.Booking) -> model.Booking:
         if booking is None:
-            raise ValueError("booking is required")
+            raise ValueError("booking ist erforderlich")
         if booking.guest_id is None:
-            raise ValueError("guest_id is required")
+            raise ValueError("guest_id ist erforderlich")
         if booking.room_id is None:
-            raise ValueError("room_id is required")
+            raise ValueError("room_id ist erforderlich")
         if booking.check_in_date is None:
-            raise ValueError("check_in_date is required")
+            raise ValueError("check_in_date ist erforderlich")
         if booking.check_out_date is None:
-            raise ValueError("check_out_date is required")
+            raise ValueError("check_out_date ist erforderlich")
         if booking.is_cancelled is None:
-            raise ValueError("is_cancelled is required")
+            raise ValueError("is_cancelled ist erforderlich")
         if booking.total_amount is None:
-            raise ValueError("total_amount is required")
+            raise ValueError("total_amount ist erforderlich")
 
         sql = """
         INSERT INTO Booking (
@@ -59,7 +56,7 @@ class BookingDataAccess(BaseDataAccess):
 
     def read_booking_by_id(self, booking_id: int) -> model.Booking | None:
         if booking_id is None:
-            raise ValueError("booking_id is required")
+            raise ValueError("booking_id ist erforderlich")
 
         sql = """
         SELECT 
@@ -99,7 +96,7 @@ class BookingDataAccess(BaseDataAccess):
 
     def read_booking_by_guest_id(self, guest_id: int) -> list[model.Booking]:
         if guest_id is None:
-            raise ValueError("guest_id is required")
+            raise ValueError("guest_id ist erforderlich")
 
         sql = """
         SELECT 
@@ -139,7 +136,7 @@ class BookingDataAccess(BaseDataAccess):
 
     def read_booking_by_room_id(self, room_id: int) -> list[model.Booking]:
         if room_id is None:
-            raise ValueError("room_id is required")
+            raise ValueError("room_id ist erforderlich")
 
         sql = """
         SELECT 

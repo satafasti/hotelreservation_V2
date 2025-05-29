@@ -1,5 +1,5 @@
 from unittest import result
-import pandas as pd
+#import pandas as pd
 import model
 import data_access
 
