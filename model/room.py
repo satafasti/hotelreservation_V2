@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
-from model.room_type import Room_Type
-from model.facilities import Facilities
 
 if TYPE_CHECKING:
     from model.hotel import Hotel
+    from model.room_type import Room_Type
+    from model.facilities import Facilities
 
 class Room:
     def __init__(self, room_id: int, hotel: Hotel, room_number: str, room_type: Room_Type, price_per_night: float):
@@ -22,8 +22,8 @@ class Room:
             raise ValueError("price_per_night muss float sein.")
         if not room_type:
             raise ValueError("room_type wird benötigt.")
-        if not isinstance(room_type, Room_Type):
-            raise ValueError("room_type muss Instanz von Room_Type sein.")
+        if not self.is_room_type(room_type):
+            raise ValueError("room_type muss Room_Type Instanz sein.")
 
         self.__room_id: int = room_id
         self.__room_number: str = room_number
@@ -34,6 +34,20 @@ class Room:
 
         if hotel is not None:
             hotel.add_room(self)
+
+    def is_room_type(self, obj) -> bool:
+        try:
+            from model.room_type import Room_Type
+            return isinstance(obj, Room_Type)
+        except ImportError:
+            return obj.__class__.__name__ == 'Room_Type'
+
+    def is_facilities(self, obj) -> bool:
+        try:
+            from model.facilities import Facilities
+            return isinstance(obj, Facilities)
+        except ImportError:
+            return obj.__class__.__name__ == 'Facilities'
 
     def __repr__(self):
         return f"Room(id={self.__room_id!r}, room_number={self.__room_number!r}, hotel={self.__hotel!r})"
