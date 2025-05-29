@@ -18,14 +18,14 @@ class HotelManager:
     def read_all_hotels(self) -> list[model.Hotel]:
         return self.__hotel_dal.read_all_hotels()
 
-    def read_all_hotels_as_df(self) -> pd.DataFrame:
-        return self.__hotel_dal.read_all_hotels_as_df()
+    #def read_all_hotels_as_df(self) -> pd.DataFrame:
+    #    return self.__hotel_dal.read_all_hotels_as_df()
 
     def read_hotels_by_similar_name(self, name: str) -> list[model.Hotel]:
         return self.__hotel_dal.read_hotels_like_name(name)
 
-    def read_hotels_by_similar_name_as_df(self, name: str) -> pd.DataFrame:
-        return self.__hotel_dal.read_hotels_like_name_as_df(name)
+    #def read_hotels_by_similar_name_as_df(self, name: str) -> pd.DataFrame:
+    #    return self.__hotel_dal.read_hotels_like_name_as_df(name)
 
     def update_hotel(self, hotel: model.Hotel) -> None:
         self.__hotel_dal.update_hotel(hotel)
