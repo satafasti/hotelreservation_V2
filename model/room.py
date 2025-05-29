@@ -22,7 +22,7 @@ class Room:
             raise ValueError("price_per_night muss float sein.")
         if not room_type:
             raise ValueError("room_type wird benötigt.")
-        if not self.is_room_type(room_type):
+        if not self._is_room_type(room_type):
             raise ValueError("room_type muss Room_Type Instanz sein.")
 
         self.__room_id: int = room_id
@@ -35,14 +35,14 @@ class Room:
         if hotel is not None:
             hotel.add_room(self)
 
-    def is_room_type(self, obj) -> bool:
+    def _is_room_type(self, obj) -> bool:
         try:
             from model.room_type import Room_Type
             return isinstance(obj, Room_Type)
         except ImportError:
             return obj.__class__.__name__ == 'Room_Type'
 
-    def is_facilities(self, obj) -> bool:
+    def _is_facilities(self, obj) -> bool:
         try:
             from model.facilities import Facilities
             return isinstance(obj, Facilities)
@@ -88,7 +88,7 @@ class Room:
     def room_type(self, room_type: Room_Type) -> None:
         if not room_type:
             raise ValueError("room_type wird benötigt.")
-        if not isinstance(room_type, Room_Type):
+        if not self._is_room_type(room_type):
             raise ValueError("room_type muss Room_Type Instanz sein.")
         self.__room_type = room_type
 
@@ -98,36 +98,42 @@ class Room:
 
     @hotel.setter
     def hotel(self, hotel: Hotel) -> None:
-        from model.hotel import Hotel
-        if hotel is not None and not isinstance(hotel, Hotel):
-            raise ValueError("hotel muss Instanz von Hotel sein.")
+        if hotel is not None and not self._is_hotel(hotel):
+            raise ValueError("hotel muss Hotel Instanz sein.")
         if self.__hotel is not hotel:
             if self.__hotel is not None:
                 self.__hotel.remove_room(self)
             self.__hotel = hotel
-            if hotel is not None and self not in hotel:
+            if hotel is not None:
                 hotel.add_room(self)
+
+    def _is_hotel(self, obj) -> bool:
+        try:
+            from model.hotel import Hotel
+            return isinstance(obj, Hotel)
+        except ImportError:
+            return obj.__class__.__name__ == 'Hotel'
 
     @property
     def facilities(self) -> list[Facilities]:
         return self.__facilities.copy()
 
     def add_room_facilities(self, facilities: Facilities) -> None:
-
         if not facilities:
             raise ValueError("facilities wird benötigt.")
-        if not isinstance(facilities, Facilities):
-            raise ValueError("facilities muss Bestandteil von Facilities sein.")
+        if not self._is_facilities(facilities):
+            raise ValueError("facilities muss Facilities Instanz sein.")
         if facilities not in self.__facilities:
             self.__facilities.append(facilities)
-            facilities.room = self
+            if hasattr(facilities, 'room'):
+                facilities.room = self
 
     def remove_room_facilities(self, facilities: Facilities) -> None:
-
         if not facilities:
             raise ValueError("room_facilities wird benötigt.")
-        if not isinstance(facilities, Facilities):
-            raise ValueError("room_facilities muss Bestandteil von Room_Facilities sein.")
+        if not self._is_facilities(facilities):
+            raise ValueError("room_facilities muss Facilities Instanz sein.")
         if facilities in self.__facilities:
             self.__facilities.remove(facilities)
-            facilities.room = None
+            if hasattr(facilities, 'room'):
+                facilities.room = None

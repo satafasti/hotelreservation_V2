@@ -14,10 +14,12 @@ class Hotel:
             raise ValueError("name wird benötigt.")
         if not isinstance(name, str):
             raise ValueError("name must be a string.")
-        if not stars:
+        if stars is None:
             raise ValueError("stars wird benötigt.")
         if not isinstance(stars, int):
             raise ValueError("stars must be an integer.")
+        if not (1 <= stars <= 5):
+            raise ValueError("stars muss zwischen 1 und 5 sein.")
         if not address_id:
             raise ValueError("address_id wird benötigt.")
         if not isinstance(address_id, int):
@@ -84,22 +86,25 @@ class Hotel:
 
         if not room:
             raise ValueError("room is required.")
-        if not isinstance(room, Room):
-            raise ValueError("room must be part of a hotel.")
+        if not self._is_room(room):
+            raise ValueError("room must be a Room instance.")
         if room not in self.__rooms:
             self.__rooms.append(room)
-            room.hotel = self
 
     def remove_room(self, room: Room) -> None:
-        from model.room import Room
-
         if not room:
             raise ValueError("room is required.")
-        if not isinstance(room, Room):
-            raise ValueError("room must be part of a hotel.")
+        if not self._is_room(room):
+            raise ValueError("room must be a Room instance.")
         if room in self.__rooms:
             self.__rooms.remove(room)
-            room.hotel = None
+
+    def _is_room(self, obj) -> bool:
+        try:
+            from model.room import Room
+            return isinstance(obj, Room)
+        except ImportError:
+            return obj.__class__.__name__ == 'Room'
 
 
 
