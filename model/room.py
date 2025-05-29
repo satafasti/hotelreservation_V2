@@ -1,10 +1,10 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+from model.room_type import Room_Type
+from model.facilities import Facilities
 
 if TYPE_CHECKING:
     from model.hotel import Hotel
-    from model.room_type import Room_Type
-    from model.facilities import Facilities
 
 #TODO Code für Projekt ergänzen
 ### Code gemäss Referenzprojekt
