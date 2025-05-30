@@ -1,4 +1,4 @@
-from business_logic.booking_manager import BookingManager
+from .booking_manager import BookingManager
 from .facilities_manager import FacilitiesManager
 from .guest_manager import GuestManager
 from .hotel_manager import HotelManager
