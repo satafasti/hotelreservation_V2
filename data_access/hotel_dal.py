@@ -105,3 +105,81 @@ class HotelDataAccess(BaseDataAccess):
 
     def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
         return []
+
+    def read_all_hotels_extended_info(self) -> list[model.Hotel]:
+        sql = """
+              SELECT h.hotel_id,
+                     h.name,
+                     h.stars,
+                     a.address_id,
+                     a.street,
+                     a.city,
+                     a.zip_code,
+                     r.room_id,
+                     r.room_number,
+                     r.price_per_night,
+                     rt.type_id,
+                     rt.description,
+                     rt.max_guests,
+                     b.booking_id,
+                     b.guest_id,
+                     b.check_in_date,
+                     b.check_out_date,
+                     b.is_cancelled,
+                     b.total_amount
+              FROM Hotel h
+                       JOIN Address a ON h.address_id = a.address_id
+                       LEFT JOIN Room r ON h.hotel_id = r.hotel_id
+                       LEFT JOIN Room_Type rt ON r.type_id = rt.type_id
+                       LEFT JOIN Booking b ON r.room_id = b.room_id
+              ORDER BY h.hotel_id, r.room_id, b.booking_id
+              """
+
+        results = self.fetchall(sql)
+
+        hotels = {}
+        for row in results:
+            (
+                hotel_id, name, stars,
+                address_id, street, city, zip_code,
+                room_id, room_number, price_per_night,
+                type_id, description, max_guests,
+                booking_id, guest_id, check_in_date, check_out_date,
+                is_cancelled, total_amount
+            ) = row
+
+            # Adresse
+            address = model.Address(address_id=address_id, street=street, city=city, zip_code=zip_code)
+
+            # Hotel nur einmal anlegen
+            if hotel_id not in hotels:
+                hotels[hotel_id] = model.Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id)
+                hotels[hotel_id].address = address
+                hotels[hotel_id].rooms = []
+
+            hotel = hotels[hotel_id]
+
+            # Room anlegen (nur wenn nicht None)
+            if room_id is not None:
+                room_type = model.Room_Type(type_id=type_id, description=description, max_guests=max_guests)
+                room = next((r for r in hotel.rooms if r.room_id == room_id), None)
+                if not room:
+                    room = model.Room(room_id=room_id, hotel=hotel, room_number=room_number,
+                                      room_type=room_type, price_per_night=price_per_night)
+                    room.bookings = []
+                    hotel.rooms.append(room)
+
+                # Booking anlegen (nur wenn nicht None)
+                if booking_id is not None:
+                    booking = model.Booking(
+                        booking_id=booking_id,
+                        room_id=room_id,
+                        guest_id=guest_id,
+                        check_in_date=check_in_date,
+                        check_out_date=check_out_date,
+                        is_cancelled=is_cancelled,
+                        total_amount=total_amount
+                    )
+                    room.bookings.append(booking)
+
+        return list(hotels.values())
