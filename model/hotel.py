@@ -77,17 +77,14 @@ class Hotel:
         self.__address_id = address_id
 
     @property
-    def rooms(self) -> list[Room]:
-        return self.__rooms.copy()
+    def rooms(self) -> list:
+        return self.__rooms
 
     @rooms.setter
-    def rooms(self, rooms_list: list) -> None:
-        if not isinstance(rooms_list, list):
+    def rooms(self, new_rooms: list):
+        if not isinstance(new_rooms, list):
             raise ValueError("rooms muss eine Liste sein.")
-        for room in rooms_list:
-            if not self._is_room(room):
-                raise ValueError("Jedes Element in rooms muss ein Room-Objekt sein.")
-        self.__rooms = rooms_list
+        self.__rooms = new_rooms
 
     def add_room(self, room: Room) -> None:
         from model import Room
