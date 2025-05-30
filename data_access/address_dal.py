@@ -41,3 +41,13 @@ class AddressDataAccess(BaseDataAccess):
             model.Address(address_id, street, city, zip_code)
             for address_id, street, city, zip_code in results
         ]
+
+    def update_address(self, address: model.Address) -> None:
+        if address is None:
+            raise ValueError("Address kann nicht leer sein.")
+
+        sql = """
+              UPDATE Address SET street   = ?, city     = ?, zip_code = ? WHERE address_id = ? 
+              """
+        params = (address.street, address.city, address.zip_code, address.address_id)
+        last_row_id, row_count = self.execute(sql, params)
