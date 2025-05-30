@@ -33,8 +33,11 @@ class HotelManager:
     def delete_hotel(self, hotel: model.Hotel) -> None:
         self.__hotel_dal.delete_hotel(hotel)
 
-    def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
-        return self.__hotel_dal.search_hotel(hotel)
+    # def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
+        #return self.__hotel_dal.search_hotel(hotel)
+
+    def read_all_hotels_extended_info(self):
+        return self.__hotel_dal.read_all_hotels_extended_info()
 
 
 
