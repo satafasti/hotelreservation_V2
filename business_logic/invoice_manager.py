@@ -27,3 +27,5 @@ class InvoiceManager:
         if invoice:
             invoice.total_amount = 0.0
             self.__dal.update_invoice(invoice)
+
+
