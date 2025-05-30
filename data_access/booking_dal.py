@@ -173,3 +173,30 @@ class BookingDataAccess(BaseDataAccess):
             )
             in bookings
         ]
+
+    def read_all_bookings(self):
+        bookings = []
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        query = """
+           SELECT booking_id, check_in_date, check_out_date, is_cancelled, amount, guest_id, room_id
+           FROM Booking
+           """
+        cursor.execute(query)
+        rows = cursor.fetchall()
+
+        for row in rows:
+            booking = Booking(
+                booking_id=row[0],
+                check_in_date=row[1],
+                check_out_date=row[2],
+                is_cancelled=bool(row[3]),
+                amount=row[4],
+                guest_id=row[5],
+                room_id=row[6]
+            )
+            bookings.append(booking)
+
+        conn.close()
+        return bookings
