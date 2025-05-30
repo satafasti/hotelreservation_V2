@@ -1,4 +1,11 @@
 import model
+import sqlite3
+from model.booking import Booking
+from typing import Optional, List
+from model.room import Room
+from model.booking import Booking
+
+
 from data_access.base_dal import BaseDataAccess
 
 
@@ -174,29 +181,57 @@ class BookingDataAccess(BaseDataAccess):
             in bookings
         ]
 
-    def read_all_bookings(self):
-        bookings = []
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+    def read_all_bookings(self) -> list[Booking]:
+        sql = """
+            SELECT booking_id, check_in_date, check_out_date, is_cancelled, total_amount, guest_id, room_id
+            FROM Booking
+        """
+        rows = self.fetchall(sql)
 
-        query = """
-           SELECT booking_id, check_in_date, check_out_date, is_cancelled, amount, guest_id, room_id
-           FROM Booking
-           """
-        cursor.execute(query)
-        rows = cursor.fetchall()
-
-        for row in rows:
-            booking = Booking(
+        return [
+            Booking(
                 booking_id=row[0],
                 check_in_date=row[1],
                 check_out_date=row[2],
                 is_cancelled=bool(row[3]),
-                amount=row[4],
+                total_amount=row[4],
                 guest_id=row[5],
                 room_id=row[6]
             )
-            bookings.append(booking)
+            for row in rows
+        ]
+
+    def find_available_room(self, room_type_description: str, check_in: str, check_out: str) -> Optional[Room]:
+        conn = sqlite3.connect(self.db_path)
+        cursor = conn.cursor()
+
+        query = """
+        SELECT r.room_id, r.type_id, r.hotel_id, rt.description, rt.max_guests
+        FROM Room r
+        JOIN Room_Type rt ON r.type_id = rt.type_id
+        WHERE rt.description = ?
+        AND r.room_id NOT IN (
+            SELECT room_id FROM Booking
+            WHERE NOT (
+                check_out_date <= ? OR check_in_date >= ?
+            )
+        )
+        LIMIT 1
+        """
+
+        params = (room_type_description, check_in, check_out)
+        cursor.execute(query, params)
+        row = cursor.fetchone()
 
         conn.close()
-        return bookings
+
+        if row:
+            return Room(
+                room_id=row[0],
+                room_type_id=row[1],
+                hotel_id=row[2],
+                room_type_description=row[3],
+                max_guests=row[4],
+                price_per_night=0  # Fill as needed
+            )
+        return None

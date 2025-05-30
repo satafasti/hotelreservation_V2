@@ -1,7 +1,9 @@
 from data_access.booking_dal import BookingDataAccess
+from model.room import Room
 from model.booking import Booking
 from typing import Optional, List
 from datetime import datetime
+
 
 class BookingManager:
     def __init__(self, db_path: str = None):
@@ -53,3 +55,7 @@ class BookingManager:
             raise ValueError("Booking not found.")
         booking.is_cancelled = True
         self.__dal.update_booking(booking)
+
+    def find_available_room(self, room_type_description: str, check_in: str, check_out: str) -> Optional[Room]:
+        return self.__dal.find_available_room(room_type_description, check_in, check_out)
+
