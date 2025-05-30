@@ -81,6 +81,15 @@ class Hotel:
         # Return a copy so that the caller cannot modify the private list directly.
         return self.__rooms.copy()
 
+    @rooms.setter #wird für hotel-suche funktion benötigt
+    def rooms(self, rooms_list: list) -> None:
+        if not isinstance(rooms_list, list):
+            raise ValueError("rooms muss eine Liste sein.")
+        for room in rooms_list:
+            if not self._is_room(room):
+                raise ValueError("Jedes Element in rooms muss ein Room-Objekt sein.")
+        self.__rooms = rooms_list
+
     def add_room(self, room: Room) -> None:
         from model import Room
 
