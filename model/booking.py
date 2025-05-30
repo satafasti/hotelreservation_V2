@@ -6,12 +6,13 @@ class Booking:
     def __init__(
         self,
         booking_id: int,
+        guest_id: int,
+        room_id: int,
         check_in_date: str,
         check_out_date: str,
         is_cancelled: bool,
         total_amount: float,
-        guest_id: int,
-        room_id: int
+
     ):
         if booking_id <= 0:
             raise ValueError("booking_id muss eine positive Ganzzahl sein")

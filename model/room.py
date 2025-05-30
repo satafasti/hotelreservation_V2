@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 class Room:
     def __init__(self, room_id: int, hotel: Hotel, room_number: str, room_type: Room_Type, price_per_night: float):
-        if not room_id:
+        if room_id is None:
             raise ValueError("room_id wird benötigt.") #wird das benötigt? sollte eigentlich automatisch erstellt werden durch DB.
         if not isinstance(room_id, int):
             raise ValueError("room_id muss integer sein.")
