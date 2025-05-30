@@ -1,4 +1,5 @@
 import model
+from model.booking import Booking
 from data_access.base_dal import BaseDataAccess
 
 
@@ -174,29 +175,50 @@ class BookingDataAccess(BaseDataAccess):
             in bookings
         ]
 
-    def read_all_bookings(self):
-        bookings = []
-        conn = sqlite3.connect(self.db_path)
-        cursor = conn.cursor()
+    def read_all_bookings(self) -> list[Booking]:
+        sql = """
+            SELECT booking_id, check_in_date, check_out_date, is_cancelled, total_amount, guest_id, room_id
+            FROM Booking
+        """
+        rows = self.fetchall(sql)
 
-        query = """
-           SELECT booking_id, check_in_date, check_out_date, is_cancelled, amount, guest_id, room_id
-           FROM Booking
-           """
-        cursor.execute(query)
-        rows = cursor.fetchall()
-
-        for row in rows:
-            booking = Booking(
+        return [
+            Booking(
                 booking_id=row[0],
                 check_in_date=row[1],
                 check_out_date=row[2],
                 is_cancelled=bool(row[3]),
-                amount=row[4],
+                total_amount=row[4],
                 guest_id=row[5],
                 room_id=row[6]
             )
-            bookings.append(booking)
+            for row in rows
+        ]
 
-        conn.close()
-        return bookings
+    def update_booking(self, booking: Booking):
+        sql = """
+            UPDATE Booking
+            SET
+                guest_id = ?,
+                room_id = ?,
+                check_in_date = ?,
+                check_out_date = ?,
+                is_cancelled = ?,
+                total_amount = ?
+            WHERE booking_id = ?
+        """
+        params = (
+            booking.guest_id,
+            booking.room_id,
+            booking.check_in_date,
+            booking.check_out_date,
+            booking.is_cancelled,
+            booking.total_amount,
+            booking.booking_id
+        )
+        self.execute(sql, params)
+
+    def delete_booking(self, booking: Booking):
+        sql = "DELETE FROM Booking WHERE booking_id = ?"
+        params = (booking.booking_id,)
+        self.execute(sql, params)
