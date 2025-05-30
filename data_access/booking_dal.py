@@ -6,6 +6,7 @@ from data_access.base_dal import BaseDataAccess
 class BookingDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
+        self.db_path = db_path
 
     def create_new_booking( self, booking: model.Booking) -> model.Booking:
         if booking is None:
@@ -175,25 +176,24 @@ class BookingDataAccess(BaseDataAccess):
             in bookings
         ]
 
-    def read_all_bookings(self) -> list[Booking]:
+    def read_all_bookings(self):
         sql = """
-            SELECT booking_id, check_in_date, check_out_date, is_cancelled, total_amount, guest_id, room_id
-            FROM Booking
+            SELECT 
+                b.booking_id,
+                g.first_name || ' ' || g.last_name AS guest_name,
+                h.name AS hotel_name,
+                r.room_number,
+                b.check_in_date,
+                b.check_out_date,
+                b.total_amount,
+                b.is_cancelled
+            FROM Booking b
+            JOIN Guest g ON b.guest_id = g.guest_id
+            JOIN Room r ON b.room_id = r.room_id
+            JOIN Hotel h ON r.hotel_id = h.hotel_id
+            ORDER BY b.booking_id
         """
-        rows = self.fetchall(sql)
-
-        return [
-            Booking(
-                booking_id=row[0],
-                check_in_date=row[1],
-                check_out_date=row[2],
-                is_cancelled=bool(row[3]),
-                total_amount=row[4],
-                guest_id=row[5],
-                room_id=row[6]
-            )
-            for row in rows
-        ]
+        return self.fetchall(sql)
 
     def update_booking(self, booking: Booking):
         sql = """
