@@ -171,6 +171,7 @@ class HotelDataAccess(BaseDataAccess):
 
                 # Booking anlegen (nur wenn nicht None)
                 if booking_id is not None:
+                    is_cancelled = bool(is_cancelled) if is_cancelled is not None else False
                     booking = model.Booking(
                         booking_id=booking_id,
                         room_id=room_id,
