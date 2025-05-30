@@ -23,13 +23,13 @@ class Booking:
 
         if not check_in_date:
             raise ValueError("check_in_date darf nicht leer sein")
-        if not isinstance(check_in_date, str):
-            raise ValueError("check_in_date muss ein String sein")
+        if not isinstance(check_in_date, (str, date, datetime)):
+            raise ValueError("check_in_date muss ein String oder Datum sein")
 
         if not check_out_date:
             raise ValueError("check_out_date darf nicht leer sein")
-        if not isinstance(check_out_date, str):
-            raise ValueError("check_out_date muss ein String sein")
+        if not isinstance(check_out_date, (str, date, datetime)):
+            raise ValueError("check_out_date muss ein String oder Datum sein")
 
         if total_amount < 0:
             raise ValueError("total_amount darf nicht negativ sein")
