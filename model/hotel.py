@@ -9,7 +9,7 @@ class Hotel:
         if not hotel_id:
            raise ValueError("hotel_id wird benötigt.")
         if not isinstance(hotel_id, int):
-            raise ValueError("hotel_id muss integer sein.")
+            raise ValueError("hotel_id muss ein integer sein.")
         if not name:
             raise ValueError("name wird benötigt.")
         if not isinstance(name, str):
@@ -17,13 +17,13 @@ class Hotel:
         if stars is None:
             raise ValueError("stars wird benötigt.")
         if not isinstance(stars, int):
-            raise ValueError("stars must be an integer.")
+            raise ValueError("stars muss ein integer sein.")
         if not (1 <= stars <= 5):
             raise ValueError("stars muss zwischen 1 und 5 sein.")
         if not address_id:
             raise ValueError("address_id wird benötigt.")
         if not isinstance(address_id, int):
-            raise ValueError("address_id must be an integer.")
+            raise ValueError("address_id muss ein integer sein.")
 
         self.__hotel_id: int = hotel_id
         self.__name: str = name
@@ -45,9 +45,9 @@ class Hotel:
     @name.setter
     def name(self, name: str) -> None:
         if not name:
-            raise ValueError("name is required.")
+            raise ValueError("name wird benötigt.")
         if not isinstance(name, str):
-            raise ValueError("name must be a string.")
+            raise ValueError("name muss ein string sein.")
         self.__name = name
 
     @property
