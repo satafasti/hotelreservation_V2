@@ -33,7 +33,7 @@ class Booking:
 
         if total_amount < 0:
             raise ValueError("total_amount darf nicht negativ sein")
-        if not total_amount:
+        if total_amount is None:
             raise ValueError("total_amount ist erforderlich")
         if not isinstance(total_amount, float):
             raise TypeError("total_amount muss ein Gleitkommawert sein")
