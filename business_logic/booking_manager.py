@@ -9,7 +9,7 @@ class BookingManager:
     def __init__(self, db_path: str = None):
         self.__dal = BookingDataAccess(db_path)
 
-    def create_booking(self, guest_id: int, room_id: int, check_in_date: str, check_out_date: str, price_per_night: float) -> Booking:
+    def create_new_booking(self, guest_id: int, room_id: int, check_in_date: str, check_out_date: str, price_per_night: float) -> Booking:
         check_in = datetime.strptime(check_in_date, "%Y-%m-%d")
         check_out = datetime.strptime(check_out_date, "%Y-%m-%d")
         num_nights = (check_out - check_in).days
@@ -26,10 +26,11 @@ class BookingManager:
             total_amount=total_price
         )
 
-        return self.__dal.create_booking(booking)
+        return self.__dal.create_new_booking(booking)
 
     def calculate_dynamic_price(self, base_price: float, check_in: str) -> float:
-        month = check_in.month
+        check_dt = datetime.strptime(check_in, "%Y-%m-%d")
+        month = check_dt.month
         if month in [6, 7, 8, 12]:
             return base_price * 1.3  # Hochsaison
         elif month in [1, 2, 3, 11]:

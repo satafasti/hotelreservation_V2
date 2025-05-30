@@ -235,3 +235,31 @@ class BookingDataAccess(BaseDataAccess):
                 price_per_night=0  # Fill as needed
             )
         return None
+
+    def update_booking(self, booking: Booking):
+        sql = """
+            UPDATE Booking
+            SET
+                guest_id = ?,
+                room_id = ?,
+                check_in_date = ?,
+                check_out_date = ?,
+                is_cancelled = ?,
+                total_amount = ?
+            WHERE booking_id = ?
+        """
+        params = (
+            booking.guest_id,
+            booking.room_id,
+            booking.check_in_date,
+            booking.check_out_date,
+            booking.is_cancelled,
+            booking.total_amount,
+            booking.booking_id
+        )
+        self.execute(sql, params)
+
+    def delete_booking(self, booking: Booking):
+        sql = "DELETE FROM Booking WHERE booking_id = ?"
+        params = (booking.booking_id,)
+        self.execute(sql, params)
