@@ -78,10 +78,9 @@ class Hotel:
 
     @property
     def rooms(self) -> list[Room]:
-        # Return a copy so that the caller cannot modify the private list directly.
         return self.__rooms.copy()
 
-    @rooms.setter #wird für hotel-suche funktion benötigt
+    @rooms.setter
     def rooms(self, rooms_list: list) -> None:
         if not isinstance(rooms_list, list):
             raise ValueError("rooms muss eine Liste sein.")
