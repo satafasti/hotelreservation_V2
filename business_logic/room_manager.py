@@ -18,4 +18,4 @@ class RoomManager():
         return self.__room_dal.read_room_by_id(room_id)
 
     def read_room_details(self, model: model.Room) -> model.Room:
-        return self.__room_dal.
+        return self.__room_dal.read_room_details(model)
