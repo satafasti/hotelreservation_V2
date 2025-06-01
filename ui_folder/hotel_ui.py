@@ -1,5 +1,7 @@
-from business_logic.hotel_manager import HotelManager
+#in deepnote umgesetzt
+#from business_logic.hotel_manager import HotelManager
 
+"""
 def user_search_hotel():
     # Eingabe vom Nutzer für Suche ohne Datum, braucht es für Suche mit Datum Booking = [] eine Liste damit dadurch iteriert werden kann? Wir haben auch für Booking keine Liste
     print("Hallo - Bitte geben Sie ihre gewünschten Suchkriterien ein. \nSie könne eine Eingabe auch leer lassen, dann wird sie für die Suche nicht beachtet")
@@ -28,7 +30,6 @@ def user_search_hotel():
             print(f"  Adresse: {hotel.address.street}, {hotel.address.zip_code} {hotel.address.city}")
             print(f"  Sterne: {hotel.stars}\n")
 
-
 #3 1.4.Ich möchte alle Hotels in einer Stadt durchsuchen, die während meines Aufenthaltes ("von" (check_in_date) und "bis" (check_out_date)) Zimmer zur Verfügung haben, damit ich nur relevante Ergebnisse sehe.
 
 
@@ -46,8 +47,7 @@ def admin_create_hotel():
     price_per_night = input("Gib den Preis pro Nacht für das Zimmer an: ")
 
 
-
-    """    def create_hotel(self):
+        def create_hotel(self):
         rooms = []
         ### Angaben für Hoteladresse
         create_new_address = {}
@@ -144,6 +144,4 @@ def admin_create_hotel():
             rooms=rooms
         )
         return create_new_hotel["hotel_id"], add_new_hotel
-
-
 """
