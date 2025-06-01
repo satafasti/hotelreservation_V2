@@ -4,6 +4,7 @@ from model import Booking
 from data_access.invoice_dal import InvoiceDataAccess
 from data_access.booking_dal import BookingDataAccess
 from typing import Optional, List
+from __future__ import annotations
 
 class InvoiceManager:
     def __init__(self, db_path: str = None):
