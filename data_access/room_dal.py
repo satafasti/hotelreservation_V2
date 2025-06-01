@@ -61,7 +61,8 @@ class RoomDataAccess(BaseDataAccess):
         for row in result:
             room_id, hotel_id, room_number, type_id, price_per_night, description, max_guests = row
             room_type = model.Room_Type(type_id=type_id, description=description, max_guests=max_guests)
-            room = model.Room(room_id, hotel_id, room_number, type_id, price_per_night)
+            hotel = model.Hotel(hotel_id) if hotel_id else None
+            room = model.Room(room_id, hotel, room_number, room_type, price_per_night)
             rooms.append(room)
 
         return rooms
