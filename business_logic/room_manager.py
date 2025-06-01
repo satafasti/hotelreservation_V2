@@ -1,6 +1,7 @@
 import os
 import model
 import data_access
+from typing import List
 
 #TODO Code für Projekt ergänzen
 ### Code gemäss Referenzprojekt
@@ -17,5 +18,5 @@ class RoomManager():
     def read_room(self, room_id: int) -> model.Room:
         return self.__room_dal.read_room_by_id(room_id)
 
-    def read_room_details(self, model: model.Room) -> model.Room:
-        return self.__room_dal.read_room_details(model)
+    def read_room_details(self, type_id: int) -> List[model.Room]:
+        return self.__room_dal.read_room_details(type_id)
