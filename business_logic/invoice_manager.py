@@ -58,10 +58,10 @@ class InvoiceManager:
         return self._invoice_dal.create_invoice(invoice)
 
     def get_booking_by_id(self, booking_id: int) -> Optional[Booking]:
-        return self._booking_dal.read_booking_by_id(booking_id)
+        return self.__booking_dal.read_booking_by_id(booking_id)
 
     def invoice_exists(self, booking_id: int) -> bool:
-        return self._invoice_dal.invoice_exists_for_booking(booking_id)
+        return self.__invoice_dal.invoice_exists_for_booking(booking_id)
 
     def get_invoice_by_booking_id(self, booking_id: int) -> Optional[Invoice]:
-        return self._invoice_dal.read_invoice_by_booking_id(booking_id)
+        return self.__invoice_dal.read_invoice_by_booking_id(booking_id)
