@@ -53,16 +53,15 @@ class RoomDataAccess(BaseDataAccess):
 
     def read_room_details(self, type_id: int) -> List[model.Room]:
         sql = """
-              SELECT room_id, hotel_id, room_number, type_id, price_per_night FROM Room WHERE type_id = ? 
+              SELECT room_id, room_number, type_id, price_per_night FROM Room WHERE type_id = ? 
               """
         params = (type_id,)
         result = self.fetchall(sql, params)
         rooms = []
         for row in result:
-            room_id, hotel_id, room_number, type_id, price_per_night = row
+            room_id, room_number, type_id, price_per_night = row
             room = model.Room(
                 room_id=room_id,
-                hotel_id=hotel_id,
                 room_number=room_number,
                 type_id=type_id,
                 price_per_night=price_per_night
