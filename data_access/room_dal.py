@@ -60,12 +60,7 @@ class RoomDataAccess(BaseDataAccess):
         rooms = []
         for row in result:
             room_id, room_number, type_id, price_per_night = row
-            room = model.Room(
-                room_id=room_id,
-                room_number=room_number,
-                type_id=type_id,
-                price_per_night=price_per_night
-            )
+            room = model.Room(room_id, room_number, type_id, price_per_night)
             rooms.append(room)
 
         return rooms
