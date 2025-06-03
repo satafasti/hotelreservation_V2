@@ -11,6 +11,7 @@ from .invoice_dal import InvoiceDataAccess
 from .room_dal import RoomDataAccess
 from .room_type_dal import RoomTypeDataAccess
 from .room_facilities_dal import RoomFacilitiesDataAccess
+from .hotel_review_dal import HotelReviewDataAccess
 
 # Adapter: Wandelt `date`-Objekt in `TEXT` um
 sqlite3.register_adapter(date, lambda d: d.isoformat())
