@@ -77,3 +77,18 @@ class InvoiceDataAccess(BaseDataAccess):
             return model.Invoice(invoice_id, booking_id, issue_date, total_amount)
         return None
 
+
+    def cancel_invoice_by_booking_id(self, booking_id: int) -> bool:
+
+        if booking_id is None:
+            raise ValueError("booking_id ist erforderlich")
+
+        sql = """
+        UPDATE Invoice 
+        SET total_amount = 0 
+        WHERE booking_id = ?
+        """
+        params = (booking_id,)
+        last_row_id, row_count = self.execute(sql, params)
+
+        return row_count > 0

@@ -23,7 +23,15 @@ class InvoiceManager:
         self.__dal.delete_invoice(invoice)
 
     def cancel_invoice_by_booking(self, booking_id: int):
+
         invoice = self.__dal.read_invoice_by_booking_id(booking_id)
-        if invoice:
-            invoice.total_amount = 0.0
-            self.__dal.update_invoice(invoice)
+        if invoice is None:
+            raise ValueError("Keine rechnung gefunden.")
+
+        was_cancelled = self.__dal.cancel_invoice_by_booking_id(booking_id)
+
+        if not was_cancelled:
+            raise ValueError("Rechnung konnte nicht storniert werden.")
+
+        invoice.total_amount = 0.0
+        return invoice

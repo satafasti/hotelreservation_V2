@@ -53,8 +53,13 @@ class BookingManager:
         booking = self.__dal.read_booking_by_id(booking_id)
         if booking is None:
             raise ValueError("Booking not found.")
+        was_cancelled = self.__dal.cancel_booking_by_id(booking_id)
+
+        if not was_cancelled:
+            raise ValueError("Booking could not be cancelled.")
+
         booking.is_cancelled = True
-        self.__dal.update_booking(booking)
+        return booking
 
     def find_available_room(self, room_type_description: str, check_in: str, check_out: str) -> Optional[Room]:
         return self.__dal.find_available_room(room_type_description, check_in, check_out)

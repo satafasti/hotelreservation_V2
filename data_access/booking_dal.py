@@ -66,19 +66,13 @@ class BookingDataAccess(BaseDataAccess):
             raise ValueError("booking_id ist erforderlich")
 
         sql = """
-        SELECT 
-            booking_id,
-            guest_id,
-            room_id,
-            check_in_date,
-            check_out_date,
-            is_cancelled,
-            total_amount
+        SELECT booking_id, guest_id, room_id, check_in_date, check_out_date, is_cancelled, total_amount
         FROM Booking
         WHERE booking_id = ?
         """
         params = (booking_id,)
         result = self.fetchone(sql, params)
+
         if result:
             (
                 booking_id,
@@ -89,14 +83,15 @@ class BookingDataAccess(BaseDataAccess):
                 is_cancelled,
                 total_amount
             ) = result
+
             return model.Booking(
-                booking_id,
-                guest_id,
-                room_id,
-                check_in_date,
-                check_out_date,
-                is_cancelled,
-                total_amount
+                booking_id=booking_id,
+                guest_id=guest_id,
+                room_id=room_id,
+                check_in_date=check_in_date,
+                check_out_date=check_out_date,
+                is_cancelled=bool(is_cancelled),  # Konvertierung zu boolean
+                total_amount=total_amount
             )
         else:
             return None
@@ -235,3 +230,16 @@ class BookingDataAccess(BaseDataAccess):
                 price_per_night=0  # Fill as needed
             )
         return None
+
+    def cancel_booking_by_id(self, booking_id: int) -> bool:
+
+
+        sql = """
+        UPDATE Booking 
+        SET is_cancelled = 1 
+        WHERE booking_id = ?
+        """
+        params = (booking_id,)
+        last_row_id, row_count = self.execute(sql, params)
+
+        return row_count > 0
