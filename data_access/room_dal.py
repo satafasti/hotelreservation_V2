@@ -56,3 +56,12 @@ class RoomDataAccess(BaseDataAccess):
         sql = "SELECT room_id FROM Room"
         rows = self.fetchall(sql)
         return [self.read_room_by_id(row[0]) for row in rows]
+
+    def update_room(self, room: Room) -> None:
+        sql = """
+            UPDATE Room
+            SET room_number = ?, price_per_night = ?
+            WHERE room_id = ?
+        """
+        params = (room.room_number, room.price_per_night, room.room_id)
+        self.execute(sql, params)
