@@ -14,12 +14,11 @@ class Booking:
         total_amount: float,
 
     ):
-        if booking_id <= 0:
-            raise ValueError("booking_id muss eine positive Ganzzahl sein")
-        if booking_id is None:
-            raise ValueError("booking_id ist erforderlich")
-        if not isinstance(booking_id, int):
-            raise ValueError("booking_id muss eine Ganzzahl sein")
+        if booking_id is not None:
+            if not isinstance(booking_id, int):
+                raise ValueError("booking_id muss eine Ganzzahl sein")
+            if booking_id <= 0:
+                raise ValueError("booking_id muss eine positive Ganzzahl sein")
 
         if not check_in_date:
             raise ValueError("check_in_date darf nicht leer sein")
@@ -65,6 +64,9 @@ class Booking:
 #        self.__invoice = None
 #        self.__guest = None
  #       self.__room = None
+
+    def __repr__(self):
+        return f"<Booking ID={self.booking_id}, Guest={self.guest_id}, Room={self.room_id}, From={self.check_in_date} To={self.check_out_date}>"
 
     @property
     def booking_id(self) -> int:
