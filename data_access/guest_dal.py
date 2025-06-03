@@ -7,12 +7,15 @@ class GuestDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
-    def create_guest(self, guest: model.Guest):
+    def create_guest(self, guest: model.Guest) -> model.Guest:
         sql = """
-        INSERT INTO Guest(guest_id, first_name, last_name, email, address_id) VALUES (?, ?, ?, ?, ?) 
+        INSERT INTO Guest(first_name, last_name, email, address_id)
+        VALUES (?, ?, ?, ?)
         """
-        params = (guest.guest_id if guest else None, guest.first_name, guest.last_name, guest.email, guest.address_id)
-        self.execute(sql, params)
+        params = (guest.first_name, guest.last_name, guest.email, guest.address_id)
+        guest_id, _ = self.execute(sql, params)
+        guest._Guest__guest_id = guest_id
+        return guest
 
     def read_guest_by_id(self, guest_id: int) -> Optional[model.Guest]:
         sql = "SELECT guest_id, first_name, last_name, email, address_id FROM Guest WHERE guest_id = ?"
