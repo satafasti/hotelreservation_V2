@@ -7,3 +7,4 @@ from .booking import Booking
 from .invoice import Invoice
 from .facilities import Facilities
 from .hotel_review import HotelReview
+from .payment import Payment

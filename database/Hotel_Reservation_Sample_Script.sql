@@ -70,6 +70,14 @@ CREATE TABLE Invoice (
     FOREIGN KEY (booking_id) REFERENCES Booking(booking_id) ON DELETE CASCADE
 );
 
+CREATE TABLE Payment (
+    payment_id     INTEGER PRIMARY KEY AUTOINCREMENT,
+    booking_id     INTEGER NOT NULL,
+    payment_date   DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    amount         REAL NOT NULL,
+    payment_method TEXT NOT NULL,
+    FOREIGN KEY (booking_id) REFERENCES Booking(booking_id) ON DELETE CASCADE
+);
 CREATE TABLE Facilities (
 	-- Author: AEP
     facility_id   INTEGER PRIMARY KEY,
@@ -149,6 +157,11 @@ INSERT INTO Invoice (invoice_id, booking_id, issue_date, total_amount) VALUES
 (3, 3, '2025-08-22', 1300.00),
 (4, 5, '2025-10-07', 9000.00),
 (5, 4, '2025-09-10', 0.00); -- Cancelled booking, no charge
+
+INSERT INTO Payment (booking_id, payment_date, amount, payment_method) VALUES
+(1, '2025-06-05', 1000.00, 'Kreditkarte'),
+(2, '2025-07-15', 2000.00, 'PayPal'),
+(3, '2025-08-22', 1300.00, 'Kreditkarte');
 
 INSERT INTO Facilities (facility_id, facility_name) VALUES
 (1, 'WiFi'),
