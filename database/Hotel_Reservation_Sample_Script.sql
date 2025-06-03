@@ -85,6 +85,19 @@ CREATE TABLE Room_Facilities (
     FOREIGN KEY (facility_id) REFERENCES Facilities(facility_id) ON DELETE CASCADE
 );
 
+CREATE TABLE Hotel_Review (
+    review_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    guest_id INTEGER NOT NULL,
+    hotel_id INTEGER NOT NULL,
+    booking_id INTEGER NOT NULL,
+    rating INTEGER CHECK(rating >= 1 AND rating <= 5),
+    comment TEXT,
+    review_date DATE DEFAULT CURRENT_DATE,
+    FOREIGN KEY (guest_id) REFERENCES Guest(guest_id),
+    FOREIGN KEY (hotel_id) REFERENCES Hotel(hotel_id),
+    FOREIGN KEY (booking_id) REFERENCES Booking(booking_id),
+    UNIQUE(booking_id)
+);
 
 INSERT INTO Address (address_id, street, city, zip_code) VALUES
 (1, 'Bahnhofstrasse 1', 'Zürich', '8001'),
