@@ -1,7 +1,9 @@
 from __future__ import annotations
 import model
 from data_access.base_dal import BaseDataAccess
+from model.room import Room
 from typing import List
+
 
 
 class RoomDataAccess(BaseDataAccess):
@@ -49,3 +51,8 @@ class RoomDataAccess(BaseDataAccess):
             WHERE r.type_id = ?
         """
         return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1], model.Room_Type(row[3], row[4], row[5]), row[2]) for row in self.fetchall(sql, (type_id,))]
+
+    def read_all_rooms(self) -> list[Room]:
+        sql = "SELECT room_id FROM Room"
+        rows = self.fetchall(sql)
+        return [self.read_room_by_id(row[0]) for row in rows]
