@@ -7,4 +7,5 @@ from .room_facilities_manager import RoomFacilitiesManager
 from .room_manager import RoomManager
 from .room_type_manager import RoomTypeManager
 from business_logic.address_manager import AddressManager
+from .hotel_review_manager import HotelReviewManager
 ###
