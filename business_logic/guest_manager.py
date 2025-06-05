@@ -12,13 +12,13 @@ class GuestManager:
         return self.__dal.create_guest(guest)
 
     def get_guest_by_id(self, guest_id: int) -> Optional[Guest]:
-              return self.__dal.read_guest_by_id(guest_id)
+        return self.__dal.read_guest_by_id(guest_id)
 
     def get_all_guests(self) -> List[Guest]:
-              return self.__dal.read_all_guests()
+        return self.__dal.read_all_guests()
 
-    def update_guest(self, guest: Guest):
-             self.__dal.update_guest(guest)
+    def update_guest(self, guest: Guest) -> None:
+         self.__dal.update_guest(guest)
 
-    def delete_guest(self, guest: Guest):
-                self.__dal.delete_guest(guest)
+    def delete_guest(self, guest: Guest) -> None:
+        self.__dal.delete_guest(guest)
