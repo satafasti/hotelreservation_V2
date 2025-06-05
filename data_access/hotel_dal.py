@@ -132,7 +132,7 @@ class HotelDataAccess(BaseDataAccess):
                        LEFT JOIN Room r ON h.hotel_id = r.hotel_id
                        LEFT JOIN Room_Type rt ON r.type_id = rt.type_id
                        LEFT JOIN Booking b ON r.room_id = b.room_id
-              ORDER BY h.hotel_id, r.room_id, b.booking_id \
+              ORDER BY h.hotel_id, r.room_id, b.booking_id
               """
 
         results = self.fetchall(sql)
@@ -174,7 +174,7 @@ class HotelDataAccess(BaseDataAccess):
                     room.bookings = []
 
                     # Ausstattung (Facilities) abrufen
-                    with self.connection as conn:
+                    with self._connect() as conn:
                         facility_rows = conn.execute("""
                                                      SELECT f.facility_name
                                                      FROM Room_Facilities rf
