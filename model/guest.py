@@ -4,8 +4,6 @@ class Guest:
     def __init__(self, guest_id: Optional[int], first_name: str, last_name: str, email: str, address_id: int):
         if guest_id is not None and not isinstance(guest_id, int):
             raise TypeError("Guest ID must be an integer")
-        if not isinstance(guest_id, int):
-            raise TypeError("Guest ID must be an integer")
         if not first_name:
             raise ValueError("First name is required")
         if not isinstance(first_name, str):
@@ -21,7 +19,7 @@ class Guest:
         if address_id is not None and not isinstance(address_id, int):
             raise TypeError("Address ID must be an integer")
             
-        self.__guest_id: int = guest_id
+        self.__guest_id: Optional[int] = guest_id
         self.__first_name: str = first_name
         self.__last_name: str = last_name
         self.__email: str = email
@@ -31,7 +29,7 @@ class Guest:
         return f"Guest(id={self.guest_id}, name='{self.first_name} {self.last_name}', email='{self.email}')"
 
     @property
-    def guest_id(self) -> int:
+    def guest_id(self) -> Optional[int]:
         return self.__guest_id
     
     @property
