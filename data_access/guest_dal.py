@@ -25,6 +25,16 @@ class GuestDataAccess(BaseDataAccess):
         else:
             return None
 
+    def read_guest_by_email(self, email: str) -> Optional[model.Guest]:
+        sql = (
+            "SELECT guest_id, first_name, last_name, email, address_id "
+            "FROM Guest WHERE email = ?"
+        )
+        result = self.fetchone(sql, (email,))
+        if result:
+            return model.Guest(*result)
+        return None
+
     def update_guest(self, guest: model.Guest):
         sql = """
         UPDATE Guest SET first_name = ?, last_name = ?, email = ?, address_id = ? WHERE guest_id = ?

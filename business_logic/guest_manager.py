@@ -11,6 +11,9 @@ class GuestManager:
         guest = Guest(None, first_name, last_name, email, address_id)
         return self.__dal.create_guest(guest)
 
+    def get_guest_by_email(self, email: str) -> Optional[Guest]:
+        return self.__dal.read_guest_by_email(email)
+
     def get_guest_by_id(self, guest_id: int) -> Optional[Guest]:
         return self.__dal.read_guest_by_id(guest_id)
 
