@@ -105,24 +105,10 @@ abhängen.
 
 ### User Stories mit DB-Schemaänderung
 
-mindestens zwei der folgenden User Stories
-
-1. Als Admin möchte ich alle Buchungen bearbeiten können, um
-fehlende Informationen zu ergänzen (z.B. Telefonnummer).
-2. Als Gast möchte ich auf meine Buchungshistorie zuzugreifen
-("lesen"), damit ich meine kommenden Reservierungen verwalten
-kann.
-2.1. Die Anwendungsfälle für meine Buchungen sind
-"neu/erstellen", "ändern/aktualisieren",
-"stornieren/löschen".
 3. Als Gast möchte ich nach meinem Aufenthalt eine Bewertung für
 ein Hotel abgeben, damit ich meine Erfahrungen teilen kann.
 4. Als Gast möchte ich vor der Buchung Hotelbewertungen lesen,
 damit ich das beste Hotel auswählen kann.
-5. Als Gast möchte ich für jeden Aufenthalt Treuepunkte sammeln,
-die ich dann für Ermässigungen einlösen kann.
-Hint: Nur häufige Gäste sollten Treuepunkte erhalten.
-Definieren Sie eine Regel, um häufige Gäste zu identifizieren.
 6. Als Gast möchte ich meine Buchung mit der von mir bevorzugten
 Zahlungsmethode bezahlen, damit ich meine Reservierung
 abschliessen kann.
@@ -147,35 +133,6 @@ Gäste nach verschiedenen Merkmalen darzustellen (z. B.
 Altersspanne, Nationalität, wiederkehrende Gäste).
 Möglicherweise müssen Sie der Tabelle „Gäste“ einige Spalten
 hinzufügen.
-
-### Optionale User Stories
-
-1. Als Admin möchte ich die Gesamteinnahmen meines Hotels sehen,
-damit ich die finanzielle Leistung des Hotels analysieren kann.
-1.1. Zeigt die Gesamteinnahmen (Revenue) an, die sich aus
-allen Buchungen für einen bestimmten Zeitraum ergeben.
-1.2. Eine zeitliche Aufschlüsselung (z. B. Umsatz nach
-Monat, Quartal, Jahr) bereitstellen.
-Hint: Füge eine Trendlinie ein, um zu veranschaulichen,
-wie sich die Einnahmen im Laufe der Zeit verändern.
-2. Als Gastnutzer möchte ich die Details meiner Reservierung in
-einer lesbaren Form erhalten (z.B. die Reservierung in einer
-dauerhaften Datei speichern), damit ich meine Buchung später
-überprüfen kann.
-Hint: Erzeugt eine «booking.txt»-Datei oder verwendet die
-Python-Bibliothek «fpdf» oder eine ähnliche Library, um eine
-PDF-Version zu erzeugen.
-3. Als Gastnutzer möchte ich eine Karte mit Zoom- und
-Filterfunktion sehen können, welche Sehenswürdigkeiten oder
-Restaurants in der Nähe meines gebuchten Hotels liegen, um
-meine Aufenthaltsplanung zu erleichtern.
-Hint: Verwende die Python-Bibliothek «geopandas» oder eine
-ähnliche.
-4. Als Gastnutzer möchte ich ein Zimmer buchen und eine
-Buchungsbestätigung mit allen Details per E-Mail erhalten, um
-einen verbindlichen Nachweis meiner Reservierung zu haben.
-Hint: Verwende die Python-Bibliothek «smtplib» oder eine
-ähnliche.
 
 ## Zusammenfassung Unterrichtseinheit 1 Iteration 1
 In der ersten Unterrichtseinheit haben wir grundlegende Programmierkonzepte in Python kennengelernt und diese durch praktische Anwendungen vertieft. Ein zentraler Bestandteil war das **Input-Process-Output (IPO)-Modell**, das den Ablauf einer Anwendung in **Datenaufnahme (Input), Verarbeitung (Process) und Ausgabe (Output)** unterteilt. Dieses Modell haben wir direkt in unseren Übungen angewendet.
@@ -243,7 +200,6 @@ In den letzten Unterrichtseinheiten haben wir uns mit Listen, Loops, Funktionen 
 möchten, oder wenn geprüft werden soll ob ein bestimmter Raum im gewünschten Reisezeitraum vergübar ist oder nicht und dazu die Buchungen überprüft werden müssen. Genauso wichtig dürften auch die Funktionen werden, da wir irgendwie Code schreiben können müssen, der es uns erlaubt z.B. neue Hotels und Räume zu kreieren oder Daten 
 von bestehenden Instanzen anzupassen. 
 
-
 ### Errors and Exceptions
 
 Errors und Exceptions sind Probmele, welche von Python nicht interpretiert werden können und verhindern, dass das Programm überhaupt ausgeführt wird (Errors) oder während der Programmausführung auftauchen (Exceptions). Häufig deutet es darauf hin, dass im Code etwas fehlt oder unvollständig ist.
@@ -256,8 +212,7 @@ Exceptions können mit "try" "except" gut behandelt werden. Hier wird sodann unt
 
 *Reflexion über Relevanz für unser Projekt:*
 Den "Try - Except" Approach können wir für unser Projekt noch nicht genau einordnen, es erscheint zur Zeit noch etwas unklar in welchem Kontext wir diesen genau einsetzen können. Allerdings ist es für den Aufbau unserer Klassen unerlässlich, dass wir z.B. prüfen ob ein eingegebenes Value dem erwarteten Datentyp entspricht oder non-nullable Felder auch tatsächlich
-einen Wert enthalten bei der Erstellung von neuen Objekten aus der jeweiligen Klasse. So können wir z.B. sicherstellen, dass keine ValueError oder TypeError entstehen. 
-
+einen Wert enthalten bei der Erstellung von neuen Objekten aus der jeweiligen Klasse. So können wir z.B. sicherstellen, dass keine ValueError oder TypeError entstehen.
 
 ## Zusammenfassung Unterrichtseinheit 2 Iteration 1
 
