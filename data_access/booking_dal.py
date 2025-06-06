@@ -101,6 +101,53 @@ class BookingDataAccess(BaseDataAccess):
         else:
             return None
 
+    def read_booking_by_id_2(self, booking_id: int) -> model.Booking | None:
+        Add
+
+    commentMore
+    actions
+    if booking_id is None:
+        raise ValueError("booking_id ist erforderlich")
+
+    sql = """
+          SELECT booking_id, \
+                 guest_id, \
+                 room_id, \
+                 check_in_date, \
+                 check_out_date, \
+                 is_cancelled, \
+                 total_amount
+          FROM Booking
+          WHERE booking_id = ? \
+          """
+    params = (booking_id,)
+    result = self.fetchone(sql, params)
+
+    if result:
+        (
+            booking_id,
+            guest_id,
+            room_id,
+            check_in_date,
+            check_out_date,
+            is_cancelled,
+            total_amount
+        ) = result
+
+        return model.Booking(
+            booking_id=booking_id,
+            guest_id=guest_id, Add
+        commentMore
+        actions
+        room_id = room_id,
+        check_in_date = check_in_date,
+        check_out_date = check_out_date,
+        is_cancelled = bool(is_cancelled),  # <- Umwandlung hier!
+        total_amount = total_amount
+        )
+        else:
+        return None
+
     def read_booking_by_guest_id(self, guest_id: int) -> list[model.Booking]:
         if guest_id is None:
             raise ValueError("guest_id ist erforderlich")
