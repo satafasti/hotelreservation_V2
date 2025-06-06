@@ -138,6 +138,7 @@ class HotelDataAccess(BaseDataAccess):
         results = self.fetchall(sql)
 
         hotels = {}
+
         for row in results:
             (
                 hotel_id, name, stars,
@@ -151,7 +152,7 @@ class HotelDataAccess(BaseDataAccess):
             # Adresse
             address = model.Address(address_id=address_id, street=street, city=city, zip_code=zip_code)
 
-            # Hotel nur einmal anlegen
+            # Hotel initialisieren
             if hotel_id not in hotels:
                 hotels[hotel_id] = model.Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id)
                 hotels[hotel_id].address = address
@@ -161,9 +162,9 @@ class HotelDataAccess(BaseDataAccess):
 
             # Room anlegen (nur wenn nicht None)
             if room_id is not None:
-                room_type = model.Room_Type(type_id=type_id, description=description, max_guests=max_guests)
                 room = next((r for r in hotel.rooms if r.room_id == room_id), None)
                 if not room:
+                    room_type = model.Room_Type(type_id=type_id, description=description, max_guests=max_guests)
                     room = model.Room(
                         room_id=room_id,
                         hotel=hotel,
@@ -176,27 +177,29 @@ class HotelDataAccess(BaseDataAccess):
                     # Ausstattung (Facilities) abrufen
                     with self._connect() as conn:
                         facility_rows = conn.execute("""
-                                                     SELECT f.facility_name
+                                                     SELECT DISTINCT f.facility_name
                                                      FROM Room_Facilities rf
                                                               JOIN Facilities f ON rf.facility_id = f.facility_id
                                                      WHERE rf.room_id = ?
                                                      """, (room_id,)).fetchall()
-                        room.features = [row[0] for row in facility_rows] if facility_rows else []
+                        room.features = list(set(row[0] for row in facility_rows)) if facility_rows else []
 
                     hotel.rooms.append(room)
 
-                # Booking anlegen (nur wenn nicht None)
+                # Buchung hinzufügen (nur wenn eindeutig)
                 if booking_id is not None:
                     is_cancelled = bool(is_cancelled) if is_cancelled is not None else False
-                    booking = model.Booking(
-                        booking_id=booking_id,
-                        room_id=room_id,
-                        guest_id=guest_id,
-                        check_in_date=check_in_date,
-                        check_out_date=check_out_date,
-                        is_cancelled=is_cancelled,
-                        total_amount=total_amount
-                    )
-                    room.bookings.append(booking)
+                    existing_booking_ids = [b.booking_id for b in room.bookings]
+                    if booking_id not in existing_booking_ids:
+                        booking = model.Booking(
+                            booking_id=booking_id,
+                            room_id=room_id,
+                            guest_id=guest_id,
+                            check_in_date=check_in_date,
+                            check_out_date=check_out_date,
+                            is_cancelled=is_cancelled,
+                            total_amount=total_amount
+                        )
+                        room.bookings.append(booking)
 
         return list(hotels.values())
