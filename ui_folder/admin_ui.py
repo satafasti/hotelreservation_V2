@@ -80,7 +80,7 @@ admin_delete_hotel_ui()
 
 # 3.3. Ich möchte die Informationen bestimmter Hotels aktualisieren, z. B. den Namen, die Sterne usw.
 
-#Variante MIT neuer Address => Funktioniert
+#Szenario 1
 
 def update_hotel_details_ui():
     hotel_name = input("Gib den Namen des Hotels an, dass du aktualisieren möchtest: ")
@@ -129,9 +129,37 @@ def update_hotel_details_ui():
 
 update_hotel_details_ui()
 
+#Szenario 2
+
+def update_hotel_details_without_address_ui():
+    hotel_name = input("Gib den Namen des Hotels an, dass du aktualisieren möchtest: ")
+    manager = HotelManager()
+    found_hotels = manager.read_hotels_by_similar_name(hotel_name)
+    for i, hotel in enumerate(found_hotels, 1):
+        print(f"{i}. Hotel ID: {hotel.hotel_id}, Hotelname: {hotel.name}, Address ID {hotel.address_id}")
+    choice = int(input(f"Wähle Hotel (1-{len(found_hotels)}): "))
+    selected_hotel = found_hotels[choice - 1]
+    if input(f"'{selected_hotel.name}' aktualisieren? (ja/nein): ") == "ja":
+        new_name = input(f"Gib den neuen Hotelnamen ein oder lass es leer, wenn du '{hotel.name}' behalten möchtest: ")
+    if new_name:
+        selected_hotel.name = new_name
+    else:
+        print("Kein Name eingegeben.")
+    new_stars = input(f"Gib die neuen Sterne an (1–5, aktuell: {hotel.stars}) oder lass es leer, wenn du die aktuellen Sterne behalten willst: ")
+    if new_stars:
+        selected_hotel.stars = int(new_stars)
+    else:
+        print("Keine Sterne eingeben.")
+    manager.update_hotel(selected_hotel)
+    print("Hotel wurde erfolgreich aktualisiert. Hotel ID: {hotel.hotel_id}, Hotelname: {hotel.name}, Sterne: {hotel.satrs}, Address ID {hotel.address_id}")
+
+
+update_hotel_details_without_address_ui()
 #8. Als Admin des Buchungssystems möchte ich alle Buchungen aller Hotels sehen können, um eine Übersicht zu erhalten.
-def read_all_bookings_ui(db_path: str = "database/hotel_reservation_sample.db") -> None:
-    booking_dal = BookingDataAccess(db_path)
+def read_all_bookings_ui ():
+    booking_dal = BookingDataAccess()
+    guest_dal = GuestDataAccess()
+    room_dal = RoomDataAccess()
     bookings: List[Booking] = booking_dal.read_all_bookings()
 
     print("Übersicht aller Buchungen:")
@@ -141,9 +169,23 @@ def read_all_bookings_ui(db_path: str = "database/hotel_reservation_sample.db") 
 
     for b in bookings:
         status = "storniert" if b.is_cancelled else "aktiv"
+        guest = guest_dal.read_guest_by_id(b.guest_id)
+        if guest:
+            guest_info = f"{guest.first_name} {guest.last_name} (ID: {b.guest_id})"
+        else:
+            guest_info = f"ID: {b.guest_id}"
+
+        room = room_dal.read_room_by_id(b.room_id)
+        if room and room.hotel:
+            hotel_info = f"{room.hotel.name} (ID: {room.hotel.hotel_id})"
+        else:
+            hotel_info = "Unbekanntes Hotel"
+
         print(
             f"  - Buchung ID: {b.booking_id}, Gast ID: {b.guest_id}, "
             f"Zimmer ID: {b.room_id}, "
+            f"  - Buchung ID: {b.booking_id}, Gast: {guest_info}, "
+            f"Hotel: {hotel_info}, Zimmer ID: {b.room_id}, "
             f"von {b.check_in_date} bis {b.check_out_date}, "
             f"Betrag: {b.total_amount:.2f} CHF, Status: {status}"
         )
@@ -151,12 +193,11 @@ def read_all_bookings_ui(db_path: str = "database/hotel_reservation_sample.db") 
 read_all_bookings_ui()
 
 #9. Als Admin möchte ich eine Liste der Zimmer mit ihrer Ausstattung sehen, damit ich sie besser bewerben kann.
-def show_rooms_with_facilities_by_hotel_ui(db_path: str = "database/hotel_reservation_sample.db"):
-    hotel_dal = HotelDataAccess(db_path)
-    room_dal = RoomDataAccess(db_path)
-    room_fac_dal = RoomFacilitiesDataAccess(db_path)
+def show_rooms_with_facilities_by_hotel_ui():
+    hotel_dal = HotelDataAccess()
+    room_dal = RoomDataAccess()
+    room_fac_dal = RoomFacilitiesDataAccess()
 
-    # Alle Hotels anzeigen
     hotels = hotel_dal.read_all_hotels()
     if not hotels:
         print("Keine Hotels gefunden.")
@@ -164,10 +205,10 @@ def show_rooms_with_facilities_by_hotel_ui(db_path: str = "database/hotel_reserv
 
     print("Verfügbare Hotels:")
     for h in hotels:
-        print(f"- {h.hotel_id}: {h.name}")
+        print(f"{h.hotel_id}: {h.name}")
 
     try:
-        hotel_id = int(input("Gib die Hotel-ID ein, für die du die Zimmer sehen möchtest: "))
+        hotel_id = int(input("Bitte Hotel-ID eingeben: "))
     except ValueError:
         print("Ungültige Eingabe.")
         return
@@ -185,21 +226,20 @@ def show_rooms_with_facilities_by_hotel_ui(db_path: str = "database/hotel_reserv
     print(f"Zimmer im Hotel '{hotel.name}':")
     for room in rooms:
         facilities = room_fac_dal.read_facilities_by_room_id(room)
-        facility_names = [f.facility_name for f in facilities]
-        ausstattung = ", ".join(facility_names) if facility_names else "Keine Ausstattung"
+        names = [f.facility_name for f in facilities]
+        ausstattung = ", ".join(names) if names else "Keine Ausstattung"
         print(f"- Zimmernummer: {room.room_number}, Zimmer-ID: {room.room_id}, Ausstattung: {ausstattung}")
-
 
 show_rooms_with_facilities_by_hotel_ui()
 
 #10. Als Admin möchte ich in der Lage sein, Stammdaten zu verwalten, z.B. Zimmertypen, Einrichtungen, und Preise in Echtzeit zu aktualisieren, damit das Backend-System aktuelle Informationen hat.
 
-def admin_main_menu_ui(db_path: str = "database/hotel_reservation_sample.db"):
-    room_type_dal = RoomTypeDataAccess(db_path)
-    facility_dal = FacilityDataAccess(db_path)
-    room_dal = RoomDataAccess(db_path)
-    hotel_dal = HotelDataAccess(db_path)
-    guest_dal = GuestDataAccess(db_path)
+def admin_main_menu_ui():
+    room_type_dal = RoomTypeDataAccess()
+    facility_dal = FacilityDataAccess()
+    room_dal = RoomDataAccess()
+    hotel_dal = HotelDataAccess()
+    guest_dal = GuestDataAccess()
 
     while True:
         print("\nAdmin-Menü – Stammdaten verwalten:")
@@ -208,6 +248,7 @@ def admin_main_menu_ui(db_path: str = "database/hotel_reservation_sample.db"):
         print("3. Zimmerpreis oder Nummer ändern")
         print("4. Hotelname oder Sterne ändern")
         print("5. Gastinformationen ändern")
+        print("6. Zimmerpreise nach Zimmertyp ändern")
         print("0. Beenden")
         auswahl = input("Wähle eine Option: ")
 
@@ -222,7 +263,10 @@ def admin_main_menu_ui(db_path: str = "database/hotel_reservation_sample.db"):
                 new_description = input("Neue Beschreibung: ")
                 new_max_guests = int(input("Neue max. Gästeanzahl: "))
                 room_type_dal.update_room_type(type_id, new_description, new_max_guests)
-                print("Zimmertyp aktualisiert.")
+                updated = room_type_dal.read_room_type_by_id(type_id)
+                print(
+                    f"Zimmertyp aktualisiert: {updated.description} für max. {updated.max_guests} Gäste"
+                )
             except Exception as e:
                 print("Fehler:", e)
 
@@ -236,36 +280,37 @@ def admin_main_menu_ui(db_path: str = "database/hotel_reservation_sample.db"):
                 print(f"Aktuell: {facility.facility_name}")
                 new_name = input("Neuer Name: ")
                 facility_dal.update_facility(facility_id, new_name)
-                print("Ausstattungsname aktualisiert.")
+                updated = facility_dal.read_facility_by_id(facility_id)
+                print(f"Ausstattung aktualisiert: {updated.facility_name}")
             except Exception as e:
                 print("Fehler:", e)
 
         elif auswahl == "3":
             try:
-                type_id = int(input("Zimmertyp-ID: "))
-                room_type = room_type_dal.read_room_type_by_id(type_id)
-                if not room_type:
-                    print("Zimmertyp nicht gefunden.")
+                room_id = int(input("Zimmer-ID: "))
+                room = room_dal.read_room_by_id(room_id)
+                if not room:
+                    print("Zimmer nicht gefunden.")
                     continue
 
-                # Alle Zimmer mit diesem Typ finden
-                rooms = room_dal.read_room_details(type_id)
-                if not rooms:
-                    print("Keine Zimmer mit diesem Zimmertyp gefunden.")
-                    continue
+                print(
+                    f"Aktuell: Nummer {room.room_number}, Preis {room.price_per_night:.2f}"
+                )
 
-                print(f"Zimmertyp: {room_type.description}, max. Gäste: {room_type.max_guests}")
-                print(f"Zimmeranzahl mit diesem Typ: {len(rooms)}")
-                for room in rooms:
-                    print(f"- Zimmer-ID: {room.room_id}, Nummer: {room.room_number}, aktueller Preis: {room.price_per_night}")
+                new_number = input("Neue Zimmernummer (leer lassen für keine Änderung): ")
+                new_price_input = input(
+                    "Neuer Preis pro Nacht (leer lassen für keine Änderung): "
+                )
 
-                new_price = float(input("Neuer Preis für alle Zimmer dieses Typs: "))
+                if new_number.strip():
+                    room.room_number = new_number
+                if new_price_input.strip():
+                    room.price_per_night = float(new_price_input)
 
-                for room in rooms:
-                    room.price_per_night = new_price
-                    room_dal.update_room(room)
-
-                print(f"Preis für alle Zimmer vom Typ '{room_type.description}' auf {new_price:.2f} gesetzt.")
+                room_dal.update_room(room)
+                print(
+                    f"Zimmer aktualisiert: Nummer {room.room_number}, Preis {room.price_per_night:.2f}"
+                )
 
             except Exception as e:
                 print("Fehler:", e)
@@ -284,7 +329,8 @@ def admin_main_menu_ui(db_path: str = "database/hotel_reservation_sample.db"):
                 hotel.name = new_name
                 hotel.stars = new_stars
                 hotel_dal.update_hotel(hotel)
-                print("Hotel aktualisiert.")
+                updated = hotel_dal.read_hotel_by_id(hotel_id)
+                print(f"Hotel aktualisiert: {updated.name}, {updated.stars} Sterne")
             except Exception as e:
                 print("Fehler:", e)
 
@@ -303,7 +349,38 @@ def admin_main_menu_ui(db_path: str = "database/hotel_reservation_sample.db"):
                 guest.last_name = new_last
                 guest.email = new_email
                 guest_dal.update_guest(guest)
-                print("Gastinformationen aktualisiert.")
+                updated = guest_dal.read_guest_by_id(guest_id)
+                print(
+                    f"Gast aktualisiert: {updated.first_name} {updated.last_name}, {updated.email}"
+                )
+            except Exception as e:
+                print("Fehler:", e)
+
+        elif auswahl == "6":
+            try:
+                type_id = int(input("Zimmertyp-ID: "))
+                room_type = room_type_dal.read_room_type_by_id(type_id)
+                if not room_type:
+                    print("Zimmertyp nicht gefunden.")
+                    continue
+                rooms = room_dal.read_room_details(type_id)
+                if not rooms:
+                    print("Keine Zimmer mit diesem Zimmertyp gefunden.")
+                    continue
+                print(f"Zimmertyp: {room_type.description} - {len(rooms)} Zimmer")
+                for room in rooms:
+                    print(
+                        f"- Zimmer-ID: {room.room_id}, Nummer {room.room_number}, Preis {room.price_per_night:.2f}"
+                    )
+                new_price = float(
+                    input("Neuer Preis pro Nacht für alle diese Zimmer: ")
+                )
+                for room in rooms:
+                    room.price_per_night = new_price
+                    room_dal.update_room(room)
+                print(
+                    f"Preis aller Zimmer vom Typ '{room_type.description}' auf {new_price:.2f} gesetzt."
+                )
             except Exception as e:
                 print("Fehler:", e)
 
@@ -312,7 +389,6 @@ def admin_main_menu_ui(db_path: str = "database/hotel_reservation_sample.db"):
             break
         else:
             print("Ungültige Auswahl.")
-
 admin_main_menu_ui()
 
 ## User Stories mit DB-Schemaänderung
