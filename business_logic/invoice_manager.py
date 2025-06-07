@@ -32,6 +32,8 @@ class InvoiceManager:
         if invoice:
             invoice.total_amount = 0.0
             self.__invoice_dal.update_invoice(invoice)
+            return invoice
+        return None
 
     def create_invoice_if_not_exists(self, booking_id: int) -> Invoice:
         if booking_id is None:
