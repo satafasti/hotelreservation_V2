@@ -13,7 +13,7 @@ class BookingDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
-    def create_new_booking( self, booking: model.Booking) -> model.Booking:
+    def create_booking( self, booking: model.Booking) -> model.Booking:
         if booking is None:
             raise ValueError("booking ist erforderlich")
         if booking.guest_id is None:
