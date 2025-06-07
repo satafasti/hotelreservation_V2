@@ -45,19 +45,17 @@ from model.hotel_review import HotelReview
 def user_search_hotels_from_data():
     from datetime import datetime
     from business_logic.hotel_manager import HotelManager
+    import copy
 
-    print("Hotel-Suche – Geben Sie beliebige Kriterien ein (leere Eingabe = ignorieren):\n")
+    print("Hotel-Suche: Geben Sie beliebige Kriterien ein (leere Eingaben werden für die Suche nicht berücksichtigt):\n")
 
-    # Eingabe durch den User
     city = input("Stadt: ").strip()
     stars = input("Mindestanzahl Sterne (1-5): ").strip()
     guests = input("Mindestens wie viele Gäste sollen im Zimmer Platz haben?: ").strip()
     check_in = input("Check-in Datum (YYYY-MM-DD): ").strip()
     check_out = input("Check-out Datum (YYYY-MM-DD): ").strip()
-    details = input(
-        "Möchten Sie nur die Hotelinfos oder auch die Zimmerdetails sehen? (hotel / full): ").strip().lower()
+    details = input("Möchten Sie nur die Hotelinfos oder auch die Zimmerdetails sehen? (hotel / full): ").strip().lower()
 
-    # Umwandlung in passende Datentypen
     city = city if city else None
     stars = int(stars) if stars else None
     guests = int(guests) if guests else None
@@ -67,42 +65,41 @@ def user_search_hotels_from_data():
         print("Ungültiger Zeitraum: Check-out muss nach dem Check-in liegen.")
         return
     if details not in ["hotel", "full"]:
-        print("Ungültige Eingabe, zeige nur Hotelinfos.")
+        print("Keine Eingabe, es werden nur Hotelinfos angezeigt.")
         details = "hotel"
 
-    # Daten aus DAL abrufen
     manager = HotelManager()
     all_hotels = manager.read_all_hotels_extended_info()
 
     matching_hotels = []
 
     for hotel in all_hotels:
-        # Stadt- und Sterne-Filter
         if city and city.lower() not in hotel.address.city.lower():
             continue
         if stars and hotel.stars < stars:
             continue
 
+        seen_room_ids = set()
         available_rooms = []
 
         for room in hotel.rooms:
-            # Gästeanzahl-Filter
+            if room.room_id in seen_room_ids:
+                continue
+            seen_room_ids.add(room.room_id)
+
             if guests and room.room_type.max_guests < guests:
                 continue
 
-            # Verfügbarkeit prüfen – nur wenn Zeitraum angegeben wurde
             is_available = True
             if check_in and check_out:
                 for booking in getattr(room, "bookings", []):
                     if not booking.is_cancelled:
                         b_in = booking.check_in_date
                         b_out = booking.check_out_date
-                        # Zeiträume überschneiden sich
                         if check_in < b_out and check_out > b_in:
                             is_available = False
                             break
 
-            # Wenn kein Zeitraum angegeben ist, gelten alle Zimmer als verfügbar
             if not check_in or not check_out:
                 is_available = True
 
@@ -110,34 +107,25 @@ def user_search_hotels_from_data():
                 available_rooms.append(room)
 
         if available_rooms:
-            hotel.rooms = available_rooms
-            matching_hotels.append(hotel)
+            hotel_copy = copy.deepcopy(hotel)
+            hotel_copy.rooms = available_rooms
+            matching_hotels.append(hotel_copy)
 
-        # Ergebnis anzeigen
     if not matching_hotels:
         print("\n Keine passenden Hotels gefunden.")
     else:
         print("\nGefundene Hotels:\n")
-        for hotel in matching_hotels:
+        for idx, hotel in enumerate(matching_hotels, start=1):
             address = hotel.address
             full_address = f"{address.street}, {address.zip_code} {address.city}"
-            print(f" Hotel: {hotel.name}, Adresse: {full_address} ({hotel.stars} Sterne)")
+            print(f" {idx}. Hotel: {hotel.name}, Adresse: {full_address} ({hotel.stars} Sterne)")
             if details == "full":
                 for room in hotel.rooms:
-                    print(
-                        f"  - Zimmer {room.room_number}, max. Gäste: {room.room_type.max_guests}, Preis: {room.price_per_night:.2f} CHF")
+                    print(f"  - Zimmer {room.room_number}, max. Gäste: {room.room_type.max_guests}, Preis: {room.price_per_night:.2f} CHF")
 
-    # Ergebnis anzeigen
-    # if not matching_hotels:
-    # print("\n Keine passenden Hotels gefunden.")
-    # else:
-    # print("\nGefundene Hotels:\n")
-    # for hotel in matching_hotels:
-    # print(f" {hotel.name} in {hotel.address.city} ({hotel.stars})")
-    # if details == "full":
-    # for room in hotel.rooms:
-    # print(f"  - Zimmer {room.room_number}, max. Gäste: {room.room_type.max_guests}, Preis: {room.price_per_night:.2f} CHF")
+    return matching_hotels, check_in, check_out
 
+results = user_search_hotels_from_data()
 
 user_search_hotels_from_data()
 
@@ -186,15 +174,67 @@ read_hotels_like_name(choose_hotel)
 #all_details = room_manager.read_room_details(type_id)
 #print(all_details)
 
-# 2.2 User Story Fehlt
+# 2.2 User Story
+
+from datetime import datetime
+from business_logic.hotel_manager import HotelManager
+
+def show_room_type_details_for_selected_hotel(matching_hotels: list, check_in=None, check_out=None):
+    if not matching_hotels:
+        print("Es sind keine passenden Hotels vorhanden.")
+        return
+
+    try:
+        hotel_choice = int(input("\nBitte geben Sie die Nummer des gewünschten Hotels ein (z. B. 1): ").strip())
+        if not (1 <= hotel_choice <= len(matching_hotels)):
+            print("Ungültige Auswahl.")
+            return
+    except ValueError:
+        print("Ungültige Eingabe.")
+        return
+
+    selected_hotel = matching_hotels[hotel_choice - 1]
+
+    print(f"\nZimmerdetails für {selected_hotel.name}:\n")
+
+    for room in selected_hotel.rooms:
+        is_available = True
+        if check_in and check_out:
+            for booking in getattr(room, "bookings", []):
+                if not booking.is_cancelled:
+                    b_in = booking.check_in_date
+                    b_out = booking.check_out_date
+                    if check_in < b_out and check_out > b_in:
+                        is_available = False
+                        break
+
+        if not check_in or not check_out or is_available:
+            total_days = (check_out - check_in).days if check_in and check_out else None
+            total_price = room.price_per_night * total_days if total_days else None
+
+            print(f"    Zimmer {room.room_number}")
+            print(f"    Typ: {room.room_type.description}")
+            print(f"    Max. Gäste: {room.room_type.max_guests}")
+            print(f"    Preis pro Nacht: {room.price_per_night:.2f} CHF")
+            if total_price:
+                print(f"    Gesamtpreis für {total_days} Nächte: {total_price:.2f} CHF")
+
+            features = ', '.join(room.features) if hasattr(room, "features") and room.features else "Keine Angaben"
+            print(f"    Ausstattung: {features}\n")
+
+results, check_in, check_out = user_search_hotels_from_data()
+show_room_type_details_for_selected_hotel(results, check_in, check_out)
 
 # 4. Als Gast möchte ich ein Zimmer in einem bestimmten Hotel buchen, um meinen Urlaub zu planen.
 
-def create_booking_ui(db_path: str = "database/hotel_reservation_sample.db"):
-    booking_manager = BookingManager(db_path)
-    hotel_dal = HotelDataAccess(db_path)
-    room_dal = RoomDataAccess(db_path)
-    room_type_dal = RoomTypeDataAccess(db_path)
+from datetime import datetime
+def create_booking_ui():
+
+    booking_manager = BookingManager()
+    hotel_dal = HotelDataAccess()
+    room_dal = RoomDataAccess()
+    room_type_dal = RoomTypeDataAccess()
+    booking_dal = BookingDataAccess()
 
     try:
         # Schritt 1: Hotel auswählen
@@ -207,11 +247,15 @@ def create_booking_ui(db_path: str = "database/hotel_reservation_sample.db"):
         for h in hotels:
             print(f"{h.hotel_id}: {h.name}")
 
-        hotel_id = int(input("Gib die Hotel-ID ein: "))
-        hotel = hotel_dal.read_hotel_by_id(hotel_id)
-        if not hotel:
-            print("Hotel nicht gefunden.")
-            return
+        while True:
+            try:
+                hotel_id = int(input("Gib die Hotel-ID ein: "))
+                hotel = hotel_dal.read_hotel_by_id(hotel_id)
+                if hotel:
+                    break
+                print("Hotel nicht gefunden.")
+            except ValueError:
+                print("Bitte eine gültige ID eingeben.")
 
         # Schritt 2: Zimmertyp eingeben
         room_types = room_type_dal.read_all_room_types()
@@ -219,18 +263,28 @@ def create_booking_ui(db_path: str = "database/hotel_reservation_sample.db"):
         for rt in room_types:
             print(f"{rt.type_id}: {rt.description} (max. Gäste: {rt.max_guests})")
 
-        type_id = int(input("Gib die ID des gewünschten Zimmertyps ein: "))
-        matching_rooms = room_dal.read_room_details(type_id)
-        matching_rooms = [r for r in matching_rooms if r.hotel.hotel_id == hotel_id]
-
-        if not matching_rooms:
-            print("Keine Zimmer dieses Typs im gewählten Hotel verfügbar.")
-            return
+        while True:
+            try:
+                type_id = int(input("Gib die ID des gewünschten Zimmertyps ein: "))
+                matching_rooms = [
+                    r for r in room_dal.read_room_details(type_id)
+                    if r.hotel.hotel_id == hotel_id
+                ]
+                if matching_rooms:
+                    break
+                print("Keine Zimmer dieses Typs im gewählten Hotel verfügbar.")
+            except ValueError:
+                print("Bitte eine gültige ID eingeben.")
 
         example_room = matching_rooms[0]
-        print(f"Zimmertyp '{example_room.room_type.description}' kostet {example_room.price_per_night} CHF pro Nacht.")
+        print(
+            f"Zimmertyp '{example_room.room_type.description}' kostet "
+            f"{example_room.price_per_night} CHF pro Nacht."
+        )
 
-        confirm = input("Möchtest du ein solches Zimmer buchen? (ja/nein): ").lower()
+        confirm = input(
+            "Möchtest du ein solches Zimmer buchen? (ja/nein): "
+        ).strip().lower()
         if confirm != "ja":
             print("Buchung abgebrochen.")
             return
@@ -240,44 +294,51 @@ def create_booking_ui(db_path: str = "database/hotel_reservation_sample.db"):
         last_name = input("Nachname: ")
         email = input("E-Mail-Adresse: ")
 
-        check_in = input("Check-in Datum (YYYY-MM-DD): ")
-        check_out = input("Check-out Datum (YYYY-MM-DD): ")
-        check_in_dt = datetime.strptime(check_in, "%Y-%m-%d")
-        check_out_dt = datetime.strptime(check_out, "%Y-%m-%d")
-        nights = (check_out_dt - check_in_dt).days
+        def parse_date(prompt: str) -> datetime:
+            while True:
+                value = input(prompt).strip()
+                try:
+                    return datetime.strptime(value, "%Y-%m-%d")
+                except ValueError:
+                    print("Ungültiges Datum, bitte im Format YYYY-MM-DD eingeben.")
 
+        check_in_dt = parse_date("Check-in Datum (YYYY-MM-DD): ")
+        check_out_dt = parse_date("Check-out Datum (YYYY-MM-DD): ")
+
+        nights = (check_out_dt - check_in_dt).days
         if nights <= 0:
             print("Das Check-out-Datum muss nach dem Check-in-Datum liegen.")
             return
 
-        # Gast speichern
-        guest_manager = GuestManager(db_path)
-        guest = guest_manager.create_guest(first_name, last_name, email, address_id=1)
-        print(f"DEBUG: Guest ID = {guest.guest_id}, Typ = {type(guest.guest_id)}")
+        guest_manager = GuestManager()
+        guest = guest_manager.get_guest_by_email(email)
+        if guest:
+            print("Bestehender Gast wird verwendet.")
+        else:
+            guest = guest_manager.create_guest(first_name, last_name, email, address_id=1)
 
-
-
-        # Erstes verfügbares Zimmer verwenden
         selected_room = matching_rooms[0]
 
-        # Buchung durchführen
         booking = booking_manager.create_booking(
             guest_id=guest.guest_id,
             room_id=selected_room.room_id,
-            check_in_date=check_in,
-            check_out_date=check_out,
-            price_per_night=selected_room.price_per_night
+            check_in_date=check_in_dt.strftime("%Y-%m-%d"),
+            check_out_date=check_out_dt.strftime("%Y-%m-%d"),
+            price_per_night=selected_room.price_per_night,
         )
 
-        print("\\nBuchung erfolgreich!")
+        print("\nBuchung erfolgreich!")
         print(f"- Gast: {first_name} {last_name}")
         print(f"- Hotel: {hotel.name}")
         print(f"- Zimmernummer: {selected_room.room_number}")
-        print(f"- Zeitraum: {check_in} bis {check_out} ({nights} Nächte)")
-        print(f"- Gesamtpreis: {booking.total_amount:.2f} CHF")
-
-        print("\\nWichtiger Hinweis:")
-        print("Kostenfreie Stornierung bis 48 Stunden vor Anreise möglich. Danach fällt eine Gebühr von 50% an.")
+        print(
+            f"- Zeitraum: {check_in_dt.date()} bis {check_out_dt.date()} ({nights} Nächte)"
+        )
+        print(f"- Gesamtpreis: {booking.total_amount:.2f} CHF\n")
+        print("Wichtiger Hinweis:")
+        print(
+            "Kostenfreie Stornierung bis 48 Stunden vor Anreise möglich. Danach fällt eine Gebühr von 50% an."
+        )
 
     except Exception as e:
         print("Fehler bei der Buchung:", e)
@@ -314,7 +375,7 @@ def create_invoice_for_guest_ui():
         # Rechnung erstellen, falls nicht vorhanden
         if manager.invoice_exists(booking_id):
             invoice = manager.get_invoice_by_booking_id(booking_id)
-            print("\n Die Rechnung liegt bereits vor:")
+            print("\nDie Rechnung liegt bereits vor:")
         else:
             invoice = manager.create_invoice_if_not_exists(booking_id)
             print("\n Die Rechnung wurde erfolgreich erstellt:")
@@ -376,7 +437,6 @@ def choose_hotel_ui():
         print("Kein Hotelname eingegeben.")
         return None
 
-    # Check-in Datum erfragen für dynamische Preisberechnung
     check_in_input = input("Geben Sie Ihr geplantes Check-in Datum ein (YYYY-MM-DD): ")
     try:
         check_in_date = datetime.strptime(check_in_input, "%Y-%m-%d")
@@ -384,12 +444,10 @@ def choose_hotel_ui():
         print("Ungültiges Datumsformat. Verwende heutige Preise.")
         check_in_date = datetime.now()
 
-    # Alle Hotels laden
     manager = HotelManager()
     booking_manager = BookingManager()
     all_hotels = manager.read_all_hotels_extended_info()
 
-    # Hotel suchen (case-insensitive)
     found_hotels = []
     for hotel in all_hotels:
         if hotel_name.lower() in hotel.name.lower():
@@ -402,7 +460,6 @@ def choose_hotel_ui():
         selected_hotel = found_hotels[0]
         print(f"Hotel gefunden: {selected_hotel.name}")
     else:
-        # Mehrere Hotels gefunden - Auswahl anbieten
         print(f"Mehrere Hotels gefunden mit '{hotel_name}':")
         for i, hotel in enumerate(found_hotels, 1):
             print(f"{i}. {hotel.name} in {hotel.address.city}")
@@ -418,7 +475,6 @@ def choose_hotel_ui():
             except ValueError:
                 print("Bitte geben Sie eine gültige Zahl ein.")
 
-    # Saisoninfo anzeigen
     month = check_in_date.month
     if month in [6, 7, 8, 12]:
         season_info = "Hochsaison (+30%)"
@@ -430,26 +486,22 @@ def choose_hotel_ui():
         season_info = "Normale Saison"
         season_factor = 1.0
 
-    # Hoteldetails anzeigen
     print(f"\n--- {selected_hotel.name} ---")
     print(f"Adresse: {selected_hotel.address.street}, {selected_hotel.address.zip_code} {selected_hotel.address.city}")
     print(f"Sterne: {selected_hotel.stars}")
     print(f"Check-in: {check_in_date.strftime('%d.%m.%Y')} ({season_info})")
     print(f"Verfügbare Zimmer: {len(selected_hotel.rooms)}")
 
-    # Zimmer und dynamische Preise anzeigen
     if selected_hotel.rooms:
         print("\nVerfügbare Zimmer mit dynamischen Preisen:")
         total_min_price = float('inf')
         total_max_price = 0
 
         for room in selected_hotel.rooms:
-            # Basis- und dynamischen Preis berechnen
             base_price = room.price_per_night
             check_in_str = check_in_date.strftime("%Y-%m-%d")  # datetime zu String konvertieren
             dynamic_price = booking_manager.calculate_dynamic_price(base_price, check_in_str)
 
-            # Preisunterschied anzeigen
             if dynamic_price != base_price:
                 price_diff = dynamic_price - base_price
                 if price_diff > 0:
@@ -461,19 +513,16 @@ def choose_hotel_ui():
 
             print(f"  - Zimmer {room.room_number}: {room.room_type.max_guests} Gäste, {price_info}")
 
-            # Min/Max für dynamische Preise
             if dynamic_price < total_min_price:
                 total_min_price = dynamic_price
             if dynamic_price > total_max_price:
                 total_max_price = dynamic_price
 
-        # Preisbereich mit dynamischen Preisen anzeigen
         if total_min_price == total_max_price:
             print(f"\nDynamischer Preis: {total_min_price:.2f} CHF pro Nacht")
         else:
             print(f"\nDynamischer Preisbereich: {total_min_price:.2f} - {total_max_price:.2f} CHF pro Nacht")
 
-        # Optional: Aufenthaltsdauer für Gesamtpreis
         calculate_total = input(
             "\nMöchten Sie den Gesamtpreis für einen bestimmten Zeitraum berechnen? (j/n): ").strip().lower()
         if calculate_total == 'j':
@@ -485,7 +534,6 @@ def choose_hotel_ui():
                     if total_min_price != total_max_price:
                         print(f"  Teuerstes Zimmer: {total_max_price * nights:.2f} CHF")
 
-                    # Saisonersparnis/aufschlag anzeigen
                     base_min = total_min_price / season_factor
                     base_max = total_max_price / season_factor
                     total_base_min = base_min * nights
@@ -597,20 +645,27 @@ def view_hotel_reviews_ui():
     review_dal = HotelReviewDataAccess()
 
     try:
-        hotel_id = int(input("Hotel-ID für Bewertungsübersicht: "))
-        hotel = hotel_dal.read_hotel_by_id(hotel_id)
+        hotel_name = input("Gib den Namen des Hotels an, von dem du Bewertungen sehen möchtest: ")
+        manager = HotelManager()
+        found_hotels = manager.read_hotels_by_similar_name(hotel_name)
 
-        if hotel is None:
+        if found_hotels is None:
             print("Hotel nicht gefunden.")
             return
 
-        print(f"\nBewertungen für das Hotel: {hotel.name}")
+        for i, hotel in enumerate(found_hotels, 1):
+            print(f"{i}. Hotel ID: {hotel.hotel_id}, Hotelname: {hotel.name}, Address ID {hotel.address_id}")
+
+        choice = int(input(f"Wähle Hotel (1-{len(found_hotels)}): "))
+        selected_hotel = found_hotels[choice - 1]
+
+        print(f"\nBewertungen für das Hotel: {selected_hotel.name}")
         print("-" * 50)
 
-        reviews = review_dal.read_reviews_by_hotel_id(hotel_id)
+        reviews = review_dal.read_reviews_by_hotel_id(selected_hotel.hotel_id)
 
         if not reviews:
-            print(f"Noch keine Bewertungen für {hotel.name} vorhanden.")
+            print(f"Noch keine Bewertungen für {selected_hotel.name} vorhanden.")
             return
 
         # Durchschnittsbewertung berechnen
@@ -623,13 +678,13 @@ def view_hotel_reviews_ui():
         # Einzelne Bewertungen anzeigen
         for review in reviews:
             stars = "*" * review.rating
-            print(f"Gast-ID: {review.guest_id} | {stars} ({review.rating}/5) | {review.review_date}")
+            print(f"{stars} ({review.rating}/5) | {review.review_date}")
             if review.comment:
                 print(f"Kommentar: {review.comment}")
             print("-" * 50)
 
     except ValueError:
-        print("Ungültige Hotel-ID.")
+        print("Ungültige Eingabe.")
     except Exception as e:
         print(f"Fehler beim Laden der Bewertungen: {e}")
 
@@ -639,7 +694,13 @@ view_hotel_reviews_ui()
 #6. Als Gast möchte ich meine Buchung mit der von mir bevorzugten Zahlungsmethode bezahlen, damit ich meine Reservierung abschliessen kann.
 def pay_booking_ui():
     print("Buchung bezahlen")
-    booking_id = int(input("Bitte geben Sie Ihre Buchungs-ID ein: "))
+    booking_id_input = input("Bitte geben Sie Ihre Buchungs-ID ein: ").strip()
+
+    try:
+        booking_id = int(booking_id_input)
+    except ValueError:
+        print("Ungültige Buchungs-ID.\n")
+        return
 
     booking_manager = BookingManager()
     payment_manager = PaymentManager()
@@ -649,10 +710,22 @@ def pay_booking_ui():
         print("Buchung nicht gefunden.\n")
         return
 
-    method = input("Zahlungsmethode (z.B. Kreditkarte, PayPal): ").strip()
+    print(f"Zu zahlender Betrag: {booking.total_amount:.2f} CHF")
+    print("Wählen Sie die Zahlungsmethode:")
+    print("1 - Kreditkarte")
+    print("2 - PayPal")
+    print("3 - Banküberweisung")
+    method_choice = input("Bitte wählen (1-3): ").strip()
+
+    methods = {"1": "Kreditkarte", "2": "PayPal", "3": "Banküberweisung"}
+    method = methods.get(method_choice)
+    if method is None:
+        print("Ungültige Auswahl.\n")
+        return
+
     try:
         payment_manager.create_payment(booking.booking_id, booking.total_amount, method)
-        print("Zahlung erfasst.\n")
+        print("Vielen Dank für Ihre Zahlung!\n")
     except Exception as e:
         print(f"Fehler bei der Zahlung: {e}\n")
 pay_booking_ui()
