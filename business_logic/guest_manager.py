@@ -1,7 +1,7 @@
 from data_access.guest_dal import GuestDataAccess
 from model.guest import Guest
 from typing import Optional, List
-
+import pandas as pd
 
 class GuestManager:
     def __init__(self, db_path: str = None):
@@ -28,21 +28,11 @@ class GuestManager:
 
 
     def get_guest_city_statistics_for_hotel(self, hotel_id: int) -> pd.DataFrame:
-        """
-        Gibt eine übersichtliche Statistik der Gäste-Herkunftsstädte für ein Hotel als DataFrame zurück.
-
-        Args:
-            hotel_id: Die ID des Hotels
-
-        Returns:
-            pandas DataFrame mit Spalten: city, count, percentage
-        """
-        import pandas as pd
 
         city_counts = self.__dal.get_guest_city_count_by_hotel(hotel_id)
 
         if not city_counts:
-            # Leeres DataFrame mit den erwarteten Spalten zurückgeben
+
             return pd.DataFrame(columns=['city', 'count', 'percentage'])
 
         total_guests = sum(count for _, count in city_counts)

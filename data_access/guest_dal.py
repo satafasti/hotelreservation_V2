@@ -58,15 +58,7 @@ class GuestDataAccess(BaseDataAccess):
         return [model.Guest(*row) for row in results]
 
     def get_guest_city_count_by_hotel(self, hotel_id: int) -> list[tuple[str, int]]:
-        """
-        Zählt wie viele Gäste aus welchen Städten in einem bestimmten Hotel waren.
 
-        Args:
-            hotel_id: Die ID des Hotels
-
-        Returns:
-            Liste von Tupeln (city, count) - Stadt und Anzahl Gäste aus dieser Stadt
-        """
         if hotel_id is None:
             raise ValueError("hotel_id ist erforderlich")
         if not isinstance(hotel_id, int):
