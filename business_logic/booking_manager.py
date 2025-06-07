@@ -20,8 +20,8 @@ class BookingManager:
             booking_id=None,
             guest_id=guest_id,
             room_id=room_id,
-            check_in_date=check_in_date,
-            check_out_date=check_out_date,
+            check_in_date=check_in,
+            check_out_date=check_out,
             is_cancelled=False,
             total_amount=total_price
         )
