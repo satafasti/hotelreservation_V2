@@ -1,39 +1,26 @@
-from business_logic.address_manager import AddressManager
-from business_logic.booking_manager import BookingManager
-from business_logic.facilities_manager import FacilitiesManager
-from business_logic.guest_manager import GuestManager
 from business_logic.hotel_manager import HotelManager
-from business_logic.invoice_manager import InvoiceManager
-from business_logic.room_facilities_manager import RoomFacilitiesManager
-from business_logic.room_manager import RoomManager
-from business_logic.room_type_manager import RoomTypeManager
-from business_logic.hotel_review_manager import HotelReviewManager
 
-from data_access.base_dal import BaseDataAccess
 from data_access.address_dal import AddressDataAccess
 from data_access.booking_dal import BookingDataAccess
 from data_access.facilities_dal import FacilityDataAccess
 from data_access.guest_dal import GuestDataAccess
 from data_access.hotel_dal import HotelDataAccess
-from data_access.invoice_dal import InvoiceDataAccess
 from data_access.room_dal import RoomDataAccess
 from data_access.room_type_dal import RoomTypeDataAccess
 from data_access.room_facilities_dal import RoomFacilitiesDataAccess
-from data_access.hotel_review_dal import HotelReviewDataAccess
 
 from model.address import Address
 from model.booking import Booking
-from model.facilities import Facilities
-from model.guest import Guest
 from model.hotel import Hotel
-from model.invoice import Invoice
 from model.room import Room
 from model.room_type import Room_Type
-from model.hotel_review import HotelReview
+
+from typing import List
+from datetime import datetime
+
 
 #3. Als Admin des Buchungssystems möchte ich die Möglichkeit haben, Hotelinformationen zu pflegen, um aktuelle Informationen im System zu haben.
 #3.1. Ich möchte neue Hotels zum System hinzufügen
-
 def admin_create_hotel_ui():
     print("Hallo - Bitte erstellen Sie ein neues Hotel.")
     street = input("Gib die Strasse des Hotels ein: ")
@@ -51,19 +38,18 @@ def admin_create_hotel_ui():
     room_id = 1
     type_id = 1
 
-    address = model.Address(address_id, street, city, zip_code)
-    hotel = model.Hotel(hotel_id, name, stars, address_id)
-    room_type = model.Room_Type(type_id, description, max_guests)
-    room = model.Room(room_id, hotel, room_number, room_type, price_per_night)
+    address = Address(address_id, street, city, zip_code)
+    hotel = Hotel(hotel_id, name, stars, address_id)
+    room_type = Room_Type(type_id, description, max_guests)
+    room = Room(room_id, hotel, room_number, room_type, price_per_night)
 
     manager = HotelManager()
     result = manager.create_hotel(hotel, address, room)
     print("Hotel erfolgreich erstellt:", result)
 
-admin_create_hotel_ui()
+
 
 # 3.2. Ich möchte Hotels aus dem System entfernen
-
 def admin_delete_hotel_ui():
     hotel_name = input("Gib den Namen des Hotels an, dass du löschen möchtest: ")
     manager = HotelManager()
@@ -76,12 +62,9 @@ def admin_delete_hotel_ui():
         manager.delete_hotel(selected_hotel)
         print(f"Hotel '{selected_hotel.name}' wurde gelöscht.")
 
-admin_delete_hotel_ui()
 
 # 3.3. Ich möchte die Informationen bestimmter Hotels aktualisieren, z. B. den Namen, die Sterne usw.
-
 #Szenario 1
-
 def update_hotel_details_ui():
     hotel_name = input("Gib den Namen des Hotels an, dass du aktualisieren möchtest: ")
     manager = HotelManager()
@@ -127,10 +110,7 @@ def update_hotel_details_ui():
     print(f"Hotel wurde erfolgreich aktualisiert. Hotel ID: {selected_hotel.hotel_id}, Hotelname: {selected_hotel.name}, Sterne: {selected_hotel.stars}, Address ID: {selected_hotel.address_id}")
 
 
-update_hotel_details_ui()
-
 #Szenario 2
-
 def update_hotel_details_without_address_ui():
     hotel_name = input("Gib den Namen des Hotels an, dass du aktualisieren möchtest: ")
     manager = HotelManager()
@@ -154,7 +134,6 @@ def update_hotel_details_without_address_ui():
     print("Hotel wurde erfolgreich aktualisiert. Hotel ID: {hotel.hotel_id}, Hotelname: {hotel.name}, Sterne: {hotel.satrs}, Address ID {hotel.address_id}")
 
 
-update_hotel_details_without_address_ui()
 #8. Als Admin des Buchungssystems möchte ich alle Buchungen aller Hotels sehen können, um eine Übersicht zu erhalten.
 def read_all_bookings_ui ():
     booking_dal = BookingDataAccess()
@@ -190,7 +169,6 @@ def read_all_bookings_ui ():
             f"Betrag: {b.total_amount:.2f} CHF, Status: {status}"
         )
 
-read_all_bookings_ui()
 
 #9. Als Admin möchte ich eine Liste der Zimmer mit ihrer Ausstattung sehen, damit ich sie besser bewerben kann.
 def show_rooms_with_facilities_by_hotel_ui():
@@ -230,10 +208,9 @@ def show_rooms_with_facilities_by_hotel_ui():
         ausstattung = ", ".join(names) if names else "Keine Ausstattung"
         print(f"- Zimmernummer: {room.room_number}, Zimmer-ID: {room.room_id}, Ausstattung: {ausstattung}")
 
-show_rooms_with_facilities_by_hotel_ui()
+
 
 #10. Als Admin möchte ich in der Lage sein, Stammdaten zu verwalten, z.B. Zimmertypen, Einrichtungen, und Preise in Echtzeit zu aktualisieren, damit das Backend-System aktuelle Informationen hat.
-
 def admin_main_menu_ui():
     room_type_dal = RoomTypeDataAccess()
     facility_dal = FacilityDataAccess()
@@ -389,6 +366,6 @@ def admin_main_menu_ui():
             break
         else:
             print("Ungültige Auswahl.")
-admin_main_menu_ui()
+
 
 ## User Stories mit DB-Schemaänderung

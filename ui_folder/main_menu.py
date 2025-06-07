@@ -3,7 +3,6 @@ from ui_folder import guest_ui
 
 
 def show_menu(options):
-    """Display a menu and execute the chosen function."""
     while True:
         for idx, (desc, _) in enumerate(options, start=1):
             print(f"{idx}. {desc}")
@@ -24,13 +23,12 @@ def show_menu(options):
 def guest_menu():
     options = [
         ("Hotels suchen", guest_ui.user_search_hotels_from_data),
-        ("Zimmer buchen", guest_ui.create_booking_ui),
+        ("Buchung inkl. Zahlung", guest_ui.create_booking_and_pay_ui),
         ("Rechnung erstellen", guest_ui.create_invoice_for_guest_ui),
         ("Buchung stornieren", guest_ui.cancel_booking_ui),
         ("Hotel wählen mit Preisinformation", guest_ui.choose_hotel_ui),
         ("Hotel bewerten", guest_ui.hotel_review_ui),
         ("Hotelbewertungen ansehen", guest_ui.view_hotel_reviews_ui),
-        ("Buchung bezahlen", guest_ui.pay_booking_ui),
     ]
     print("\nGäste-Menü:")
     show_menu(options)
