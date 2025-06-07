@@ -100,3 +100,25 @@ class GuestDataAccess(BaseDataAccess):
 
         results = self.fetchall(sql, (hotel_id,))
         return [(nationality, count) for nationality, count in results]
+
+    def get_guest_age_count_by_hotel(self, hotel_id: int) -> list[tuple[int, int]]:
+
+        if hotel_id is None:
+            raise ValueError("hotel_id ist erforderlich")
+        if not isinstance(hotel_id, int):
+            raise TypeError("hotel_id muss ein integer sein")
+
+        sql = """
+        SELECT gd.age, COUNT(DISTINCT g.guest_id) as guest_count
+        FROM Guest g
+        JOIN Guest_Details gd ON g.guest_id = gd.guest_id
+        JOIN Booking b ON g.guest_id = b.guest_id
+        JOIN Room r ON b.room_id = r.room_id
+        JOIN Hotel h ON r.hotel_id = h.hotel_id
+        WHERE h.hotel_id = ?
+        GROUP BY gd.age
+        ORDER BY gd.age ASC
+        """
+
+        results = self.fetchall(sql, (hotel_id,))
+        return [(age, count) for age, count in results]
