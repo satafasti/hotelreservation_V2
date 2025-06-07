@@ -226,18 +226,23 @@ results, check_in, check_out = user_search_hotels_from_data()
 show_room_type_details_for_selected_hotel(results, check_in, check_out)
 
 # 4. Als Gast möchte ich ein Zimmer in einem bestimmten Hotel buchen, um meinen Urlaub zu planen.
+# 6.(DB mit Schemaänderung) Als Gast möchte ich meine Buchung mit der von mir bevorzugten Zahlungsmethode bezahlen, damit ich meine Reservierung abschliessen kann.
 
 from datetime import datetime
-def create_booking_ui():
 
+
+def create_booking_and_pay_ui():
+    """Kombinierter Ablauf für Buchung und Bezahlung."""
     booking_manager = BookingManager()
     hotel_dal = HotelDataAccess()
     room_dal = RoomDataAccess()
     room_type_dal = RoomTypeDataAccess()
-    booking_dal = BookingDataAccess()
+    payment_manager = PaymentManager()
+    address_manager = AddressManager()
+    guest_manager = GuestManager()
 
     try:
-        # Schritt 1: Hotel auswählen
+        # Hotel wählen
         hotels = hotel_dal.read_all_hotels()
         if not hotels:
             print("Keine Hotels verfügbar.")
@@ -257,7 +262,7 @@ def create_booking_ui():
             except ValueError:
                 print("Bitte eine gültige ID eingeben.")
 
-        # Schritt 2: Zimmertyp eingeben
+        # Zimmertyp wählen
         room_types = room_type_dal.read_all_room_types()
         print("Verfügbare Zimmertypen:")
         for rt in room_types:
@@ -282,17 +287,18 @@ def create_booking_ui():
             f"{example_room.price_per_night} CHF pro Nacht."
         )
 
-        confirm = input(
-            "Möchtest du ein solches Zimmer buchen? (ja/nein): "
-        ).strip().lower()
+        confirm = input("Möchtest du ein solches Zimmer buchen? (ja/nein): ").strip().lower()
         if confirm != "ja":
             print("Buchung abgebrochen.")
             return
 
-        # Schritt 3: Buchungsdaten eingeben
+        # Gast- und Buchungsdaten
         first_name = input("Vorname: ")
         last_name = input("Nachname: ")
         email = input("E-Mail-Adresse: ")
+        street = input("Strasse: ")
+        zip_code = input("PLZ: ")
+        city = input("Ort: ")
 
         def parse_date(prompt: str) -> datetime:
             while True:
@@ -310,12 +316,13 @@ def create_booking_ui():
             print("Das Check-out-Datum muss nach dem Check-in-Datum liegen.")
             return
 
-        guest_manager = GuestManager()
         guest = guest_manager.get_guest_by_email(email)
         if guest:
             print("Bestehender Gast wird verwendet.")
         else:
-            guest = guest_manager.create_guest(first_name, last_name, email, address_id=1)
+            address = Address(0, street, city, zip_code)
+            address = address_manager.create_address(address)
+            guest = guest_manager.create_guest(first_name, last_name, email, address.address_id)
 
         selected_room = matching_rooms[0]
 
@@ -331,19 +338,32 @@ def create_booking_ui():
         print(f"- Gast: {first_name} {last_name}")
         print(f"- Hotel: {hotel.name}")
         print(f"- Zimmernummer: {selected_room.room_number}")
-        print(
-            f"- Zeitraum: {check_in_dt.date()} bis {check_out_dt.date()} ({nights} Nächte)"
-        )
+        print(f"- Zeitraum: {check_in_dt.date()} bis {check_out_dt.date()} ({nights} Nächte)")
         print(f"- Gesamtpreis: {booking.total_amount:.2f} CHF\n")
+
+        # Zahlung
+        print("Wählen Sie die Zahlungsmethode:")
+        print("1 - Kreditkarte")
+        print("2 - PayPal")
+        print("3 - Banküberweisung")
+        method_choice = input("Bitte wählen (1-3): ").strip()
+        methods = {"1": "Kreditkarte", "2": "PayPal", "3": "Banküberweisung"}
+        method = methods.get(method_choice)
+        if method is None:
+            print("Ungültige Auswahl.")
+            return
+
+        payment_manager.create_payment(booking.booking_id, booking.total_amount, method)
+
+        print("Vielen Dank für Ihre erfolgreiche Buchung. Wir freuen uns auf Ihren Besuch!\n")
         print("Wichtiger Hinweis:")
-        print(
-            "Kostenfreie Stornierung bis 48 Stunden vor Anreise möglich. Danach fällt eine Gebühr von 50% an."
-        )
+        print("Kostenfreie Stornierung bis 48 Stunden vor Anreise möglich. Danach fällt eine Gebühr von 50% an.")
 
     except Exception as e:
         print("Fehler bei der Buchung:", e)
 
-create_booking_ui()
+
+create_booking_and_pay_ui()
 
 #5. Als Gast möchte ich nach meinem Aufenthalt eine Rechnung erhalten, damit ich einen Zahlungsnachweis habe. Hint: Fügt einen Eintrag in der «Invoice» Tabelle hinzu.
 def create_invoice_for_guest_ui():
@@ -690,42 +710,3 @@ def view_hotel_reviews_ui():
 
 
 view_hotel_reviews_ui()
-
-#6. Als Gast möchte ich meine Buchung mit der von mir bevorzugten Zahlungsmethode bezahlen, damit ich meine Reservierung abschliessen kann.
-def pay_booking_ui():
-    print("Buchung bezahlen")
-    booking_id_input = input("Bitte geben Sie Ihre Buchungs-ID ein: ").strip()
-
-    try:
-        booking_id = int(booking_id_input)
-    except ValueError:
-        print("Ungültige Buchungs-ID.\n")
-        return
-
-    booking_manager = BookingManager()
-    payment_manager = PaymentManager()
-
-    booking = booking_manager.read_booking_by_id(booking_id)
-    if booking is None:
-        print("Buchung nicht gefunden.\n")
-        return
-
-    print(f"Zu zahlender Betrag: {booking.total_amount:.2f} CHF")
-    print("Wählen Sie die Zahlungsmethode:")
-    print("1 - Kreditkarte")
-    print("2 - PayPal")
-    print("3 - Banküberweisung")
-    method_choice = input("Bitte wählen (1-3): ").strip()
-
-    methods = {"1": "Kreditkarte", "2": "PayPal", "3": "Banküberweisung"}
-    method = methods.get(method_choice)
-    if method is None:
-        print("Ungültige Auswahl.\n")
-        return
-
-    try:
-        payment_manager.create_payment(booking.booking_id, booking.total_amount, method)
-        print("Vielen Dank für Ihre Zahlung!\n")
-    except Exception as e:
-        print(f"Fehler bei der Zahlung: {e}\n")
-pay_booking_ui()
