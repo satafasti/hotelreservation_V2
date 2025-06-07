@@ -106,7 +106,6 @@ CREATE TABLE Hotel_Review (
     FOREIGN KEY (booking_id) REFERENCES Booking(booking_id),
     UNIQUE(booking_id)
 );
-
 INSERT INTO Address (address_id, street, city, zip_code) VALUES
 (1, 'Bahnhofstrasse 1', 'Zürich', '8001'),
 (2, 'Rue du Rhône 42', 'Genève', '1204'),
@@ -129,7 +128,7 @@ INSERT INTO Guest (guest_id, first_name, last_name, email, address_id) VALUES
 (5, 'Marc', 'Weber', 'marc.weber@example.ch', 5);
 
 
-INSERT INTO Room_Type (type_id, description, max_guests) VALUES 
+INSERT INTO Room_Type (type_id, description, max_guests) VALUES
 (1, 'Single', 1),
 (2, 'Double', 2),
 (3, 'Suite', 4),
@@ -176,3 +175,4 @@ INSERT INTO Room_Facilities (room_id, facility_id) VALUES
 (2, 1), -- Room 102 has WiFi
 (3, 3), -- Room 201 has Air Conditioning
 (4, 4); -- Room 301 has Mini Bar
+

@@ -1,6 +1,5 @@
 import model
 import sqlite3
-from model.booking import Booking
 from typing import Optional, List
 from model.room import Room
 from model.booking import Booking
@@ -12,8 +11,9 @@ from data_access.base_dal import BaseDataAccess
 class BookingDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
+        self._db_path = db_path
 
-    def create_new_booking( self, booking: model.Booking) -> model.Booking:
+    def create_booking( self, booking: model.Booking) -> model.Booking:
         if booking is None:
             raise ValueError("booking ist erforderlich")
         if booking.guest_id is None:
@@ -281,8 +281,6 @@ class BookingDataAccess(BaseDataAccess):
         return None
 
     def cancel_booking_by_id(self, booking_id: int) -> bool:
-
-
         sql = """
         UPDATE Booking 
         SET is_cancelled = 1 
