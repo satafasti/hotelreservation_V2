@@ -10,8 +10,8 @@ class BookingManager:
         self.__dal = BookingDataAccess(db_path)
 
     def create_booking(self, guest_id: int, room_id: int, check_in_date: str, check_out_date: str, price_per_night: float) -> Booking:
-        check_in = datetime.strptime(check_in_date, "%Y-%m-%d")
-        check_out = datetime.strptime(check_out_date, "%Y-%m-%d")
+        check_in = datetime.strptime(check_in_date, "%Y-%m-%d").date()
+        check_out = datetime.strptime(check_out_date, "%Y-%m-%d").date()
         num_nights = (check_out - check_in).days
         dynamic_price = self.calculate_dynamic_price(price_per_night, check_in)
         total_price = num_nights * dynamic_price
@@ -30,7 +30,7 @@ class BookingManager:
 
     def calculate_dynamic_price(self, base_price: float, check_in: str) -> float:
         if isinstance(check_in, str):
-            check_in_date = datetime.strptime(check_in, "%Y-%m-%d")
+            check_in_date = datetime.strptime(check_in, "%Y-%m-%d").date()
         else:
             check_in_date = check_in
         month = check_in_date.month

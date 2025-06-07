@@ -15,7 +15,7 @@ from model.address import Address
 from model.hotel import Hotel
 from model.hotel_review import HotelReview
 
-from datetime import datetime
+from datetime import datetime, date
 
 # 1. Als Gast möchte ich die verfügbaren Hotels durchsuchen, damit ich dasjenige auswählen kann, welches meinen Wünschen entspricht. Wünsche sind:
 # 1.1. Ich möchte alle Hotels in einer Stadt durchsuchen, damit ich das Hotel nach meinem bevorzugten Standort (Stadt) auswählen kann.

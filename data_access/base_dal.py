@@ -1,7 +1,6 @@
 import os
 import sqlite3
 
-
 class BaseDataAccess:
     def __init__(self, db_connection_str: str = None):
         if db_connection_str is None:

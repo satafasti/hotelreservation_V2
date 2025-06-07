@@ -9,6 +9,7 @@ from data_access.room_dal import RoomDataAccess
 from data_access.room_type_dal import RoomTypeDataAccess
 from data_access.room_facilities_dal import RoomFacilitiesDataAccess
 
+
 from model.address import Address
 from model.booking import Booking
 from model.hotel import Hotel
@@ -217,6 +218,7 @@ def admin_main_menu_ui():
     room_dal = RoomDataAccess()
     hotel_dal = HotelDataAccess()
     guest_dal = GuestDataAccess()
+    address_dal = AddressDataAccess()
 
     while True:
         print("\nAdmin-Menü – Stammdaten verwalten:")
