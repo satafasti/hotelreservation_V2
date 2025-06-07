@@ -18,8 +18,13 @@ from .payment_dal import PaymentDataAccess
 sqlite3.register_adapter(date, lambda d: d.isoformat())
 
 # Konverter: Wandelt gespeicherte `TEXT`-Werte wieder in `date`
-sqlite3.register_converter(
-    "DATE",
-    lambda s: datetime.fromisoformat(s.decode()).date(),
-)
+def _convert_date(val: bytes) -> date:
+    text = val.decode()
+    try:
+        return datetime.strptime(text, "%Y-%m-%d").date()
+    except ValueError:
+        # Handles values with time components as well
+        return datetime.fromisoformat(text).date()
+
+sqlite3.register_converter("DATE", _convert_date)
  ## test
