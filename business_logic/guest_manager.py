@@ -47,3 +47,23 @@ class GuestManager:
         ]
 
         return pd.DataFrame(data)
+
+    def get_guest_nationality_statistics_for_hotel(self, hotel_id: int) -> pd.DataFrame:
+
+        nationality_counts = self.__dal.get_guest_nationality_count_by_hotel(hotel_id)
+
+        if not nationality_counts:
+            return pd.DataFrame(columns=['nationality', 'count', 'percentage'])
+
+        total_guests = sum(count for _, count in nationality_counts)
+
+        data = [
+            {
+                'nationality': nationality,
+                'count': count,
+                'percentage': round((count / total_guests) * 100, 1)
+            }
+            for nationality, count in nationality_counts
+        ]
+
+        return pd.DataFrame(data)
