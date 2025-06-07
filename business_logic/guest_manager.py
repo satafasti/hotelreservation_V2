@@ -27,33 +27,33 @@ class GuestManager:
         self.__dal.delete_guest(guest)
 
 
-def get_guest_city_statistics_for_hotel(self, hotel_id: int) -> pd.DataFrame:
-    """
-    Gibt eine übersichtliche Statistik der Gäste-Herkunftsstädte für ein Hotel als DataFrame zurück.
+    def get_guest_city_statistics_for_hotel(self, hotel_id: int) -> pd.DataFrame:
+        """
+        Gibt eine übersichtliche Statistik der Gäste-Herkunftsstädte für ein Hotel als DataFrame zurück.
 
-    Args:
-        hotel_id: Die ID des Hotels
+        Args:
+            hotel_id: Die ID des Hotels
 
-    Returns:
-        pandas DataFrame mit Spalten: city, count, percentage
-    """
-    import pandas as pd
+        Returns:
+            pandas DataFrame mit Spalten: city, count, percentage
+        """
+        import pandas as pd
 
-    city_counts = self.__dal.get_guest_city_count_by_hotel(hotel_id)
+        city_counts = self.__dal.get_guest_city_count_by_hotel(hotel_id)
 
-    if not city_counts:
-        # Leeres DataFrame mit den erwarteten Spalten zurückgeben
-        return pd.DataFrame(columns=['city', 'count', 'percentage'])
+        if not city_counts:
+            # Leeres DataFrame mit den erwarteten Spalten zurückgeben
+            return pd.DataFrame(columns=['city', 'count', 'percentage'])
 
-    total_guests = sum(count for _, count in city_counts)
+        total_guests = sum(count for _, count in city_counts)
 
-    data = [
-        {
-            'city': city,
-            'count': count,
-            'percentage': round((count / total_guests) * 100, 1)
-        }
-        for city, count in city_counts
-    ]
+        data = [
+            {
+                'city': city,
+                'count': count,
+                'percentage': round((count / total_guests) * 100, 1)
+            }
+            for city, count in city_counts
+        ]
 
-    return pd.DataFrame(data)
+        return pd.DataFrame(data)
