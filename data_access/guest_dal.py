@@ -56,3 +56,33 @@ class GuestDataAccess(BaseDataAccess):
         sql = """SELECT guest_id, first_name, last_name, email, address_id FROM Guest"""
         results = self.fetchall(sql)
         return [model.Guest(*row) for row in results]
+
+    def get_guest_city_count_by_hotel(self, hotel_id: int) -> list[tuple[str, int]]:
+        """
+        Zählt wie viele Gäste aus welchen Städten in einem bestimmten Hotel waren.
+
+        Args:
+            hotel_id: Die ID des Hotels
+
+        Returns:
+            Liste von Tupeln (city, count) - Stadt und Anzahl Gäste aus dieser Stadt
+        """
+        if hotel_id is None:
+            raise ValueError("hotel_id ist erforderlich")
+        if not isinstance(hotel_id, int):
+            raise TypeError("hotel_id muss ein integer sein")
+
+        sql = """
+        SELECT a.city, COUNT(DISTINCT g.guest_id) as guest_count
+        FROM Guest g
+        JOIN Address a ON g.address_id = a.address_id
+        JOIN Booking b ON g.guest_id = b.guest_id
+        JOIN Room r ON b.room_id = r.room_id
+        JOIN Hotel h ON r.hotel_id = h.hotel_id
+        WHERE h.hotel_id = ?
+        GROUP BY a.city
+        ORDER BY guest_count DESC, a.city ASC
+        """
+
+        results = self.fetchall(sql, (hotel_id,))
+        return [(city, count) for city, count in results]
