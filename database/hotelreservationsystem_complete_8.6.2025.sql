@@ -98,6 +98,19 @@ CREATE TABLE Hotel_Review (
     UNIQUE(booking_id)
 );
 
+
+CREATE TABLE Payment (
+    payment_id INTEGER PRIMARY KEY,
+    booking_id INTEGER,
+    payment_date DATE,
+    amount REAL,
+    payment_method TEXT
+);
+
+
+
+
+
 INSERT INTO Address (address_id, street, city, zip_code) VALUES
 (1, 'Bahnhofstrasse 1', 'Zürich', '8001'),
 (2, 'Rue du Rhône 42', 'Genève', '1204'),
@@ -312,3 +325,9 @@ INSERT INTO Invoice (invoice_id, booking_id, issue_date, total_amount) VALUES
 (33, 33, '2025-12-24', 3600.00),
 (34, 34, '2025-12-30', 6000.00),
 (35, 35, '2026-01-08', 750.00);
+
+
+INSERT INTO Payment (payment_id, booking_id, payment_date, amount, payment_method) VALUES
+(1, 1, '2025-06-05', 1000.0, 'Kreditkarte'),
+(2, 2, '2025-07-15', 2000.0, 'PayPal'),
+(3, 3, '2025-08-22', 1300.0, 'Kreditkarte');
