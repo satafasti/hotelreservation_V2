@@ -2,6 +2,8 @@ from data_access.guest_dal import GuestDataAccess
 from model.guest import Guest
 from typing import Optional, List
 import pandas as pd
+import plotly.express as px
+import matplotlib.pyplot as plt
 
 class GuestManager:
     def __init__(self, db_path: str = None):
@@ -68,43 +70,74 @@ class GuestManager:
 
         return pd.DataFrame(data)
 
+
     def get_guest_age_statistics_for_hotel(self, hotel_id: int) -> pd.DataFrame:
+        ages = self.__dal.get_guest_age_count_by_hotel(hotel_id)
 
-        age_counts = self.__dal.get_guest_age_count_by_hotel(hotel_id)
+        jugendliche = 0
+        junge_erwachsene = 0
+        berufstaetige = 0
+        erfahrene = 0
+        rentner = 0
 
-        if not age_counts:
-            return pd.DataFrame(columns=['age_group', 'count', 'percentage'])
+        for age, count in ages:
+            if age <= 17:
+                jugendliche += count
+            elif age <= 29:
+                junge_erwachsene += count
+            elif age <= 49:
+                berufstaetige += count
+            elif age <= 64:
+                erfahrene += count
+            else:
+                rentner += count
 
-        age_groups = [
-        ("Jugendliche 0-17", 0, 17),
-        ("Junge Erwachsene 18-29)", 18, 29),
-        ("Berufstätige 30-49", 30, 49),
-        ("Erfahrene 50-64", 50, 64),
-        ("Rentner 65-150", 65, 150)
-    ]
+        data = {
+            'age_group': ['Jugendliche 0-17', 'Junge Erwachsene 18-29',
+                          'Berufstätige 30-49', 'Erfahrene 50-64', 'Rentner 65+'],
+            'count': [jugendliche, junge_erwachsene, berufstaetige, erfahrene, rentner]}
 
-        group_counts = {group_name: 0 for group_name, _, _ in age_groups}
+        df = pd.DataFrame(data)
+        return df
 
-        for age, count in age_counts:
-            for group_name, min_age, max_age in age_groups:
-                if min_age <= age <= max_age:
-                    group_counts[group_name] += count
-                    break
+    def guest_city_pie_chart(self, df: pd.DataFrame, title: str = "Gäste-Herkunft"):
 
-        total_guests = sum(group_counts.values())
+        if df.empty:
+            print("DataFrame ist leer.")
+            return
 
-        if total_guests == 0:
-            return pd.DataFrame(columns=['age_group', 'count', 'percentage'])
+        df.set_index('city')['count'].plot.pie(
+            autopct='%1.1f%%',
+            figsize=(8, 8),
+            title=title)
 
-        data = [
-            {
-                'age_group': group_name,
-                'count': count,
-                'percentage': round((count / total_guests) * 100, 1)
-            }
-            for group_name, count in group_counts.items()
-            if count > 0
-        ]
+        plt.ylabel('')  # Y-Label entfernen
+        plt.show()
 
-        return pd.DataFrame(data)
+    def guest_nationality_pie_chart(self, df: pd.DataFrame, title: str = "Gäste-Herkunft nach Nationalitäten"):
+        if df.empty:
+            print("DataFrame ist leer.")
+            return
 
+        df.set_index('nationality')['count'].plot.pie(
+            autopct='%1.1f%%',
+            figsize=(8, 8),
+            title=title
+        )
+
+        plt.ylabel('')
+        plt.show()
+
+    def guest_age_bar_chart(self, df: pd.DataFrame):
+
+        if df.empty:
+            print("Keine Daten zur Anzeige.")
+            return
+
+        fig = px.bar(df,
+                     x='age_group',
+                     y='count',
+                     title='Gäste nach Altersgruppen',
+                     labels={'age_group': 'Altersgruppen', 'count': 'Anzahl'})
+
+        fig.show()
