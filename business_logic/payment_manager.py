@@ -8,7 +8,7 @@ class PaymentManager:
         self.__dal = PaymentDataAccess(db_path)
 
     def create_payment(self, booking_id: int, amount: float, payment_method: str) -> Payment:
-        payment_date = datetime.now().strftime("%Y-%m-%d")
+        payment_date = datetime.now().date()
         payment = Payment(None, booking_id, payment_date, amount, payment_method)
         return self.__dal.create_payment(payment)
 

@@ -1,5 +1,5 @@
 # from model import guest, room
-from datetime import datetime, date
+from datetime import date
 
 class Booking:
 
@@ -8,8 +8,8 @@ class Booking:
         booking_id: int,
         guest_id: int,
         room_id: int,
-        check_in_date: str,
-        check_out_date: str,
+        check_in_date: date,
+        check_out_date: date,
         is_cancelled: bool,
         total_amount: float,
 
@@ -20,15 +20,11 @@ class Booking:
             if booking_id <= 0:
                 raise ValueError("booking_id muss eine positive Ganzzahl sein")
 
-        if not check_in_date:
-            raise ValueError("check_in_date darf nicht leer sein")
-        if not isinstance(check_in_date, (str, date, datetime)):
-            raise ValueError("check_in_date muss ein String oder Datum sein")
+        if not isinstance(check_in_date, date):
+            raise TypeError("check_in_date muss ein date Objekt sein")
 
-        if not check_out_date:
-            raise ValueError("check_out_date darf nicht leer sein")
-        if not isinstance(check_out_date, (str, date, datetime)):
-            raise ValueError("check_out_date muss ein String oder Datum sein")
+        if not isinstance(check_out_date, date):
+            raise TypeError("check_out_date muss ein date Objekt sein")
 
         if total_amount < 0:
             raise ValueError("total_amount darf nicht negativ sein")
@@ -79,34 +75,20 @@ class Booking:
         return self.__check_in_date
 
     @check_in_date.setter
-    def check_in_date(self, check_in_date) -> None:
-        if isinstance(check_in_date, date):
-            try:
-                datetime.strptime(check_in_date, '%Y-%m-%d')
-                self.__check_in_date = check_in_date
-            except ValueError:
-                raise ValueError("Datum muss im Format YYYY-MM-DD sein")
-        elif isinstance(check_in_date, (date, datetime)):
-            self.__check_in_date = check_in_date.strftime('%Y-%m-%d')
-        else:
-            raise TypeError("Datum muss ein String, date oder datetime Objekt sein")
+    def check_in_date(self, check_in_date: date) -> None:
+        if not isinstance(check_in_date, date):
+            raise TypeError("check_in_date muss ein date Objekt sein")
+        self.__check_in_date = check_in_date
 
     @property
-    def check_out_date(self) -> str:
+    def check_out_date(self) -> date:
         return self.__check_out_date
 
     @check_out_date.setter
-    def check_out_date(self, check_out_date) -> None:
-        if isinstance(check_out_date, date):
-            try:
-                datetime.strptime(check_out_date, '%Y-%m-%d')
-                self.__check_out_date = check_out_date
-            except ValueError:
-                raise ValueError("Datum muss im Format YYYY-MM-DD sein")
-        elif isinstance(check_out_date, (date, datetime)):
-            self.__check_out_date = check_out_date.strftime('%Y-%m-%d')
-        else:
-            raise TypeError("Datum muss ein String, date oder datetime Objekt sein")
+    def check_out_date(self, check_out_date: date) -> None:
+        if not isinstance(check_out_date, date):
+            raise TypeError("check_out_date muss ein date Objekt sein")
+        self.__check_out_date = check_out_date
 
     @property
     def is_cancelled(self) -> bool:

@@ -3,6 +3,7 @@ import sqlite3
 from typing import Optional, List
 from model.room import Room
 from model.booking import Booking
+from datetime import date
 
 
 from data_access.base_dal import BaseDataAccess
@@ -245,7 +246,7 @@ class BookingDataAccess(BaseDataAccess):
             for row in rows
         ]
 
-    def find_available_room(self, room_type_description: str, check_in: str, check_out: str) -> Optional[Room]:
+    def find_available_room(self, room_type_description: str, check_in: date, check_out: date) -> Optional[Room]:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 

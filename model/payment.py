@@ -1,7 +1,8 @@
 from typing import Optional
+from datetime import date
 
 class Payment:
-    def __init__(self, payment_id: Optional[int], booking_id: int, payment_date: str, amount: float, payment_method: str):
+    def __init__(self, payment_id: Optional[int], booking_id: int, payment_date: date, amount: float, payment_method: str):
         if payment_id is not None:
             if not isinstance(payment_id, int):
                 raise TypeError("payment_id must be an integer")
@@ -9,10 +10,8 @@ class Payment:
                 raise ValueError("payment_id must be positive")
         if not isinstance(booking_id, int) or booking_id <= 0:
             raise ValueError("booking_id must be a positive integer")
-        if not payment_date:
-            raise ValueError("payment_date is required")
-        if not isinstance(payment_date, str):
-            raise TypeError("payment_date must be a string")
+        if not isinstance(payment_date, date):
+            raise TypeError("payment_date must be a date")
         if amount is None or amount < 0:
             raise ValueError("amount must be non-negative")
         if not isinstance(amount, float):
@@ -40,7 +39,7 @@ class Payment:
         return self.__booking_id
 
     @property
-    def payment_date(self) -> str:
+    def payment_date(self) -> date:
         return self.__payment_date
 
     @property
