@@ -290,3 +290,6 @@ class BookingDataAccess(BaseDataAccess):
         last_row_id, row_count = self.execute(sql, params)
 
         return row_count > 0
+
+    def update_booking(self, Booking):
+        pass

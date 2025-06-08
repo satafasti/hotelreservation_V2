@@ -75,12 +75,12 @@ class Booking:
 
 
     @property
-    def check_in_date(self) -> str:
+    def check_in_date(self) -> date:
         return self.__check_in_date
 
     @check_in_date.setter
     def check_in_date(self, check_in_date) -> None:
-        if isinstance(check_in_date, str):
+        if isinstance(check_in_date, date):
             try:
                 datetime.strptime(check_in_date, '%Y-%m-%d')
                 self.__check_in_date = check_in_date
@@ -97,7 +97,7 @@ class Booking:
 
     @check_out_date.setter
     def check_out_date(self, check_out_date) -> None:
-        if isinstance(check_out_date, str):
+        if isinstance(check_out_date, date):
             try:
                 datetime.strptime(check_out_date, '%Y-%m-%d')
                 self.__check_out_date = check_out_date
