@@ -86,4 +86,3 @@ Allerdings fiel es uns in der Folge immer schwerer eine klare Aufteilung aufrech
 haben wir ab diesem Zeitpunkt nicht mehr weiterverwendet, da eine klare Aufgabentrennung nicht mehr möglich war. Wir haben es daher präferiert uns regelmässig persönlich oder via Teams auszutauschen und Check-Ins abzuhalten. Ebenso haben wir uns bei der Erarbeitung der UserStories schlussendlich unterstütz und einige der obligatorischen UserStories schliesslich gemeinsam ausgearbeitet. Im Deepnote hat jeder seine eigenen umgesetzten UserStories dokumentiert. 
 Die allgemeine Dokumentation / ReadMe haben wir zu Beginn gemeinsam geführt, die Fertigstellung wurde schlussendlich durch Tanja Lüscher sichergestellt. 
 
-
