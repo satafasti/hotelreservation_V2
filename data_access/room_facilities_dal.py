@@ -69,3 +69,8 @@ class RoomFacilitiesDataAccess(BaseDataAccess):
               """
         params = (room.room_id,)
         self.execute(sql, params)
+
+    def read_all_facilities(self) -> list[model.Facilities]:
+        sql = "SELECT facility_id, facility_name FROM Facilities ORDER BY facility_name"
+        results = self.fetchall(sql)
+        return [model.Facilities(facility_id, facility_name) for facility_id, facility_name in results]
