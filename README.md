@@ -24,10 +24,10 @@ empfohlen, dass jedes Teammitglied an der Videopräsentation beiträgt.
 
 #  Einleitung
 
-Dieses Projekt implementiert eine einfache HOtelbuchungs-Plattform auf Basis einer SQLite-Datenbank. Die Anwendung ermöglicht die Suche nach Hotels anhand
+Dieses Projekt implementiert eine einfache Hotelbuchungs-Plattform auf Basis einer SQLite-Datenbank. Die Anwendung ermöglicht die Suche nach Hotels anhand
 flexibler Kriterien wie zum Beispiel die Stadt, Anzahl Sterne eines Hotels, gewünschter Reisezeitraum oder Anzahl Gäste. Die zugrunde liegende Datenbank
 beinhaltet im wesentlichen Informationen zu den Hotels, Zimmern, Ausstattung der Zimmer, Gäste, Buchungen und Rechnungen mit realistischen Beispieldaten.
-Die Datenstruktur bildet unter Anderem Beziehungen zwischen Hotels, Zimmern und Gästen und erlaubt es die Buchungen mit Check-in /  Check-out-Daten und Stornierungen
+Die Datenstruktur bildet unter Anderem Beziehungen zwischen Hotels, Zimmern und Gästen ab und erlaubt es die Buchungen mit Check-in /  Check-out-Daten und Stornierungen
 zu verwalten. Die Anwendung nutzt Python zur Abfrage und Verarbeitung der Daten sowie einer benutzerfreundlichen Darstellung für den User. Ziel des Projektes
 ist es die Anwendungsentwicklung mit Python in einem praxisnahen Szenario zu erlernen und vertiefen.
 
@@ -37,102 +37,56 @@ Für dieses Projekt wird den Autoren eine SQLite Datenkbank mit realistischen Be
 Diese soll als Basis dienen die im Unterricht erlernten Konzepte zur objektorientierten Entwicklung mit Python anhand eines realistischen Beispieles umzusetzen. 
 Die im Rahmen des Projektes entwickelten UserStories sind die Folgenden. 
 
-## User Stories -> am Schluss nur die effektiv umgesetzten erwähnen. 
+## User Stories
 
-### Minimale User Stories
+Die umgesetzten UserStories haben wir direkt im Deepnote dokumentiert: *Link einfügen*
 
-1. Als Gast möchte ich die verfügbaren Hotels durchsuchen, damit
-ich dasjenige auswählen kann, welches meinen Wünschen
-entspricht. Wünsche sind:
-1.1. Ich möchte alle Hotels in einer Stadt durchsuchen,
-damit ich das Hotel nach meinem bevorzugten Standort
-(Stadt) auswählen kann.
-1.2. Ich möchte alle Hotels in einer Stadt nach der
-Anzahl der Sterne (z.B. mindestens 4 Sterne) durchsuchen.
-1.3. Ich möchte alle Hotels in einer Stadt durchsuchen,
-die Zimmer haben, die meiner Gästezahl entsprechen (nur 1
-Zimmer pro Buchung).
-1.4. Ich möchte alle Hotels in einer Stadt durchsuchen,
-die während meines Aufenthaltes ("von" (check_in_date)
-und "bis" (check_out_date)) Zimmer zur Verfügung haben,
-damit ich nur relevante Ergebnisse sehe.
-1.5. Ich möchte Wünsche kombinieren können, z.B. die
-verfügbaren Zimmer zusammen mit meiner Gästezahl und der
-mindest Anzahl Sterne.
-1.6. Ich möchte die folgenden Informationen pro Hotel
-sehen: Name, Adresse, Anzahl der Sterne.
-2. Als Gast möchte ich Details zu verschiedenen Zimmertypen
-(Single, Double, Suite usw.), die in einem Hotel verfügbar
-sind, sehen, einschliesslich der maximalen Anzahl von Gästen
-für dieses Zimmer, Beschreibung, Preis und Ausstattung, um eine
-fundierte Entscheidung zu treffen.
-2.1. Ich möchte die folgenden Informationen pro Zimmer
-sehen: Zimmertyp, max. Anzahl der Gäste, Beschreibung,
-Ausstattung, Preis pro Nacht und Gesamtpreis.
-2.2. Ich möchte nur die verfügbaren Zimmer sehen, sofern
-ich meinen Aufenthalt (von – bis) spezifiziert habe.
-3. Als Admin des Buchungssystems möchte ich die Möglichkeit haben,
-Hotelinformationen zu pflegen, um aktuelle Informationen im
-System zu haben.
-3.1. Ich möchte neue Hotels zum System hinzufügen
-3.2. Ich möchte Hotels aus dem System entfernen
-3.3. Ich möchte die Informationen bestimmter Hotels
-aktualisieren, z. B. den Namen, die Sterne usw.
-4. Als Gast möchte ich ein Zimmer in einem bestimmten Hotel
-buchen, um meinen Urlaub zu planen.
-5. Als Gast möchte ich nach meinem Aufenthalt eine Rechnung
-erhalten, damit ich einen Zahlungsnachweis habe.
-Hint: Fügt einen Eintrag in der «Invoice» Tabelle hinzu.
-6. Als Gast möchte ich meine Buchung stornieren, damit ich nicht
-belastet werde, wenn ich das Zimmer nicht mehr benötige.
-Hint: Sorgt für die entsprechende Invoice.
-7. Als Gast möchte ich eine dynamische Preisgestaltung auf der
-Grundlage der Nachfrage sehen, damit ich ein Zimmer zum besten
-Preis buchen kann.
-Hint: Wendet in der Hochsaison höhere und in der Nebensaison
-niedrigere Tarife an.
-8. Als Admin des Buchungssystems möchte ich alle Buchungen aller
-Hotels sehen können, um eine Übersicht zu erhalten.
-9. Als Admin möchte ich eine Liste der Zimmer mit ihrer
-Ausstattung sehen, damit ich sie besser bewerben kann.
-10. Als Admin möchte ich in der Lage sein, Stammdaten zu verwalten,
-z.B. Zimmertypen, Einrichtungen, und Preise in Echtzeit zu
-aktualisieren, damit das Backend-System aktuelle Informationen
-hat.
-3
-Hint: Stammdaten sind alle Daten, die nicht von anderen Daten
-abhängen.
+## Layers
 
-### User Stories mit DB-Schemaänderung
+Projektstruktur und Architekturentscheidungen
+Unser Projekt basiert auf einer klassischen Mehrschichtenarchitektur, bestehend aus Model, Data Access Layer (DAL), Business Logic Layer (Manager) und einer einfachen UI-Schicht. Diese Trennung erhöht die Wartbarkeit, Testbarkeit und Wiederverwendbarkeit des Codes.
 
-3. Als Gast möchte ich nach meinem Aufenthalt eine Bewertung für
-ein Hotel abgeben, damit ich meine Erfahrungen teilen kann.
-4. Als Gast möchte ich vor der Buchung Hotelbewertungen lesen,
-damit ich das beste Hotel auswählen kann.
-6. Als Gast möchte ich meine Buchung mit der von mir bevorzugten
-Zahlungsmethode bezahlen, damit ich meine Reservierung
-abschliessen kann.
+1. Warum wir uns für diese Schichten entschieden haben
+	•	Model-Schicht: Enthält ausschließlich strukturierte Datenobjekte (wie Hotel, Room, Guest, Booking, Invoice). Alle Attribute sind privat gekapselt, mit Validierung über Getter/Setter. Dadurch stellen wir sicher, dass alle Instanzen in einem konsistenten Zustand bleiben. Beziehungen zwischen Objekten (z. B. Hotel ↔ Room) sind direkt abgebildet, was eine intuitive Navigation im Code ermöglicht.
+	•	DAL (Data Access Layer): Kapselt alle direkten Datenbankzugriffe. Jeder Zugriff erfolgt über dedizierte Klassen wie BookingDataAccess oder InvoiceDataAccess. Diese Klassen enthalten ausschließlich SQL-Operationen und wandeln die Ergebnisse in Model-Objekte um.
+	•	Manager-Schicht (Business Logic): Vermittelt zwischen UI/DAL und zentralisiert die Geschäftslogik. Zum Beispiel prüft der InvoiceManager, ob eine Rechnung zu einer Buchung existiert, bevor eine neue erstellt wird. Manager nutzen jeweils die passenden DAL-Klassen, um mit der Datenbank zu interagieren, und wenden zusätzliche Regeln an (z. B. keine Rechnung bei stornierten Buchungen).
+	•	UI-Schicht: Dient der Benutzereingabe und Ausgabe. Sie ist vollständig getrennt von der Logik. Die Ergebnisse werden strukturiert formatiert und mögliche Mehrfachausgaben durch Korrekturen im Manager- und DAL-Bereich vermieden.
 
-### User Stories mit Datenvisualisierung
+2. Warum wir die Manager so gestaltet haben
+	•	Manager bündeln zusammengehörige Operationen (z. B. create_invoice, read_invoice, cancel_invoice im InvoiceManager).
+	•	Die Manager prüfen Eingaben zusätzlich zur DAL-Validierung (z. B. ob eine Buchung storniert wurde oder ob bereits eine Rechnung existiert).
+	•	Manager verwenden jeweils nur die DALs, die sie wirklich benötigen (InvoiceManager nutzt z. B. zusätzlich BookingDataAccess, um Buchungsdaten zu lesen).
 
-eine der folgenden User Stories 
+3. Modellverknüpfungen
+	•	Verknüpfungen sind objektorientiert modelliert, z. B. referenziert ein Room sein Hotel-Objekt direkt, nicht nur dessen ID.
+	•	Komposition wird verwendet (ein Hotel enthält Räume; ein Raum enthält Ausstattung).
+	•	Bidirektionale Beziehungen wie Room ↔ Hotel werden gepflegt, indem z. B. beim Setzen eines Hotels im Room automatisch das Hotel den Room ergänzt (hotel.add_room(self)).
+Details zu den Modellverknüpfungen lassen sich direkt in der Dokumentation im Abschnitt "Modell Schicht" finden: 
+https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/Hotelreservationv2-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30
 
-1. Als Admin möchte ich die Belegungsraten für jeden Zimmertyp in
-meinem Hotel sehen, damit ich weiss, welche Zimmer am
-beliebtesten sind und ich meine Buchungsstrategien optimieren
-kann.
-Hint: Wählt ein geeignetes Diagramm, um die Auslastung nach
-Zimmertyp darzustellen (z. B. wie oft jeder Zimmertyp gebucht
-wird).
-4
-2. Als Admin möchte ich eine Aufschlüsselung der demografischen
-Merkmale meiner Gäste sehen, damit ich gezieltes Marketing
-planen kann.
-Hint: Wählt ein geeignetes Diagramm, um die Verteilung der
-Gäste nach verschiedenen Merkmalen darzustellen (z. B.
-Altersspanne, Nationalität, wiederkehrende Gäste).
-Möglicherweise müssen Sie der Tabelle „Gäste“ einige Spalten
-hinzufügen.
+Diese Struktur ermöglicht ein robustes, erweiterbares System mit klaren Verantwortlichkeiten pro Schicht und hoher Datenkonsistenz.
+
+## Zusammenarbeit und Projektaufbau
+
+Zu Beginn des Projektes haben wir uns für eine Aufteilung des Aufbau der Klassen (über alle Layers hinweg) entschieden und dabei ein KANBAN-Board direkt in GitHub verwendet zwecks Tracking der Aufgaben.
+
+Initial wurden die Klassen wie folgt aufgeteilt:
+
+Fabia Holzer: Booking, Invoice
+Stirling Mulholland: 
+Sarina Grabherr: Room, Roomtype
+Tanja Lüscher: Hotel, Address
+
+Im Weiteren Verlaufe des Projektes wurden sodann auch die UserStories erst einmal aufgeteilt:t
+
+Fabia Holzer: UserStory 4, 8, 9, 10
+Stirling Mulholland: UserStory 2 und 6
+Sarina Grabherr: UserStory 3 und 7
+Tanja Lüscher: UserStory 1 und 5
+
+Allerdings fiel es uns in der Folge immer schwerer eine klare Aufteilung aufrecht zu erhalten, da für die Umsetzung einiger UserStories auch Klassen angepasst werden mussten, welche einem ursprünglich nicht zugeteilt waren. Wir haben uns daher wöchentlich mindestens einmal (im Unterricht am Mittwoch) und vielfach auch weitere Male (oft am Freitag vor Ort oder Abends via Teams) abgesprochen und aufgeteilt, wer welche Aufgaben übernimmt. Das KANBAN-Board 
+haben wir ab diesem Zeitpunkt nicht mehr weiterverwendet, da eine klare Aufgabentrennung nicht mehr möglich war. Wir haben es daher präferiert uns regelmässig persönlich oder via Teams auszutauschen und Check-Ins abzuhalten. Ebenso haben wir uns bei der Erarbeitung der UserStories schlussendlich unterstütz und einige der obligatorischen UserStories schliesslich gemeinsam ausgearbeitet. 
+
 
 ## Zusammenfassung Unterrichtseinheit 1 Iteration 1
 In der ersten Unterrichtseinheit haben wir grundlegende Programmierkonzepte in Python kennengelernt und diese durch praktische Anwendungen vertieft. Ein zentraler Bestandteil war das **Input-Process-Output (IPO)-Modell**, das den Ablauf einer Anwendung in **Datenaufnahme (Input), Verarbeitung (Process) und Ausgabe (Output)** unterteilt. Dieses Modell haben wir direkt in unseren Übungen angewendet.
