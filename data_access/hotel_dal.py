@@ -55,7 +55,6 @@ class HotelDataAccess(BaseDataAccess):
         self.execute(room_sql, room_params)
 
         print(f"Raum hinzugefügt: {room.room_number} ({room.room_type.description}, {room.price_per_night}/Nacht)")
-        print(f"Hotel '{hotel.name}' erfolgreich erstellt (ID: {hotel_id})")
         return model.Hotel(hotel_id=hotel_id, name=hotel.name, stars=hotel.stars, address_id=address_id, )
 
     def read_hotel_by_id(self, hotel_id: int) -> model.Hotel | None:
