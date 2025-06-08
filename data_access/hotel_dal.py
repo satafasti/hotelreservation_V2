@@ -28,13 +28,24 @@ class HotelDataAccess(BaseDataAccess):
 
         if existing_type:
             type_id = existing_type[0]
+            print(f"Verwende existierenden Room_Type: {room.room_type.description} (max. {room.room_type.max_guests} Gäste)")
         else:
-            room_type_sql = """
-                            INSERT INTO Room_Type (description, max_guests)
-                            VALUES (?, ?)
-                            """
-            room_type_params = (room.room_type.description, room.room_type.max_guests)
-            type_id, _ = self.execute(room_type_sql, room_type_params)
+            desc_check_sql = "SELECT type_id, max_guests FROM Room_Type WHERE description = ?"
+            desc_result = self.fetchone(desc_check_sql, (room.room_type.description,))
+
+            if desc_result:
+                existing_max_guests = desc_result[1]
+                raise ValueError(
+                    f"Room_Type '{room.room_type.description}' existiert bereits mit max_guests={existing_max_guests}. "
+                    f"Verwenden Sie den existierenden Typ oder wählen Sie eine anderen Zimmertyp.")
+            else:
+                room_type_sql = """
+                                INSERT INTO Room_Type (description, max_guests)
+                                VALUES (?, ?)
+                                """
+                room_type_params = (room.room_type.description, room.room_type.max_guests)
+                type_id, _ = self.execute(room_type_sql, room_type_params)
+                print(f"Neuer Room_Type erstellt: {room.room_type.description} (max. {room.room_type.max_guests} Gäste)")
 
         room_sql = """
                    INSERT INTO Room (hotel_id, room_number, type_id, price_per_night)
@@ -44,6 +55,7 @@ class HotelDataAccess(BaseDataAccess):
         self.execute(room_sql, room_params)
 
         print(f"Raum hinzugefügt: {room.room_number} ({room.room_type.description}, {room.price_per_night}/Nacht)")
+        print(f"Hotel '{hotel.name}' erfolgreich erstellt (ID: {hotel_id})")
         return model.Hotel(hotel_id=hotel_id, name=hotel.name, stars=hotel.stars, address_id=address_id, )
 
     def read_hotel_by_id(self, hotel_id: int) -> model.Hotel | None:
