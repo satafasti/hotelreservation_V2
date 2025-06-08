@@ -98,10 +98,14 @@ class HotelDataAccess(BaseDataAccess):
             raise ValueError("Hotel kann nicht leer sein.")
 
         sql = """
-        DELETE FROM Hotel WHERE hotel_id = ?
-        """
-        params = (hotel.hotel_id,)
-        last_row_id, row_count = self.execute(sql, params)
+              DELETE FROM Booking WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?);
+              DELETE FROM Room_Facilities WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?);
+              DELETE FROM Room WHERE hotel_id = ?;
+              DELETE FROM Hotel WHERE hotel_id = ?;
+              DELETE FROM Address WHERE address_id = ?; 
+              """
+        params = (hotel.hotel_id, hotel.hotel_id, hotel.hotel_id, hotel.hotel_id, hotel.address_id)
+        self.execute(sql, params)
 
     def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
         return []
