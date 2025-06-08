@@ -106,15 +106,31 @@ class HotelDataAccess(BaseDataAccess):
         if hotel is None:
             raise ValueError("Hotel kann nicht leer sein.")
 
-        sql = """
-              DELETE FROM Booking WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?);
-              DELETE FROM Room_Facilities WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?);
-              DELETE FROM Room WHERE hotel_id = ?;
-              DELETE FROM Hotel WHERE hotel_id = ?;
-              DELETE FROM Address WHERE address_id = ?; 
-              """
-        params = (hotel.hotel_id, hotel.hotel_id, hotel.hotel_id, hotel.hotel_id, hotel.address_id)
-        self.execute(sql, params)
+        try:
+            sql = "DELETE FROM Booking WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?)"
+            self.execute(sql, (hotel.hotel_id,))
+
+            sql = "DELETE FROM Room_Facilities WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?)"
+            self.execute(sql, (hotel.hotel_id,))
+
+            sql = "DELETE FROM Room WHERE hotel_id = ?"
+            self.execute(sql, (hotel.hotel_id,))
+
+            sql = "DELETE FROM Hotel WHERE hotel_id = ?"
+            self.execute(sql, (hotel.hotel_id,))
+
+            sql = "SELECT COUNT(*) FROM Hotel WHERE address_id = ?"
+            result = self.fetchone(sql, (hotel.address_id,))
+
+            if result and result[0] == 0:
+                sql = "DELETE FROM Address WHERE address_id = ?"
+                self.execute(sql, (hotel.address_id,))
+
+            print(f"Hotel '{hotel.name}' (ID: {hotel.hotel_id}) wurde erfolgreich gelöscht.")
+
+        except Exception as e:
+            print(f"Fehler beim Löschen des Hotels: {e}")
+            raise
 
     def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
         return []
