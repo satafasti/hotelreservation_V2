@@ -277,7 +277,7 @@ class HotelDataAccess(BaseDataAccess):
                    VALUES (?, ?, ?, ?)
                    """
         room_params = (hotel_id, room_number, type_id, price_per_night)
-        self.execute(room_sql, room_params)
+        room_id, _ = self.execute(room_sql, room_params)
 
         if facility_ids:
             from data_access.room_facilities_dal import RoomFacilitiesDataAccess
@@ -288,7 +288,6 @@ class HotelDataAccess(BaseDataAccess):
             room_obj = model.Room(room_id, hotel_data, room_number, room_type_obj, price_per_night)
 
             for facility_id in facility_ids:
-                # Lade Facility-Daten aus der Datenbank
                 facility_sql = "SELECT facility_id, facility_name FROM Facilities WHERE facility_id = ?"
                 facility_result = self.fetchone(facility_sql, (facility_id,))
 
