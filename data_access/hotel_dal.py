@@ -244,7 +244,7 @@ class HotelDataAccess(BaseDataAccess):
 
         return list(hotels.values())
 
-    def add_room_to_hotel(self, hotel_id: int, room_number: str, description: str, max_guests: int, price_per_night: float) -> None:
+    def add_room_to_hotel(self, hotel_id: int, room_number: str, description: str, max_guests: int, price_per_night: float, facility_ids: list[int] = None) -> None:
         existing_type_sql = """
                             SELECT type_id FROM Room_Type WHERE description = ? AND max_guests = ?
                             """
@@ -278,5 +278,26 @@ class HotelDataAccess(BaseDataAccess):
                    """
         room_params = (hotel_id, room_number, type_id, price_per_night)
         self.execute(room_sql, room_params)
+
+        if facility_ids:
+            from data_access.room_facilities_dal import RoomFacilitiesDataAccess
+            facilities_dal = RoomFacilitiesDataAccess()
+
+            hotel_data = self.read_hotel_by_id(hotel_id)
+            room_type_obj = model.Room_Type(type_id, description, max_guests)
+            room_obj = model.Room(room_id, hotel_data, room_number, room_type_obj, price_per_night)
+
+            for facility_id in facility_ids:
+                # Lade Facility-Daten aus der Datenbank
+                facility_sql = "SELECT facility_id, facility_name FROM Facilities WHERE facility_id = ?"
+                facility_result = self.fetchone(facility_sql, (facility_id,))
+
+                if facility_result:
+                    facility_obj = model.Facilities(facility_result[0], facility_result[1])
+                    facilities_dal.create_facility_to_room(room_obj, facility_obj)
+
+            print(f"{len(facility_ids)} Facilities hinzugefügt")
+
+
 
         print(f"Zimmer {room_number} ({description}, {price_per_night}/Nacht) hinzugefügt.")
