@@ -243,3 +243,40 @@ class HotelDataAccess(BaseDataAccess):
                         room.bookings.append(booking)
 
         return list(hotels.values())
+
+    def add_room_to_hotel(self, hotel_id: int, room_number: str, description: str, max_guests: int, price_per_night: float) -> None:
+        existing_type_sql = """
+                            SELECT type_id FROM Room_Type WHERE description = ? AND max_guests = ?
+                            """
+        existing_type_params = (description, max_guests)
+        existing_type = self.fetchone(existing_type_sql, existing_type_params)
+
+        if existing_type:
+            type_id = existing_type[0]
+            print(f"Verwende existierenden Room_Type: {description} (max. {max_guests} Gäste)")
+        else:
+            desc_check_sql = "SELECT type_id, max_guests FROM Room_Type WHERE description = ?"
+            desc_result = self.fetchone(desc_check_sql, (description,))
+
+            if desc_result:
+                existing_max_guests = desc_result[1]
+                print(f"Room_Type '{description}' existiert bereits mit max_guests={existing_max_guests}")
+                print("Verwende existierenden Typ.")
+                type_id = desc_result[0]
+            else:
+                room_type_sql = """
+                                INSERT INTO Room_Type (description, max_guests)
+                                VALUES (?, ?)
+                                """
+                room_type_params = (description, max_guests)
+                type_id, _ = self.execute(room_type_sql, room_type_params)
+                print(f"Neuer Room_Type erstellt: {description} (max. {max_guests} Gäste)")
+
+        room_sql = """
+                   INSERT INTO Room (hotel_id, room_number, type_id, price_per_night)
+                   VALUES (?, ?, ?, ?)
+                   """
+        room_params = (hotel_id, room_number, type_id, price_per_night)
+        self.execute(room_sql, room_params)
+
+        print(f"Zimmer {room_number} ({description}, {price_per_night}/Nacht) hinzugefügt.")
