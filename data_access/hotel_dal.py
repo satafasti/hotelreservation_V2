@@ -107,24 +107,24 @@ class HotelDataAccess(BaseDataAccess):
             raise ValueError("Hotel kann nicht leer sein.")
 
         try:
-            sql = "DELETE FROM Booking WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?)"
-            self.execute(sql, (hotel.hotel_id,))
+            booking_sql = "DELETE FROM Booking WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?)"
+            self.execute(booking_sql, (hotel.hotel_id,))
 
-            sql = "DELETE FROM Room_Facilities WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?)"
-            self.execute(sql, (hotel.hotel_id,))
+            room_facilities_sql = "DELETE FROM Room_Facilities WHERE room_id IN (SELECT room_id FROM Room WHERE hotel_id = ?)"
+            self.execute(room_facilities_sql, (hotel.hotel_id,))
 
-            sql = "DELETE FROM Room WHERE hotel_id = ?"
-            self.execute(sql, (hotel.hotel_id,))
+            room_sql = "DELETE FROM Room WHERE hotel_id = ?"
+            self.execute(room_sql, (hotel.hotel_id,))
 
-            sql = "DELETE FROM Hotel WHERE hotel_id = ?"
-            self.execute(sql, (hotel.hotel_id,))
+            hotel_sql = "DELETE FROM Hotel WHERE hotel_id = ?"
+            self.execute(hotel_sql, (hotel.hotel_id,))
 
-            sql = "SELECT COUNT(*) FROM Hotel WHERE address_id = ?"
-            result = self.fetchone(sql, (hotel.address_id,))
+            address_sql = "SELECT COUNT(*) FROM Hotel WHERE address_id = ?"
+            result = self.fetchone(address_sql, (hotel.address_id,))
 
             if result and result[0] == 0:
-                sql = "DELETE FROM Address WHERE address_id = ?"
-                self.execute(sql, (hotel.address_id,))
+                address_sql = "DELETE FROM Address WHERE address_id = ?"
+                self.execute(address_sql, (hotel.address_id,))
 
             print(f"Hotel '{hotel.name}' (ID: {hotel.hotel_id}) wurde erfolgreich gelöscht.")
 
