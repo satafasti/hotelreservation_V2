@@ -91,7 +91,7 @@ class HotelDataAccess(BaseDataAccess):
         UPDATE Hotel SET name = ?, stars = ?, address_id = ? WHERE hotel_id = ?
         """
         params = (hotel.name, hotel.stars, hotel.address_id, hotel.hotel_id)
-        last_row_id, row_count = self.execute(sql, params)
+        self.execute(sql, params)
 
     def delete_hotel(self, hotel: model.Hotel) -> None:
         if hotel is None:
