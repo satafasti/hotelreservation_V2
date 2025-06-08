@@ -20,12 +20,21 @@ class HotelDataAccess(BaseDataAccess):
         hotel_params = (hotel.name, hotel.stars, address_id)
         hotel_id, _ = self.execute(hotel_sql, hotel_params)
 
-        room_type_sql = """
-                   INSERT INTO Room_Type (description, max_guests)
-                   VALUES (?, ?) 
-                   """
-        room_type_params = (room.room_type.description, room.room_type.max_guests)
-        type_id, _ = self.execute(room_type_sql, room_type_params)
+        existing_type_sql = """
+                            SELECT type_id FROM Room_Type WHERE description = ? AND max_guests = ?
+                            """
+        existing_type_params = (room.room_type.description, room.room_type.max_guests)
+        existing_type = self.fetchone(existing_type_sql, existing_type_params)
+
+        if existing_type:
+            type_id = existing_type[0]
+        else:
+            room_type_sql = """
+                            INSERT INTO Room_Type (description, max_guests)
+                            VALUES (?, ?)
+                            """
+            room_type_params = (room.room_type.description, room.room_type.max_guests)
+            type_id, _ = self.execute(room_type_sql, room_type_params)
 
         room_sql = """
                    INSERT INTO Room (hotel_id, room_number, type_id, price_per_night)
