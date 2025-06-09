@@ -32,6 +32,12 @@ o Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der e
 
 	[Demo Video]()
 
+Unser Deepnote-Projekt ist wie folgt aufgebaut:
+
+- Dokumentation: enthält eine Erklärung zu unseren Layers und Klassen
+- Showcase UserStories - 2: enthält alle unsere UI-Funktionen sowie die Erklärungen zu unseren Gedanken und Hintergründen für die Umsetzung der UserStories
+- UI - Menü: enthält einen zentralen Einstieg in die verschiedenen verfügbaren UserStories, aufgeteilt in Gäste- und Adminfunktionen
+
 #  Einleitung
 
 Dieses Projekt implementiert eine einfache Hotelbuchungs-Plattform auf Basis einer SQLite-Datenbank. Die Anwendung ermöglicht die Suche nach Hotels anhand
@@ -86,7 +92,7 @@ Initial wurden die Klassen wie folgt aufgeteilt:
 Fabia Holzer: Booking, Invoice -> später ergänzt mit Payment
 Stirling Mulholland: Address, Guest -> später ergänzt mit Guets_Details
 Sarina Grabherr: Room, Roomtype -> später ergänzt mit hotel_review
-Tanja Lüscher: Hotel, Facilities
+Tanja Lüscher: Hotel, Facilities -> später diverse Manager- und Data Access-Klassen ergänzt 
 
 Im Weiteren Verlaufe des Projektes wurden sodann auch die UserStories erst einmal aufgeteilt:
 
@@ -95,9 +101,15 @@ Stirling Mulholland: UserStory 2 und 6, UserStory mit Datenvisualisierung 2
 Sarina Grabherr: UserStory 3 und 7, UserStory mit Datenbankschemaänderung 3 und 4
 Tanja Lüscher: UserStory 1, 2 und 5
 
+Fabia Holzer hat sich schlussendlich auch noch um das UI-Menü gekümmert.
+
 Allerdings fiel es uns in der Folge immer schwerer eine klare Aufteilung aufrecht zu erhalten, da für die Umsetzung einiger UserStories auch Klassen angepasst werden mussten, welche einem ursprünglich nicht zugeteilt waren. Wir haben uns daher wöchentlich mindestens einmal (im Unterricht am Mittwoch) und vielfach auch weitere Male (oft am Freitag vor Ort oder Abends via Teams) abgesprochen und aufgeteilt, wer welche Aufgaben übernimmt. Das KANBAN-Board 
 haben wir ab diesem Zeitpunkt nicht mehr weiterverwendet, da eine klare Aufgabentrennung nicht mehr möglich war. Wir haben es daher präferiert uns regelmässig persönlich oder via Teams auszutauschen und Check-Ins abzuhalten. Ebenso haben wir uns bei der Erarbeitung der UserStories schlussendlich unterstütz und einige der obligatorischen UserStories schliesslich gemeinsam ausgearbeitet. Im Deepnote hat jeder seine eigenen umgesetzten UserStories dokumentiert. 
 Die allgemeine Dokumentation / ReadMe haben wir zu Beginn gemeinsam geführt, die Fertigstellung wurde schlussendlich durch Tanja Lüscher sichergestellt. 
+
+Zum Aufbau des Projektes ist speziell zu erwähnen, dass wir bis ca. Mitte Mai etwas "festgefahren" waren und die Implementierung der UserStories nicht gut voranschritt. Wir haben uns daher nach einem intensiven Coaching dazu entschieden noch einmal ein neues GitHub Repository zu erstellen um einen "Neustart" zu simulieren. Für den Neuaufbau der Klassen haben wir uns dazu stark am Beispiel-Projekt orientiert. Dies hat uns tatsächlich geholfen einen "Durchbruch" im Verständnis 
+erreichen, zog allerdings in der Folge auch nach sich, dass wir teilweise viel des geschriebenen Codes nicht mehr weiterverwendet haben, weil uns plötzlich klar wurde, wie wir die für unser Projekt nötigen Methoden selbst optimiert schreiben können. Aus zeitlichen Gründen haben wir die nicht verwendeten Code-Blöcke in den Klassen auskommentiert. Im Sinne einer sauberen Codeführung hätten wir mit etwas mehr Zeit diese aber vermutlich komplett bereinigt und entfernt. Da wir
+zum jetzigen sehr fortgeschrittenen Projektverlauf allerdings nicht riskieren wollten, versehentlich Methoden zu löschen, welche doch irgendwo verwendet werden, oder welche man idealerweise bei der weiteren Implementierung von zusätzlichen UserStories gut hätte verwenden können, haben wir dies unterlassen.
 
 ## Reflexion
 
@@ -111,10 +123,10 @@ Angefangen mit einfachen Eingaben und Variablen hat uns die Reise zu Klassen, Fu
 Mit diesem Wissen konnten wir unsere ersten Zeilen Code in der Modellklasse schreiben. Hier sind die ersten
 Probleme einer Gruppenarbeit aufgetaucht. Vier Personen verstehen nicht immer alles gleich schnell.
 Es wäre hilfreich gewesen, die Aufgaben aus dem Unterricht gemeinsam zu lösen, um die Theorie gleich zu verstehen wie die anderen Teamkollegen.
-Einige von uns hätten es hilfreich gefunden, beim User Interface anzufangen, um einen groben Überblick zu bekommen.
-Was eigentlich von uns erwartet wurde. Jeder hat seinen Ansatz umgesetzt, ohne zu überprüfen, was die anderen gemacht haben.
+Einige von uns hätten es hilfreich gefunden, beim User Interface anzufangen, um einen groben Überblick zu bekommen,
+was eigentlich von uns erwartet wurde. Jeder hat seinen Ansatz umgesetzt, ohne zu überprüfen, was die anderen gemacht haben.
 Hier waren das Beispielprojekt, das Kanban-Board und GitHub eine grosse Hilfe, um einen gemeinsamen Nenner zu finden.
-Die Zusammenarbeit im Team war hervorragend, jeder konnte seinen Teil beitragen und sich gegenseitig helfen.
+Die Zusammenarbeit im Team war hervorragend, jeder konnte seinen Teil beitragen und wir konnten uns gegenseitig helfen.
 Wie die einzelnen Schichten zusammenhingen, war uns lange Zeit ein Rätsel, bis wir die Datenbank anbinden konnten.
 Sobald wir Daten erhalten konnten, wurden schon fleissig die ersten User Stories zum Laufen gebracht.
 Eureka! Ein Erfolgserlebnis nach dem anderen!
@@ -124,7 +136,7 @@ Insbesondere bei dieser komplexen Arbeit, denn das Resultat wurde durch die  Zus
 Der Erfolg, einen Code selbstständig zu schreiben und diesen nach Trial and Error zum Laufen zu bringen, ist unbeschreiblich.
 Unser Zeitmanagement war leider nicht optimal, was auch daran lag, dass wir nicht wussten, wie wir selbstständig vorankommen. 
 Dies führte dazu, dass wir keine zusätzlichen User Stories umsetzen konnten.
-Es hat sich massiv gelohnt, beim Coach Hilfe zu holen, um den Endspurt zu meistern. 
+Es hat sich massiv gelohnt, bei den Coaches Hilfe zu holen, um den Endspurt zu meistern. 
 Ein neues GitHub aufzusetzen ist zwar keine gute Lösung, weil dabei die Historie verloren geht. 
 Aber es hat uns motiviert, den Code von Grund auf noch einmal anzuschauen und zu korrigieren. 
 Weitere Verbesserungen wären in den Klassen „Manager”, „UI” und „Data Access” möglich. Die Funktionen sind
