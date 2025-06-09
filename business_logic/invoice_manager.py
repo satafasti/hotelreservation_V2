@@ -11,22 +11,6 @@ class InvoiceManager:
         self.__invoice_dal = InvoiceDataAccess(db_path)
         self.__booking_dal = BookingDataAccess(db_path)
 
-    def create_invoice(self, booking_id: int, issue_date: str, total_amount: float) -> Invoice:
-        invoice = Invoice(None, booking_id, issue_date, total_amount)
-        return self.__invoice_dal.create_invoice(invoice)
-
-    def read_invoice_by_id(self, invoice_id: int) -> Optional[Invoice]:
-        return self.__invoice_dal.read_invoice_by_id(invoice_id)
-
-    def read_all_invoices(self) -> List[Invoice]:
-        return self.__invoice_dal.read_all_invoices()
-
-    def update_invoice(self, invoice: Invoice):
-        self.__invoice_dal.update_invoice(invoice)
-
-    def delete_invoice(self, invoice: Invoice):
-        self.__invoice_dal.delete_invoice(invoice)
-
     def cancel_invoice_by_booking(self, booking_id: int):
         invoice = self.__invoice_dal.read_invoice_by_booking_id(booking_id)
         if invoice:
@@ -69,3 +53,20 @@ class InvoiceManager:
 
     def get_invoice_by_booking_id(self, booking_id: int) -> Optional[Invoice]:
         return self.__invoice_dal.read_invoice_by_booking_id(booking_id)
+
+    # Im Projekt wurde nach einem Neustart ein Grossteil des Codes neu geschrieben. Dabei stellte sich heraus, dass einige der früher implementierten Methoden nicht mehr benötigt wurden. Um versehentliche Löschungen zu vermeiden und aus Zeitgründen wurden sie nur auskommentiert.
+    # def create_invoice(self, booking_id: int, issue_date: str, total_amount: float) -> Invoice:
+    #     invoice = Invoice(None, booking_id, issue_date, total_amount)
+    #     return self.__invoice_dal.create_invoice(invoice)
+
+    # def read_invoice_by_id(self, invoice_id: int) -> Optional[Invoice]:
+    #     return self.__invoice_dal.read_invoice_by_id(invoice_id)
+
+    # def read_all_invoices(self) -> List[Invoice]:
+    #     return self.__invoice_dal.read_all_invoices()
+
+    # def update_invoice(self, invoice: Invoice):
+    #     self.__invoice_dal.update_invoice(invoice)
+
+    # def delete_invoice(self, invoice: Invoice):
+    #     self.__invoice_dal.delete_invoice(invoice)

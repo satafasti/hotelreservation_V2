@@ -1,6 +1,5 @@
 from data_access.payment_dal import PaymentDataAccess
 from model.payment import Payment
-from typing import Optional, List
 from datetime import datetime
 
 class PaymentManager:
@@ -12,11 +11,12 @@ class PaymentManager:
         payment = Payment(None, booking_id, payment_date, amount, payment_method)
         return self.__dal.create_payment(payment)
 
-    def read_payment_by_id(self, payment_id: int) -> Optional[Payment]:
-        return self.__dal.read_payment_by_id(payment_id)
+    # Aktuell sind diese Methoden nicht im Einsatz, werden aber für potenzielle Systemerweiterungen bereitgehalten.
+    # def read_payment_by_id(self, payment_id: int) -> Optional[Payment]:
+    #     return self.__dal.read_payment_by_id(payment_id)
 
-    def read_payments_by_booking_id(self, booking_id: int) -> List[Payment]:
-        return self.__dal.read_payments_by_booking_id(booking_id)
+    # def read_payments_by_booking_id(self, booking_id: int) -> List[Payment]:
+    #     return self.__dal.read_payments_by_booking_id(booking_id)
 
-    def read_all_payments(self) -> List[Payment]:
-        return self.__dal.read_all_payments()
+    # def read_all_payments(self) -> List[Payment]:
+    #     return self.__dal.read_all_payments()
