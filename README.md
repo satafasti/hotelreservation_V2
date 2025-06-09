@@ -128,5 +128,10 @@ Ein neues GitHub aufzusetzen ist keine gute Lösung, weil dabei die Historie ver
 Aber es hat uns motiviert, den Code von Grund auf noch einmal anzuschauen und zu korrigieren. 
 Weitere Verbesserungen wären in den Klassen „Manager”, „UI” und „Data Access” möglich. Die Funktionen sind
 nicht immer korrekt getrennt worden. Manchmal wurden die Daten aus der Datenbank auch direkt mit SQL-Funktionen wie Joins und Group By geholt.
-Anstatt diese als Objekte der Modellklassen zu laden und nachher weiterzuverarbeiten. In Zukunft
-
+Anstatt diese als Objekte der Modellklassen zu laden und nachher weiterzuverarbeiten. 
+Den gelernten Stoff werden wir in Zukunft sicher im Studium und bei der Arbeit anwenden können.
+Besonders nützlich waren die Datenbankanbindung sowie die Möglichkeit, Daten zu verarbeiten und zu visualisieren, um verschiedene Analysen durchzuführen.
+Die Fähigkeit, die Logik eines Programms nur anhand des Codes zu verstehen, ist sehr wertvoll.
+GitHub ist beim Programmieren unerlässlich, um einen Versionsverlauf zu haben und die Zusammenarbeit des Teams zu ermöglichen.
+Unsere erste Erfahrung mit einer IDE, die wir mit PyCharm gemacht haben, war sehr positiv und hat bei allen die Arbeit erleichtert. 
+Diese Tools packen wir gerne in unseren wachsenden Werkzeugkoffer.
