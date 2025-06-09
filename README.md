@@ -34,7 +34,7 @@ Stirling Mulholland
 
 Unser Deepnote-Projekt ist wie folgt aufgebaut:
 
-- Dokumentation: enthält eine Erklärung zu unseren Layers und Klassen
+- Dokumentation: enthält eine Erklärung zu unseren Layers und Klassen sowie Begründungen zu den gewählten Vorgehensweisen
 - Showcase UserStories - 2: enthält alle unsere UI-Funktionen sowie die Erklärungen zu unseren Gedanken und Hintergründen für die Umsetzung der UserStories
 - UI - Menü: enthält einen zentralen Einstieg in die verschiedenen verfügbaren UserStories, aufgeteilt in Gäste- und Adminfunktionen
 
