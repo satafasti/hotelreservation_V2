@@ -8,7 +8,7 @@ Stirling Mulholland
 
 ## Deliverables 
 - Source Code und Artefakte
-o Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der endgültigen Datenbank
+- Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der endgültigen Datenbank
 
 	[Deepnote Dokumentation](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
 
@@ -17,14 +17,14 @@ o Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der e
 	[Deepnote Hotelreservation UI](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
 
 
-- o Link zum GitHub-Repository
+- Link zum GitHub-Repository
 
   [GitHub-Repository](https://github.com/satafasti/hotelreservation_V2)
-	
+
 	[Altes GitHub-Repository](https://github.com/satafasti/team12_hotelreservation)
 
 
-- o Link zum Projekt Board
+- Link zum Projekt Board
 
 	[Projekt Board](https://github.com/orgs/satafasti/projects/2/views/1)
 
@@ -42,14 +42,14 @@ Unser Deepnote-Projekt ist wie folgt aufgebaut:
 
 Dieses Projekt implementiert eine einfache Hotelbuchungs-Plattform auf Basis einer SQLite-Datenbank. Die Anwendung ermöglicht die Suche nach Hotels anhand
 flexibler Kriterien wie zum Beispiel die Stadt, Anzahl Sterne eines Hotels, gewünschter Reisezeitraum oder Anzahl Gäste. Die zugrunde liegende Datenbank
-beinhaltet im wesentlichen Informationen zu den Hotels, Zimmern, Ausstattung der Zimmer, Gäste, Buchungen und Rechnungen mit realistischen Beispieldaten.
-Die Datenstruktur bildet unter Anderem Beziehungen zwischen Hotels, Zimmern und Gästen ab und erlaubt es die Buchungen mit Check-in /  Check-out-Daten und Stornierungen
+beinhaltet wesentliche Informationen zu den Hotels, Zimmern, Ausstattung der Zimmer, Gäste, Buchungen und Rechnungen mit realistischen Beispieldaten.
+Die Datenstruktur bildet Beziehungen zwischen Hotels, Zimmern und Gästen ab und erlaubt es die Buchungen mit Check-in / Check-out-Daten und Stornierungen
 zu verwalten. Die Anwendung nutzt Python zur Abfrage und Verarbeitung der Daten sowie einer benutzerfreundlichen Darstellung für den User. Ziel des Projektes
 ist es die Anwendungsentwicklung mit Python in einem praxisnahen Szenario zu erlernen und vertiefen.
 
 ## Kontext
 
-Für dieses Projekt wird den Autoren eine SQLite Datenkbank mit realistischen Beispieldaten zu zum Beispiel Hotels, Räumen und Gästen zur Verfügung gestellt. 
+Für dieses Projekt wird den Autoren eine SQLite Datenbank mit realistischen Beispieldaten zum Beispiel Hotels, Räumen und Gästen zur Verfügung gestellt. 
 Diese soll als Basis dienen die im Unterricht erlernten Konzepte zur objektorientierten Entwicklung mit Python anhand eines realistischen Beispieles umzusetzen. 
 Die im Rahmen des Projektes entwickelten UserStories sind die Folgenden.
 
@@ -57,6 +57,11 @@ Die im Rahmen des Projektes entwickelten UserStories sind die Folgenden.
 
 Die umgesetzten UserStories haben wir direkt im Deepnote dokumentiert:
 [Deepnote Showcase User Stories](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
+
+Diese wurden im UI Layer zusammengesetzt und ein Menu für die Gäste und Admin Funktionen erstellt:
+	[Deepnote Hotelreservation UI](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
+
+
 
 ## Layers
 
@@ -97,15 +102,24 @@ Tanja Lüscher: Hotel, Facilities -> später diverse Manager- und Data Access-Kl
 Im Weiteren Verlaufe des Projektes wurden sodann auch die UserStories erst einmal aufgeteilt:
 
 Fabia Holzer: UserStory 4, 8, 9 und 10, UserStory mit Datenbankschemaänderung 6
+
 Stirling Mulholland: UserStory 2 und 6, UserStory mit Datenvisualisierung 2
+
 Sarina Grabherr: UserStory 3 und 7, UserStory mit Datenbankschemaänderung 3 und 4
+
 Tanja Lüscher: UserStory 1, 2 und 5
 
-Fabia Holzer hat sich schlussendlich auch noch um das UI-Menü gekümmert.
+Allerdings fiel es uns in der Folge immer schwerer eine klare Aufteilung aufrecht zu erhalten, da für die Umsetzung einiger 
+UserStories auch Klassen angepasst werden mussten, welche einem ursprünglich nicht zugeteilt waren. Wir haben uns daher wöchentlich 
+mindestens einmal (im Unterricht am Mittwoch) und vielfach auch weitere Male (oft am Freitag vor Ort oder Abends via Teams) abgesprochen 
+und aufgeteilt, wer welche Aufgaben übernimmt. 
 
-Allerdings fiel es uns in der Folge immer schwerer eine klare Aufteilung aufrecht zu erhalten, da für die Umsetzung einiger UserStories auch Klassen angepasst werden mussten, welche einem ursprünglich nicht zugeteilt waren. Wir haben uns daher wöchentlich mindestens einmal (im Unterricht am Mittwoch) und vielfach auch weitere Male (oft am Freitag vor Ort oder Abends via Teams) abgesprochen und aufgeteilt, wer welche Aufgaben übernimmt. Das KANBAN-Board 
-haben wir ab diesem Zeitpunkt nicht mehr weiterverwendet, da eine klare Aufgabentrennung nicht mehr möglich war. Wir haben es daher präferiert uns regelmässig persönlich oder via Teams auszutauschen und Check-Ins abzuhalten. Ebenso haben wir uns bei der Erarbeitung der UserStories schlussendlich unterstütz und einige der obligatorischen UserStories schliesslich gemeinsam ausgearbeitet. Im Deepnote hat jeder seine eigenen umgesetzten UserStories dokumentiert. 
-Die allgemeine Dokumentation / ReadMe haben wir zu Beginn gemeinsam geführt, die Fertigstellung wurde schlussendlich durch Tanja Lüscher sichergestellt. 
+Das KANBAN-Board haben wir ab diesem Zeitpunkt nicht mehr weiterverwendet, da eine klare Aufgabentrennung nicht mehr möglich war. Wir haben es daher 
+präferiert uns regelmässig persönlich oder via Teams auszutauschen. Ebenso haben wir uns bei der Erarbeitung 
+der UserStories schlussendlich unterstützt und einige der obligatorischen UserStories schliesslich gemeinsam ausgearbeitet. 
+Im Deepnote hat jeder seine eigenen umgesetzten UserStories dokumentiert. 
+Die allgemeine Dokumentation und das ReadMe haben wir zu Beginn gemeinsam geführt, die Fertigstellung wurde schlussendlich 
+durch Tanja Lüscher und Stirling Mulholland sichergestellt. 
 
 Zum Aufbau des Projektes ist speziell zu erwähnen, dass wir bis ca. Mitte Mai etwas "festgefahren" waren und die Implementierung der UserStories nicht gut voranschritt. Wir haben uns daher nach einem intensiven Coaching dazu entschieden noch einmal ein neues GitHub Repository zu erstellen um einen "Neustart" zu simulieren. Für den Neuaufbau der Klassen haben wir uns dazu stark am Beispiel-Projekt orientiert. Dies hat uns tatsächlich geholfen einen "Durchbruch" im Verständnis 
 erreichen, zog allerdings in der Folge auch nach sich, dass wir teilweise viel des geschriebenen Codes nicht mehr weiterverwendet haben, weil uns plötzlich klar wurde, wie wir die für unser Projekt nötigen Methoden selbst optimiert schreiben können. Aus zeitlichen Gründen haben wir die nicht verwendeten Code-Blöcke in den Klassen auskommentiert. Im Sinne einer sauberen Codeführung hätten wir mit etwas mehr Zeit diese aber vermutlich komplett bereinigt und entfernt. Da wir
