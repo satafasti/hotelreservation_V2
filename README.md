@@ -58,8 +58,8 @@ Projektstruktur und Architekturentscheidungen
 Unser Projekt basiert auf einer klassischen Mehrschichtenarchitektur, bestehend aus Model, Data Access Layer (DAL), Business Logic Layer (Manager) und einer einfachen UI-Schicht. Diese Trennung erhöht die Wartbarkeit, Testbarkeit und Wiederverwendbarkeit des Codes.
 
 1. Warum wir uns für diese Schichten entschieden haben
-	•	Model-Schicht: Enthält ausschließlich strukturierte Datenobjekte (wie Hotel, Room, Guest, Booking, Invoice). Alle Attribute sind privat gekapselt, mit Validierung über Getter/Setter. Dadurch stellen wir sicher, dass alle Instanzen in einem konsistenten Zustand bleiben. Beziehungen zwischen Objekten (z. B. Hotel ↔ Room) sind direkt abgebildet, was eine intuitive Navigation im Code ermöglicht.
-	•	DAL (Data Access Layer): Kapselt alle direkten Datenbankzugriffe. Jeder Zugriff erfolgt über dedizierte Klassen wie BookingDataAccess oder InvoiceDataAccess. Diese Klassen enthalten ausschließlich SQL-Operationen und wandeln die Ergebnisse in Model-Objekte um.
+	•	Model-Schicht: Enthält ausschliesslich strukturierte Datenobjekte (wie Hotel, Room, Guest, Booking, Invoice). Alle Attribute sind privat gekapselt, mit Validierung über Getter/Setter. Dadurch stellen wir sicher, dass alle Instanzen in einem konsistenten Zustand bleiben. Beziehungen zwischen Objekten (z. B. Hotel ↔ Room) sind direkt abgebildet, was eine intuitive Navigation im Code ermöglicht.
+	•	DAL (Data Access Layer): Kapselt alle direkten Datenbankzugriffe. Jeder Zugriff erfolgt über dedizierte Klassen wie BookingDataAccess oder InvoiceDataAccess. Diese Klassen enthalten ausschliesslich SQL-Operationen und wandeln die Ergebnisse in Model-Objekte um.
 	•	Manager-Schicht (Business Logic): Vermittelt zwischen UI/DAL und zentralisiert die Geschäftslogik. Zum Beispiel prüft der InvoiceManager, ob eine Rechnung zu einer Buchung existiert, bevor eine neue erstellt wird. Manager nutzen jeweils die passenden DAL-Klassen, um mit der Datenbank zu interagieren, und wenden zusätzliche Regeln an (z. B. keine Rechnung bei stornierten Buchungen).
 	•	UI-Schicht: Dient der Benutzereingabe und Ausgabe. Sie ist vollständig getrennt von der Logik. Die Ergebnisse werden strukturiert formatiert und mögliche Mehrfachausgaben durch Korrekturen im Manager- und DAL-Bereich vermieden.
 
@@ -102,7 +102,7 @@ Die allgemeine Dokumentation / ReadMe haben wir zu Beginn gemeinsam geführt, di
 ## Reflexion
 
 „Keep it simple, stupid“ sollte das Motto eines jeden angehenden Programmierers sein – und ist es wahrscheinlich auch.
-Auch für viele Erfahrene. Dies hat sich schnell als gute Leitidee gezeigt, um das Projekt in einem für unseren Wissensstand übersichtlichen Maß umsetzen zu können.
+Auch für viele Erfahrene. Dies hat sich schnell als gute Leitidee gezeigt, um das Projekt in einem für unseren Wissensstand übersichtlichen Mass umsetzen zu können.
 Unser Ziel war es, zum ersten Mal Computersprache zu sprechen. Wir wollten dem PC sagen, was und wie er etwas machen sollte, ohne eine hübsche Benutzeroberfläche bedienen zu müssen.
 
 
@@ -112,13 +112,13 @@ Probleme einer Gruppenarbeit sind aufgetaucht. Vier Personen verstehen nicht imm
 Es wäre hilfreich gewesen, die Aufgaben aus dem Unterricht gemeinsam zu lösen, um die Theorie gleich zu verstehen wie die anderen Teamkollegen.
 Einige von uns hätten es hilfreich gefunden, beim User Interface anzufangen, um einen groben Überblick zu bekommen.
 Was eigentlich von uns erwartet wurde. Jeder hat seinen Ansatz umgesetzt, ohne zu überprüfen, was die anderen gemacht haben.
-gemacht hat. Hier waren das Beispielprojekt, das Kanban-Board und GitHub eine große Hilfe, um einen gemeinsamen Nenner zu finden.
+gemacht hat. Hier waren das Beispielprojekt, das Kanban-Board und GitHub eine grosse Hilfe, um einen gemeinsamen Nenner zu finden.
 Die Zusammenarbeit im Team war hervorragend, jeder konnte seinen Teil beitragen und sich gegenseitig helfen.
 Wie die einzelnen Schichten zusammenhingen, war uns lange Zeit ein Rätsel, bis wir die Datenbank anbinden konnten.
-Sobald wir Daten erhalten konnten, wurden schon fleißig die ersten User Stories zum Laufen gebracht.
+Sobald wir Daten erhalten konnten, wurden schon fleissig die ersten User Stories zum Laufen gebracht.
 Eureka! Ein Erfolgserlebnis nach dem anderen!
 
-Nach jeder Gruppenarbeit sollte es heißen: „Ich bin teamfähiger geworden.”
+Nach jeder Gruppenarbeit sollte es heissen: „Ich bin teamfähiger geworden.”
 Insbesondere bei dieser komplexen Arbeit, denn das Resultat wurde durch die  Zusammenarbeit und gegenseitige Unterstützung im Team ermöglicht.
 Der Erfolg, einen Code selbstständig zu schreiben und diesen nach Trial and Error zum Laufen zu bringen, ist unbeschreiblich.
 Unser Zeitmanagement war leider nicht optimal, was auch daran lag, dass wir nicht wussten, wie wir selbstständig vorankommen. 
