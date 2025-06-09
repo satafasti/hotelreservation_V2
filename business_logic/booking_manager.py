@@ -1,5 +1,4 @@
 from data_access.booking_dal import BookingDataAccess
-from model.room import Room
 from model.booking import Booking
 from typing import Optional, List
 from datetime import date
@@ -36,17 +35,6 @@ class BookingManager:
         else:
             return base_price
 
-    def read_booking_by_id(self, booking_id: int) -> Optional[Booking]:
-        return self.__dal.read_booking_by_id(booking_id)
-
-    def read_all_bookings(self) -> List[Booking]:
-        return self.__dal.read_all_bookings()
-
-    def update_booking(self, booking: Booking):
-        self.__dal.update_booking(Booking)
-
-    def delete_booking(self, booking: Booking):
-        self.__dal.delete_booking(Booking)
 
     def cancel_booking(self, booking_id: int):
         booking = self.__dal.read_booking_by_id(booking_id)
@@ -60,6 +48,26 @@ class BookingManager:
         booking.is_cancelled = True
         return booking
 
-    def find_available_room(self, room_type_description: str, check_in: str, check_out: str) -> Optional[Room]:
-        return self.__dal.find_available_room(room_type_description, check_in, check_out)
+    #def find_available_room(self, room_type_description: str, check_in: str, check_out: str) -> Optional[Room]:
+        #return self.__dal.find_available_room(room_type_description, check_in, check_out)
 
+    #def read_booking_by_id(self, booking_id: int) -> Optional[Booking]:
+        #return self.__dal.read_booking_by_id(booking_id)
+
+    #def read_all_bookings(self) -> List[Booking]:
+        #return self.__dal.read_all_bookings()
+
+    #def update_booking(self, booking: Booking):
+        #self.__dal.update_booking(Booking)
+
+    #def delete_booking(self, booking: Booking):
+        #self.__dal.delete_booking(Booking)
+
+#Im Projekt wurde zwar im BookingManager ein ganzer Satz von Methoden definiert – darunter read_booking_by_id, read_all_bookings, update_booking, delete_booking und find_available_room.
+#Allerdings greifen die übrigen Komponenten des Systems nicht auf diese Manager-Methoden zu.
+
+#Beispielsweise nutzt die admin_ui in der Funktion read_all_bookings_ui direkt den BookingDataAccess, ohne den BookingManager zu verwenden.
+#Ähnlich verhält es sich beim InvoiceManager, der Buchungen direkt über den BookingDataAccess lädt, wenn eine Rechnung erstellt werden soll.
+
+#In der README wird zudem erläutert, dass beim „Neustart“ des Repositories viele ehemals geschriebene Codeblöcke nicht weiterverwendet wurden. Aus Zeitgründen wurden diese nur auskommentiert oder nicht mehr angerührt, damit nichts versehentlich gelöscht wird.
+#Die genannten Funktionen im BookingManager waren für die implementierten User Stories letztlich überflüssig und blieben daher ungenutzt.
