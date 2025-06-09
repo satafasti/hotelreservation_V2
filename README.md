@@ -8,7 +8,7 @@ Stirling Mulholland
 
 ## Deliverables 
 - Source Code und Artefakte
-o Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der endgültigen Datenbank
+- Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der endgültigen Datenbank
 
 	[Deepnote Dokumentation](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
 
@@ -17,14 +17,14 @@ o Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der e
 	[Deepnote Hotelreservation UI](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
 
 
-- o Link zum GitHub-Repository
+- Link zum GitHub-Repository
 
   [GitHub-Repository](https://github.com/satafasti/hotelreservation_V2)
-	
+
 	[Altes GitHub-Repository](https://github.com/satafasti/team12_hotelreservation)
 
 
-- o Link zum Projekt Board
+- Link zum Projekt Board
 
 	[Projekt Board](https://github.com/orgs/satafasti/projects/2/views/1)
 
@@ -36,14 +36,14 @@ o Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der e
 
 Dieses Projekt implementiert eine einfache Hotelbuchungs-Plattform auf Basis einer SQLite-Datenbank. Die Anwendung ermöglicht die Suche nach Hotels anhand
 flexibler Kriterien wie zum Beispiel die Stadt, Anzahl Sterne eines Hotels, gewünschter Reisezeitraum oder Anzahl Gäste. Die zugrunde liegende Datenbank
-beinhaltet im wesentlichen Informationen zu den Hotels, Zimmern, Ausstattung der Zimmer, Gäste, Buchungen und Rechnungen mit realistischen Beispieldaten.
-Die Datenstruktur bildet unter Anderem Beziehungen zwischen Hotels, Zimmern und Gästen ab und erlaubt es die Buchungen mit Check-in /  Check-out-Daten und Stornierungen
+beinhaltet wesentliche Informationen zu den Hotels, Zimmern, Ausstattung der Zimmer, Gäste, Buchungen und Rechnungen mit realistischen Beispieldaten.
+Die Datenstruktur bildet Beziehungen zwischen Hotels, Zimmern und Gästen ab und erlaubt es die Buchungen mit Check-in / Check-out-Daten und Stornierungen
 zu verwalten. Die Anwendung nutzt Python zur Abfrage und Verarbeitung der Daten sowie einer benutzerfreundlichen Darstellung für den User. Ziel des Projektes
 ist es die Anwendungsentwicklung mit Python in einem praxisnahen Szenario zu erlernen und vertiefen.
 
 ## Kontext
 
-Für dieses Projekt wird den Autoren eine SQLite Datenkbank mit realistischen Beispieldaten zu zum Beispiel Hotels, Räumen und Gästen zur Verfügung gestellt. 
+Für dieses Projekt wird den Autoren eine SQLite Datenkbank mit realistischen Beispieldaten zum Beispiel Hotels, Räumen und Gästen zur Verfügung gestellt. 
 Diese soll als Basis dienen die im Unterricht erlernten Konzepte zur objektorientierten Entwicklung mit Python anhand eines realistischen Beispieles umzusetzen. 
 Die im Rahmen des Projektes entwickelten UserStories sind die Folgenden.
 
@@ -51,6 +51,11 @@ Die im Rahmen des Projektes entwickelten UserStories sind die Folgenden.
 
 Die umgesetzten UserStories haben wir direkt im Deepnote dokumentiert:
 [Deepnote Showcase User Stories](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
+
+Diese wurden im UI Layer zusammengesetzt und ein Menu für die Gäste und Admin Funktionen erstellt:
+	[Deepnote Hotelreservation UI](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
+
+
 
 ## Layers
 
@@ -91,13 +96,24 @@ Tanja Lüscher: Hotel, Facilities
 Im Weiteren Verlaufe des Projektes wurden sodann auch die UserStories erst einmal aufgeteilt:
 
 Fabia Holzer: UserStory 4, 8, 9 und 10, UserStory mit Datenbankschemaänderung 6
+
 Stirling Mulholland: UserStory 2 und 6, UserStory mit Datenvisualisierung 2
+
 Sarina Grabherr: UserStory 3 und 7, UserStory mit Datenbankschemaänderung 3 und 4
+
 Tanja Lüscher: UserStory 1, 2 und 5
 
-Allerdings fiel es uns in der Folge immer schwerer eine klare Aufteilung aufrecht zu erhalten, da für die Umsetzung einiger UserStories auch Klassen angepasst werden mussten, welche einem ursprünglich nicht zugeteilt waren. Wir haben uns daher wöchentlich mindestens einmal (im Unterricht am Mittwoch) und vielfach auch weitere Male (oft am Freitag vor Ort oder Abends via Teams) abgesprochen und aufgeteilt, wer welche Aufgaben übernimmt. Das KANBAN-Board 
-haben wir ab diesem Zeitpunkt nicht mehr weiterverwendet, da eine klare Aufgabentrennung nicht mehr möglich war. Wir haben es daher präferiert uns regelmässig persönlich oder via Teams auszutauschen und Check-Ins abzuhalten. Ebenso haben wir uns bei der Erarbeitung der UserStories schlussendlich unterstütz und einige der obligatorischen UserStories schliesslich gemeinsam ausgearbeitet. Im Deepnote hat jeder seine eigenen umgesetzten UserStories dokumentiert. 
-Die allgemeine Dokumentation / ReadMe haben wir zu Beginn gemeinsam geführt, die Fertigstellung wurde schlussendlich durch Tanja Lüscher sichergestellt. 
+Allerdings fiel es uns in der Folge immer schwerer eine klare Aufteilung aufrecht zu erhalten, da für die Umsetzung einiger 
+UserStories auch Klassen angepasst werden mussten, welche einem ursprünglich nicht zugeteilt waren. Wir haben uns daher wöchentlich 
+mindestens einmal (im Unterricht am Mittwoch) und vielfach auch weitere Male (oft am Freitag vor Ort oder Abends via Teams) abgesprochen 
+und aufgeteilt, wer welche Aufgaben übernimmt. 
+
+Das KANBAN-Board haben wir ab diesem Zeitpunkt nicht mehr weiterverwendet, da eine klare Aufgabentrennung nicht mehr möglich war. Wir haben es daher 
+präferiert uns regelmässig persönlich oder via Teams auszutauschen. Ebenso haben wir uns bei der Erarbeitung 
+der UserStories schlussendlich unterstützt und einige der obligatorischen UserStories schliesslich gemeinsam ausgearbeitet. 
+Im Deepnote hat jeder seine eigenen umgesetzten UserStories dokumentiert. 
+Die allgemeine Dokumentation und das ReadMe haben wir zu Beginn gemeinsam geführt, die Fertigstellung wurde schlussendlich 
+durch Tanja Lüscher und Stirling Mulholland sichergestellt. 
 
 ## Reflexion
 
@@ -111,8 +127,8 @@ Angefangen mit einfachen Eingaben und Variablen hat uns die Reise zu Klassen, Fu
 Mit diesem Wissen konnten wir unsere ersten Zeilen Code in der Modellklasse schreiben. Hier sind die ersten
 Probleme einer Gruppenarbeit aufgetaucht. Vier Personen verstehen nicht immer alles gleich schnell.
 Es wäre hilfreich gewesen, die Aufgaben aus dem Unterricht gemeinsam zu lösen, um die Theorie gleich zu verstehen wie die anderen Teamkollegen.
-Einige von uns hätten es hilfreich gefunden, beim User Interface anzufangen, um einen groben Überblick zu bekommen.
-Was eigentlich von uns erwartet wurde. Jeder hat seinen Ansatz umgesetzt, ohne zu überprüfen, was die anderen gemacht haben.
+Einige von uns hätten es hilfreich gefunden, beim User Interface anzufangen, um einen groben Überblick des Resultats zu bekommen.
+Jeder hat seinen Ansatz umgesetzt, ohne zu überprüfen, was die anderen gemacht haben.
 Hier waren das Beispielprojekt, das Kanban-Board und GitHub eine grosse Hilfe, um einen gemeinsamen Nenner zu finden.
 Die Zusammenarbeit im Team war hervorragend, jeder konnte seinen Teil beitragen und sich gegenseitig helfen.
 Wie die einzelnen Schichten zusammenhingen, war uns lange Zeit ein Rätsel, bis wir die Datenbank anbinden konnten.
@@ -120,7 +136,7 @@ Sobald wir Daten erhalten konnten, wurden schon fleissig die ersten User Stories
 Eureka! Ein Erfolgserlebnis nach dem anderen!
 
 Nach jeder Gruppenarbeit sollte es heissen: „Ich bin teamfähiger geworden.”
-Insbesondere bei dieser komplexen Arbeit, denn das Resultat wurde durch die  Zusammenarbeit und gegenseitige Unterstützung im Team ermöglicht.
+Insbesondere bei dieser komplexen Arbeit, denn das Resultat wurde durch die Zusammenarbeit und gegenseitige Unterstützung im Team ermöglicht.
 Der Erfolg, einen Code selbstständig zu schreiben und diesen nach Trial and Error zum Laufen zu bringen, ist unbeschreiblich.
 Unser Zeitmanagement war leider nicht optimal, was auch daran lag, dass wir nicht wussten, wie wir selbstständig vorankommen. 
 Dies führte dazu, dass wir keine zusätzlichen User Stories umsetzen konnten.
@@ -130,6 +146,8 @@ Aber es hat uns motiviert, den Code von Grund auf noch einmal anzuschauen und zu
 Weitere Verbesserungen wären in den Klassen „Manager”, „UI” und „Data Access” möglich. Die Funktionen sind
 nicht immer korrekt getrennt worden. Manchmal wurden die Daten aus der Datenbank direkt mit SQL-Funktionen wie Joins und Group By geholt.
 Anstatt diese als Objekte der Modellklassen zu laden und nachher weiterzuverarbeiten. 
+
+
 Den gelernten Stoff werden wir in Zukunft sicher im Studium und bei der Arbeit anwenden können.
 Besonders nützlich waren die Datenbankanbindung sowie die Möglichkeit, Daten zu verarbeiten und zu visualisieren, um verschiedene Analysen durchzuführen.
 Die Fähigkeit, die Logik eines Programms nur anhand des Codes zu verstehen, ist sehr wertvoll.
