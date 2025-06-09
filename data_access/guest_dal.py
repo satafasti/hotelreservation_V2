@@ -57,7 +57,9 @@ class GuestDataAccess(BaseDataAccess):
         results = self.fetchall(sql)
         return [model.Guest(*row) for row in results]
 
-    def get_guest_city_count_by_hotel(self, hotel_id: int) -> list[tuple[str, int]]:
+
+    def get_all_guest_details_by_hotel(self, hotel_id: int) -> list[dict]:
+
 
         if hotel_id is None:
             raise ValueError("hotel_id ist erforderlich")
@@ -65,60 +67,35 @@ class GuestDataAccess(BaseDataAccess):
             raise TypeError("hotel_id muss ein integer sein")
 
         sql = """
-        SELECT a.city, COUNT(DISTINCT g.guest_id) as guest_count
+        SELECT DISTINCT
+            g.guest_id,
+            a.city,
+            gd.nationality,
+            gd.birthdate,
+            gd.gender,
+            gd.marital_status
         FROM Guest g
         JOIN Address a ON g.address_id = a.address_id
-        JOIN Booking b ON g.guest_id = b.guest_id
-        JOIN Room r ON b.room_id = r.room_id
-        JOIN Hotel h ON r.hotel_id = h.hotel_id
-        WHERE h.hotel_id = ?
-        GROUP BY a.city
-        ORDER BY guest_count DESC, a.city ASC
-        """
-
-        results = self.fetchall(sql, (hotel_id,))
-        return [(city, count) for city, count in results]
-
-    def get_guest_nationality_count_by_hotel(self, hotel_id: int) -> list[tuple[str, int]]:
-
-        if hotel_id is None:
-            raise ValueError("hotel_id ist erforderlich")
-        if not isinstance(hotel_id, int):
-            raise TypeError("hotel_id muss ein integer sein")
-
-        sql = """
-        SELECT gd.nationality, COUNT(DISTINCT g.guest_id) as guest_count
-        FROM Guest g
         JOIN Guest_Details gd ON g.guest_id = gd.guest_id
         JOIN Booking b ON g.guest_id = b.guest_id
         JOIN Room r ON b.room_id = r.room_id
         JOIN Hotel h ON r.hotel_id = h.hotel_id
         WHERE h.hotel_id = ?
-        GROUP BY gd.nationality
-        ORDER BY guest_count DESC, gd.nationality ASC
+        ORDER BY g.guest_id
         """
 
         results = self.fetchall(sql, (hotel_id,))
-        return [(nationality, count) for nationality, count in results]
 
-    def get_guest_age_count_by_hotel(self, hotel_id: int) -> list[tuple[int, int]]:
+        guest_details = []
+        for row in results:
+            guest_id, city, nationality, birthdate, gender, marital_status = row
+            guest_details.append({
+                'guest_id': guest_id,
+                'city': city,
+                'nationality': nationality,
+                'birthdate': birthdate,
+                'gender': gender,
+                'marital_status': marital_status
+            })
 
-        if hotel_id is None:
-            raise ValueError("hotel_id ist erforderlich")
-        if not isinstance(hotel_id, int):
-            raise TypeError("hotel_id muss ein integer sein")
-
-        sql = """
-        SELECT gd.age, COUNT(DISTINCT g.guest_id) as guest_count
-        FROM Guest g
-        JOIN Guest_Details gd ON g.guest_id = gd.guest_id
-        JOIN Booking b ON g.guest_id = b.guest_id
-        JOIN Room r ON b.room_id = r.room_id
-        JOIN Hotel h ON r.hotel_id = h.hotel_id
-        WHERE h.hotel_id = ?
-        GROUP BY gd.age
-        ORDER BY gd.age ASC
-        """
-
-        results = self.fetchall(sql, (hotel_id,))
-        return [(age, count) for age, count in results]
+        return guest_details

@@ -104,7 +104,8 @@ CREATE TABLE Payment (
     booking_id INTEGER,
     payment_date DATE,
     amount REAL,
-    payment_method TEXT
+    payment_method TEXT,
+    FOREIGN KEY (booking_id) REFERENCES Booking(booking_id)
 );
 
 
@@ -226,40 +227,42 @@ INSERT INTO Guest (guest_id, first_name, last_name, email, address_id) VALUES
 CREATE TABLE Guest_Details (
     guest_details_id INTEGER PRIMARY KEY,
     guest_id INTEGER NOT NULL,
-    age INTEGER NOT NULL,
+    birthdate DATE NOT NULL,
     nationality TEXT NOT NULL,
-    geschlecht TEXT NOT NULL CHECK(geschlecht IN ('Männlich', 'Weiblich', 'Divers')),
-    familienstand TEXT NOT NULL CHECK(familienstand IN ('Ledig', 'Verheiratet', 'Geschieden', 'Verwitwet')),
+    gender TEXT NOT NULL CHECK(gender IN ('Männlich', 'Weiblich', 'Divers')),
+    marital_status TEXT NOT NULL CHECK(marital_status IN ('Ledig', 'Verheiratet', 'Geschieden', 'Verwitwet')),
     FOREIGN KEY (guest_id) REFERENCES Guest(guest_id) ON DELETE CASCADE
 );
 
+
 -- INSERT Statements für alle 25 Gäste (IDs 1-25)
-INSERT INTO Guest_Details (guest_details_id, guest_id, age, nationality, geschlecht, familienstand) VALUES
-(1, 1, 45, 'Schweiz', 'Männlich', 'Verheiratet'),
-(2, 2, 32, 'Schweiz', 'Weiblich', 'Ledig'),
-(3, 3, 38, 'Italien', 'Männlich', 'Verheiratet'),
-(4, 4, 29, 'Deutschland', 'Weiblich', 'Ledig'),
-(5, 5, 52, 'Schweiz', 'Männlich', 'Geschieden'),
-(6, 6, 27, 'Schweiz', 'Weiblich', 'Ledig'),
-(7, 7, 41, 'Deutschland', 'Männlich', 'Verheiratet'),
-(8, 8, 35, 'Österreich', 'Weiblich', 'Verheiratet'),
-(9, 9, 33, 'Frankreich', 'Männlich', 'Ledig'),
-(10, 10, 28, 'Schweiz', 'Weiblich', 'Ledig'),
-(11, 11, 39, 'Deutschland', 'Männlich', 'Verheiratet'),
-(12, 12, 31, 'Schweiz', 'Weiblich', 'Ledig'),
-(13, 13, 47, 'Schweiz', 'Männlich', 'Verheiratet'),
-(14, 14, 26, 'Italien', 'Weiblich', 'Ledig'),
-(15, 15, 34, 'Deutschland', 'Männlich', 'Ledig'),
-(16, 16, 42, 'Spanien', 'Weiblich', 'Verheiratet'),
-(17, 17, 36, 'Schweiz', 'Männlich', 'Geschieden'),
-(18, 18, 30, 'Schweiz', 'Weiblich', 'Verheiratet'),
-(19, 19, 44, 'Italien', 'Männlich', 'Verheiratet'),
-(20, 20, 37, 'Deutschland', 'Weiblich', 'Geschieden'),
-(21, 21, 25, 'Schweiz', 'Männlich', 'Ledig'),
-(22, 22, 48, 'Österreich', 'Weiblich', 'Verheiratet'),
-(23, 23, 40, 'Schweiz', 'Männlich', 'Verheiratet'),
-(24, 24, 43, 'Frankreich', 'Weiblich', 'Geschieden'),
-(25, 25, 29, 'Schweiz', 'Männlich', 'Ledig');
+-- Berechnet vom heutigen Datum (2025) rückwärts
+INSERT INTO Guest_Details (guest_details_id, guest_id, birthdate, nationality, gender, marital_status) VALUES
+(1, 1, '1980-03-15', 'Schweiz', 'Männlich', 'Verheiratet'),      -- war 45 Jahre alt
+(2, 2, '1993-07-22', 'Schweiz', 'Weiblich', 'Ledig'),           -- war 32 Jahre alt
+(3, 3, '1987-11-08', 'Italien', 'Männlich', 'Verheiratet'),     -- war 38 Jahre alt
+(4, 4, '1996-04-12', 'Deutschland', 'Weiblich', 'Ledig'),       -- war 29 Jahre alt
+(5, 5, '1973-09-30', 'Schweiz', 'Männlich', 'Geschieden'),     -- war 52 Jahre alt
+(6, 6, '1998-01-18', 'Schweiz', 'Weiblich', 'Ledig'),          -- war 27 Jahre alt
+(7, 7, '1984-05-25', 'Deutschland', 'Männlich', 'Verheiratet'), -- war 41 Jahre alt
+(8, 8, '1990-10-14', 'Österreich', 'Weiblich', 'Verheiratet'),  -- war 35 Jahre alt
+(9, 9, '1992-02-28', 'Frankreich', 'Männlich', 'Ledig'),       -- war 33 Jahre alt
+(10, 10, '1997-08-05', 'Schweiz', 'Weiblich', 'Ledig'),        -- war 28 Jahre alt
+(11, 11, '1986-12-11', 'Deutschland', 'Männlich', 'Verheiratet'), -- war 39 Jahre alt
+(12, 12, '1994-06-07', 'Schweiz', 'Weiblich', 'Ledig'),        -- war 31 Jahre alt
+(13, 13, '1978-03-20', 'Schweiz', 'Männlich', 'Verheiratet'),   -- war 47 Jahre alt
+(14, 14, '1999-09-16', 'Italien', 'Weiblich', 'Ledig'),        -- war 26 Jahre alt
+(15, 15, '1991-11-02', 'Deutschland', 'Männlich', 'Ledig'),     -- war 34 Jahre alt
+(16, 16, '1983-04-27', 'Spanien', 'Weiblich', 'Verheiratet'),   -- war 42 Jahre alt
+(17, 17, '1989-07-13', 'Schweiz', 'Männlich', 'Geschieden'),   -- war 36 Jahre alt
+(18, 18, '1995-12-09', 'Schweiz', 'Weiblich', 'Verheiratet'),   -- war 30 Jahre alt
+(19, 19, '1981-01-24', 'Italien', 'Männlich', 'Verheiratet'),   -- war 44 Jahre alt
+(20, 20, '1988-08-17', 'Deutschland', 'Weiblich', 'Geschieden'), -- war 37 Jahre alt
+(21, 21, '2000-05-03', 'Schweiz', 'Männlich', 'Ledig'),        -- war 25 Jahre alt
+(22, 22, '1977-10-21', 'Österreich', 'Weiblich', 'Verheiratet'), -- war 48 Jahre alt
+(23, 23, '1985-02-14', 'Schweiz', 'Männlich', 'Verheiratet'),   -- war 40 Jahre alt
+(24, 24, '1982-06-06', 'Frankreich', 'Weiblich', 'Geschieden'), -- war 43 Jahre alt
+(25, 25, '1996-12-28', 'Schweiz', 'Männlich', 'Ledig');        -- war 29 Jahre alt
 
 
 INSERT INTO Booking (booking_id, guest_id, room_id, check_in_date, check_out_date, is_cancelled, total_amount) VALUES

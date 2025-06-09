@@ -2,6 +2,7 @@ from data_access.guest_dal import GuestDataAccess
 from model.guest import Guest
 from typing import Optional, List
 import pandas as pd
+from datetime import date, datetime
 import plotly.express as px
 import matplotlib.pyplot as plt
 
@@ -29,115 +30,121 @@ class GuestManager:
         self.__dal.delete_guest(guest)
 
 
-    def get_guest_city_statistics_for_hotel(self, hotel_id: int) -> pd.DataFrame:
+    def get_all_guest_details_for_hotel(self, hotel_id: int) -> list[dict]:
 
-        city_counts = self.__dal.get_guest_city_count_by_hotel(hotel_id)
+        return self.__dal.get_all_guest_details_by_hotel(hotel_id)
 
-        if not city_counts:
-
-            return pd.DataFrame(columns=['city', 'count', 'percentage'])
-
-        total_guests = sum(count for _, count in city_counts)
-
-        data = [
-            {
-                'city': city,
-                'count': count,
-                'percentage': round((count / total_guests) * 100, 1)
-            }
-            for city, count in city_counts
-        ]
-
-        return pd.DataFrame(data)
-
-    def get_guest_nationality_statistics_for_hotel(self, hotel_id: int) -> pd.DataFrame:
-
-        nationality_counts = self.__dal.get_guest_nationality_count_by_hotel(hotel_id)
-
-        if not nationality_counts:
-            return pd.DataFrame(columns=['nationality', 'count', 'percentage'])
-
-        total_guests = sum(count for _, count in nationality_counts)
-
-        data = [
-            {
-                'nationality': nationality,
-                'count': count,
-                'percentage': round((count / total_guests) * 100, 1)
-            }
-            for nationality, count in nationality_counts
-        ]
-
-        return pd.DataFrame(data)
+    def calculate_age_and_convert_to_dataframe(self, guest_details: list[dict]) -> pd.DataFrame:
+        if not guest_details:
+            return pd.DataFrame()
 
 
-    def get_guest_age_statistics_for_hotel(self, hotel_id: int) -> pd.DataFrame:
-        ages = self.__dal.get_guest_age_count_by_hotel(hotel_id)
+        df = pd.DataFrame(guest_details)
 
-        jugendliche = 0
-        junge_erwachsene = 0
-        berufstaetige = 0
-        erfahrene = 0
-        rentner = 0
 
-        for age, count in ages:
-            if age <= 17:
-                jugendliche += count
-            elif age <= 29:
-                junge_erwachsene += count
-            elif age <= 49:
-                berufstaetige += count
-            elif age <= 64:
-                erfahrene += count
-            else:
-                rentner += count
+        df['age'] = df['birthdate'].apply(self.calculate_age)
 
-        data = {
-            'age_group': ['Jugendliche 0-17', 'Junge Erwachsene 18-29',
-                          'Berufstätige 30-49', 'Erfahrene 50-64', 'Rentner 65+'],
-            'count': [jugendliche, junge_erwachsene, berufstaetige, erfahrene, rentner]}
 
-        df = pd.DataFrame(data)
         return df
 
-    def guest_city_pie_chart(self, df: pd.DataFrame, title: str = "Gäste-Herkunft"):
+    def calculate_age(self, birthdate) -> int:
+        if not birthdate:
+            return None
+        try:
+            if isinstance(birthdate, str):
+                birthdate = datetime.strptime(birthdate, '%Y-%m-%d').date()
+
+            today = date.today()
+            return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
+
+        except:
+            return None
+
+    def create_city_count_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
+
+        if df.empty or 'city' not in df.columns:
+            return pd.DataFrame(columns=['category', 'count'])
+
+        city_counts = df['city'].value_counts().reset_index()
+        city_counts.columns = ['category', 'count']
+        return city_counts
+
+    def create_nationality_count_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
+
+        if df.empty or 'nationality' not in df.columns:
+            return pd.DataFrame(columns=['category', 'count'])
+
+        nationality_counts = df['nationality'].value_counts().reset_index()
+        nationality_counts.columns = ['category', 'count']
+        return nationality_counts
+
+    def create_gender_count_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
+
+        if df.empty or 'gender' not in df.columns:
+            return pd.DataFrame(columns=['category', 'count'])
+
+        gender_counts = df['gender'].value_counts().reset_index()
+        gender_counts.columns = ['category', 'count']
+        return gender_counts
+
+    def create_marital_status_count_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
+
+        if df.empty or 'marital_status' not in df.columns:
+            return pd.DataFrame(columns=['category', 'count'])
+
+        marital_counts = df['marital_status'].value_counts().reset_index()
+        marital_counts.columns = ['category', 'count']
+        return marital_counts
+
+    def create_age_group_count_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
+
+        if df.empty or 'age' not in df.columns:
+            return pd.DataFrame(columns=['category', 'count'])
+
+        # Altersgruppen definieren
+        def get_age_group(age):
+            if pd.isna(age):
+                return 'Unbekannt'
+            elif age < 18:
+                return 'Jugendliche (0-17)'
+            elif age < 30:
+                return 'Junge Erwachsene (18-29)'
+            elif age < 50:
+                return 'Berufstätige (30-49)'
+            elif age < 65:
+                return 'Erfahrene (50-64)'
+            else:
+                return 'Rentner (65+)'
+
+        age_groups = df['age'].apply(get_age_group)
+        age_group_counts = age_groups.value_counts().reset_index()
+        age_group_counts.columns = ['category', 'count']
+        return age_group_counts
+
+    def create_universal_pie_chart(self, df: pd.DataFrame, title: str = "Verteilung"):
 
         if df.empty:
             print("DataFrame ist leer.")
             return
 
-        df.set_index('city')['count'].plot.pie(
+        df.set_index('category')['count'].plot.pie(
             autopct='%1.1f%%',
             figsize=(8, 8),
             title=title)
 
-        plt.ylabel('')  # Y-Label entfernen
-        plt.show()
-
-    def guest_nationality_pie_chart(self, df: pd.DataFrame, title: str = "Gäste-Herkunft nach Nationalitäten"):
-        if df.empty:
-            print("DataFrame ist leer.")
-            return
-
-        df.set_index('nationality')['count'].plot.pie(
-            autopct='%1.1f%%',
-            figsize=(8, 8),
-            title=title
-        )
-
         plt.ylabel('')
         plt.show()
 
-    def guest_age_bar_chart(self, df: pd.DataFrame):
-
+    def create_universal_bar_chart(self, df: pd.DataFrame, title: str = "Verteilung", xlabel: str = "Kategorie"):
         if df.empty:
             print("Keine Daten zur Anzeige.")
             return
 
         fig = px.bar(df,
-                     x='age_group',
+                     x='category',
                      y='count',
-                     title='Gäste nach Altersgruppen',
-                     labels={'age_group': 'Altersgruppen', 'count': 'Anzahl'})
+                     title=title,
+                     labels={'category': xlabel, 'count': 'Anzahl'},
+                     color='category')
 
         fig.show()
