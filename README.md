@@ -6,19 +6,31 @@ Sarina Grabherr
 Fabia Holzer
 Stirling Mulholland
 
-## Deliverables -> KORRIGIEREN !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!¨
+## Deliverables 
 - Source Code und Artefakte
-o Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der
-endgültigen Datenbank,
-  (https://deepnote.com/workspace/fhnw-7ab7-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30
-o Link zum GitHub-Repository,
-[GitHub-Repository](https://github.com/satafasti/team12_hotelreservation)
-o Link zu einer Projekt Board
-[Projekt Board](https://www.notion.so/1a62a269cd5a805f8983f8caf82b576a?v=1a62a269cd5a80769d6d000c6d5a6a27 )
-- Dokumentation/Bericht (Link zu GitHub Markdown-Datei(en))
-- Link zum Präsentationsvideo (das auf Microsoft Stream, SWITCHtube oder YouTube
-gehostet wird; eingeschränkter/ungelisteter Zugang möglich und empfohlen). Es wird
-empfohlen, dass jedes Teammitglied an der Videopräsentation beiträgt.
+o Link zum Deepnote-Projekt mit allen ausführbaren Notebooks, Dateien und der endgültigen Datenbank
+
+	[Deepnote Dokumentation](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
+
+	[Deepnote Showcase User Stories](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
+
+	[Deepnote Hotelreservation UI](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
+
+
+- o Link zum GitHub-Repository
+
+  [GitHub-Repository](https://github.com/satafasti/hotelreservation_V2)
+	
+	[Altes GitHub-Repository](https://github.com/satafasti/team12_hotelreservation)
+
+
+- o Link zum Projekt Board
+
+	[Projekt Board](https://github.com/orgs/satafasti/projects/2/views/1)
+
+- Link zum Präsentationsvideo 
+
+	[Demo Video]()
 
 #  Einleitung
 
@@ -37,7 +49,8 @@ Die im Rahmen des Projektes entwickelten UserStories sind die Folgenden.
 
 ## User Stories
 
-Die umgesetzten UserStories haben wir direkt im Deepnote dokumentiert: *Link einfügen*
+Die umgesetzten UserStories haben wir direkt im Deepnote dokumentiert:
+[Deepnote Showcase User Stories](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
 
 ## Layers
 
@@ -60,7 +73,7 @@ Unser Projekt basiert auf einer klassischen Mehrschichtenarchitektur, bestehend 
 	•	Komposition wird verwendet (ein Hotel enthält Räume; ein Raum enthält Ausstattung).
 	•	Bidirektionale Beziehungen wie Room ↔ Hotel werden gepflegt, indem z. B. beim Setzen eines Hotels im Room automatisch das Hotel den Room ergänzt (hotel.add_room(self)).
 Details zu den Modellverknüpfungen lassen sich direkt in der Dokumentation im Abschnitt "Modell Schicht" finden: 
-https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/Hotelreservationv2-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30
+[Deepnote Dokumentation](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
 
 Diese Struktur ermöglicht ein robustes, erweiterbares System mit klaren Verantwortlichkeiten pro Schicht und hoher Datenkonsistenz.
 
@@ -85,4 +98,35 @@ Tanja Lüscher: UserStory 1, 2 und 5
 Allerdings fiel es uns in der Folge immer schwerer eine klare Aufteilung aufrecht zu erhalten, da für die Umsetzung einiger UserStories auch Klassen angepasst werden mussten, welche einem ursprünglich nicht zugeteilt waren. Wir haben uns daher wöchentlich mindestens einmal (im Unterricht am Mittwoch) und vielfach auch weitere Male (oft am Freitag vor Ort oder Abends via Teams) abgesprochen und aufgeteilt, wer welche Aufgaben übernimmt. Das KANBAN-Board 
 haben wir ab diesem Zeitpunkt nicht mehr weiterverwendet, da eine klare Aufgabentrennung nicht mehr möglich war. Wir haben es daher präferiert uns regelmässig persönlich oder via Teams auszutauschen und Check-Ins abzuhalten. Ebenso haben wir uns bei der Erarbeitung der UserStories schlussendlich unterstütz und einige der obligatorischen UserStories schliesslich gemeinsam ausgearbeitet. Im Deepnote hat jeder seine eigenen umgesetzten UserStories dokumentiert. 
 Die allgemeine Dokumentation / ReadMe haben wir zu Beginn gemeinsam geführt, die Fertigstellung wurde schlussendlich durch Tanja Lüscher sichergestellt. 
+
+## Reflexion
+
+„Keep it simple, stupid“ sollte das Motto eines jeden angehenden Programmierers sein – und ist es wahrscheinlich auch.
+Auch für viele Erfahrene. Dies hat sich schnell als gute Leitidee gezeigt, um das Projekt in einem für unseren Wissensstand übersichtlichen Maß umsetzen zu können.
+Unser Ziel war es, zum ersten Mal Computersprache zu sprechen. Wir wollten dem PC sagen, was und wie er etwas machen sollte, ohne eine hübsche Benutzeroberfläche bedienen zu müssen.
+
+
+Angefangen mit einfachen Eingaben und Variablen hat uns die Reise zu Klassen, Funktionen und Listen gebracht.
+Mit diesem Wissen konnten wir unsere ersten Zeilen Code in der Modellklasse schreiben. Hier sind die ersten
+Probleme einer Gruppenarbeit sind aufgetaucht. Vier Personen verstehen nicht immer alles gleich schnell.
+Es wäre hilfreich gewesen, die Aufgaben aus dem Unterricht gemeinsam zu lösen, um die Theorie gleich zu verstehen wie die anderen Teamkollegen.
+Einige von uns hätten es hilfreich gefunden, beim User Interface anzufangen, um einen groben Überblick zu bekommen.
+Was eigentlich von uns erwartet wurde. Jeder hat seinen Ansatz umgesetzt, ohne zu überprüfen, was die anderen gemacht haben.
+gemacht hat. Hier waren das Beispielprojekt, das Kanban-Board und GitHub eine große Hilfe, um einen gemeinsamen Nenner zu finden.
+Die Zusammenarbeit im Team war hervorragend, jeder konnte seinen Teil beitragen und sich gegenseitig helfen.
+Wie die einzelnen Schichten zusammenhingen, war uns lange Zeit ein Rätsel, bis wir die Datenbank anbinden konnten.
+Sobald wir Daten erhalten konnten, wurden schon fleißig die ersten User Stories zum Laufen gebracht.
+Eureka! Ein Erfolgserlebnis nach dem anderen!
+
+Nach jeder Gruppenarbeit sollte es heißen: „Ich bin teamfähiger geworden.”
+Insbesondere bei dieser komplexen Arbeit, denn das Resultat wurde durch die  Zusammenarbeit und gegenseitige Unterstützung im Team ermöglicht.
+Der Erfolg, einen Code selbstständig zu schreiben und diesen nach Trial and Error zum Laufen zu bringen, ist unbeschreiblich.
+Unser Zeitmanagement war leider nicht optimal, was auch daran lag, dass wir nicht wussten, wie wir selbstständig vorankommen. 
+Dies führte dazu, dass wir keine zusätzlichen User Stories umsetzen konnten.
+Es hat sich massiv gelohnt, beim Coach Hilfe zu holen, um den Endspurt zu meistern. 
+Ein neues GitHub aufzusetzen ist keine gute Lösung, weil dabei die Historie verloren geht. 
+Aber es hat uns motiviert, den Code von Grund auf noch einmal anzuschauen und zu korrigieren. 
+Weitere Verbesserungen wären in den Klassen „Manager”, „UI” und „Data Access” möglich. Die Funktionen sind
+nicht immer korrekt getrennt worden. Manchmal wurden die Daten aus der Datenbank auch direkt mit SQL-Funktionen wie Joins und Group By geholt.
+Anstatt diese als Objekte der Modellklassen zu laden und nachher weiterzuverarbeiten. In Zukunft
 
