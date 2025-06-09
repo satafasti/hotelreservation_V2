@@ -8,27 +8,14 @@ class RoomTypeManager:
     def __init__(self, room_type_dal: RoomTypeDataAccess):
         self._dal = room_type_dal
 
-    def create_room_type(self, type_id: int, description: str, max_guests: int) -> model.Room_Type:
-        if max_guests <= 0:
-            raise ValueError("Die Anzahl maximaler Gäste muss grösser als 0 sein")
-        return self._dal.create_new_room_type(type_id, description, max_guests)
+    # def create_room(self, hotel_id: int, room_number: str, type_id: int, price_per_night: float, hotel: model.Hotel = None) -> model.Room:
+    #     return self.__room_dal.create_room(hotel_id, room_number, type_id, price_per_night, hotel)
 
-    def get_room_type_by_id(self, type_id: int) -> Optional[model.Room_Type]:
-        return self._dal.read_room_type_by_id(type_id)
+    # def read_hotels_rooms(self, hotel: model.Hotel) -> None:
+    #     return self.__room_dal.read_rooms_by_hotel(hotel)
 
-    def get_all_room_types(self) -> list[model.Room_Type]:
-        return self._dal.read_all_room_types()
+    # def read_room(self, room_id: int) -> model.Room:
+    #     return self.__room_dal.read_room_by_id(room_id)
 
-    def update_room_type(self, type_id: int, description: str, max_guests: int):
-        if max_guests <= 0:
-            raise ValueError("Max guests must be greater than zero")
-        self._dal.update_room_type(type_id, description, max_guests)
-
-    def delete_room_type(self, type_id: int):
-        self._dal.delete_room_type(type_id)
-
-    def is_suitable_for_guests(self, type_id: int, guest_count: int) -> bool:
-        room_type = self._dal.read_room_type_by_id(type_id)
-        if room_type is None:
-            return False
-        return guest_count <= room_type.max_guests
+    # def read_room_details(self, type_id: int) -> List[model.Room]:
+    #     return self.__room_dal.read_room_details(type_id)
