@@ -1,22 +1,19 @@
-CREATE TABLE Hotel (
-	-- Author: AEP
-    hotel_id       INTEGER PRIMARY KEY, 
-    name           TEXT NOT NULL,
-    stars          INTEGER,
-    address_id     INTEGER,
-    FOREIGN KEY (address_id) REFERENCES Address(address_id) ON DELETE SET NULL
-);
-
 CREATE TABLE Address (
-	-- Author: AEP
     address_id     INTEGER PRIMARY KEY,
     street        TEXT NOT NULL,
     city          TEXT NOT NULL,
     zip_code      TEXT
 );
 
+CREATE TABLE Hotel (
+    hotel_id       INTEGER PRIMARY KEY,
+    name           TEXT NOT NULL,
+    stars          INTEGER,
+    address_id     INTEGER,
+    FOREIGN KEY (address_id) REFERENCES Address(address_id) ON DELETE SET NULL
+);
+
 CREATE TABLE Guest (
-	-- Author: AEP
     guest_id       INTEGER PRIMARY KEY,
     first_name     TEXT NOT NULL,
     last_name      TEXT NOT NULL,
@@ -25,15 +22,24 @@ CREATE TABLE Guest (
     FOREIGN KEY (address_id) REFERENCES Address(address_id) ON DELETE SET NULL
 );
 
+-- WICHTIG: Guest_Details DIREKT nach Guest erstellen
+CREATE TABLE Guest_Details (
+    guest_details_id INTEGER PRIMARY KEY,
+    guest_id INTEGER NOT NULL,
+    birthdate DATE NOT NULL,
+    nationality TEXT NOT NULL,
+    gender TEXT NOT NULL CHECK(gender IN ('Männlich', 'Weiblich', 'Divers')),
+    marital_status TEXT NOT NULL CHECK(marital_status IN ('Ledig', 'Verheiratet', 'Geschieden', 'Verwitwet')),
+    FOREIGN KEY (guest_id) REFERENCES Guest(guest_id) ON DELETE CASCADE
+);
+
 CREATE TABLE Room_Type (
-	-- Author: AEP
     type_id        INTEGER PRIMARY KEY,
-    description    TEXT NOT NULL UNIQUE, -- E.g., Single, Double, Suite
+    description    TEXT NOT NULL UNIQUE,
     max_guests     INTEGER NOT NULL
 );
 
 CREATE TABLE Room (
-	-- Author: AEP
     room_id        INTEGER PRIMARY KEY,
     hotel_id       INTEGER NOT NULL,
     room_number    TEXT NOT NULL,
@@ -43,26 +49,19 @@ CREATE TABLE Room (
     FOREIGN KEY (type_id) REFERENCES Room_Type(type_id) ON DELETE CASCADE
 );
 
--- one-to-many mapping with guest, hotel, room
--- one booking can have only one room, but one room can be part of multiple bookings
--- if two rooms are booked for the same dates, two bookings should be created
--- check availability using business logic
 CREATE TABLE Booking (
-	-- Author: AEP
     booking_id     INTEGER PRIMARY KEY,
     guest_id       INTEGER NOT NULL,
     room_id        INTEGER NOT NULL,
     check_in_date  DATE NOT NULL,
     check_out_date DATE NOT NULL,
-    is_cancelled   BOOLEAN NOT NULL DEFAULT 0, -- 0 = confirmed, 1 = cancelled
+    is_cancelled   BOOLEAN NOT NULL DEFAULT 0,
     total_amount   REAL,
     FOREIGN KEY (guest_id) REFERENCES Guest(guest_id) ON DELETE CASCADE,
     FOREIGN KEY (room_id) REFERENCES Room(room_id) ON DELETE CASCADE
 );
 
-
 CREATE TABLE Invoice (
-	-- Author: AEP
     invoice_id     INTEGER PRIMARY KEY,
     booking_id     INTEGER NOT NULL,
     issue_date     DATE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -71,13 +70,11 @@ CREATE TABLE Invoice (
 );
 
 CREATE TABLE Facilities (
-	-- Author: AEP
     facility_id   INTEGER PRIMARY KEY,
-    facility_name TEXT NOT NULL UNIQUE -- E.g., "Shower", "TV", "WiFi", "Air Conditioning"
+    facility_name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE Room_Facilities (
-	-- Author: AEP
     room_id       INTEGER NOT NULL,
     facility_id   INTEGER NOT NULL,
     PRIMARY KEY (room_id, facility_id),
@@ -92,12 +89,12 @@ CREATE TABLE Hotel_Review (
     booking_id INTEGER NOT NULL,
     rating INTEGER CHECK(rating >= 1 AND rating <= 5),
     comment TEXT,
+    review_date DATE NOT NULL DEFAULT CURRENT_TIMESTAMP, -- HINZUGEFÜGT!
     FOREIGN KEY (guest_id) REFERENCES Guest(guest_id),
     FOREIGN KEY (hotel_id) REFERENCES Hotel(hotel_id),
     FOREIGN KEY (booking_id) REFERENCES Booking(booking_id),
     UNIQUE(booking_id)
 );
-
 
 CREATE TABLE Payment (
     payment_id INTEGER PRIMARY KEY,
@@ -107,8 +104,6 @@ CREATE TABLE Payment (
     payment_method TEXT,
     FOREIGN KEY (booking_id) REFERENCES Booking(booking_id)
 );
-
-
 
 
 
@@ -134,7 +129,7 @@ INSERT INTO Guest (guest_id, first_name, last_name, email, address_id) VALUES
 (5, 'Marc', 'Weber', 'marc.weber@example.ch', 5);
 
 
-INSERT INTO Room_Type (type_id, description, max_guests) VALUES 
+INSERT INTO Room_Type (type_id, description, max_guests) VALUES
 (1, 'Single', 1),
 (2, 'Double', 2),
 (3, 'Suite', 4),
@@ -222,17 +217,6 @@ INSERT INTO Guest (guest_id, first_name, last_name, email, address_id) VALUES
 (23, 'Daniel', 'Gut', 'daniel.gut@example.ch', 23),
 (24, 'Sabine', 'Moser', 'sabine.moser@example.ch', 24),
 (25, 'Patrick', 'Sommer', 'patrick.sommer@example.ch', 25);
-
--- CREATE TABLE für Guest_Details
-CREATE TABLE Guest_Details (
-    guest_details_id INTEGER PRIMARY KEY,
-    guest_id INTEGER NOT NULL,
-    birthdate DATE NOT NULL,
-    nationality TEXT NOT NULL,
-    gender TEXT NOT NULL CHECK(gender IN ('Männlich', 'Weiblich', 'Divers')),
-    marital_status TEXT NOT NULL CHECK(marital_status IN ('Ledig', 'Verheiratet', 'Geschieden', 'Verwitwet')),
-    FOREIGN KEY (guest_id) REFERENCES Guest(guest_id) ON DELETE CASCADE
-);
 
 
 -- INSERT Statements für alle 25 Gäste (IDs 1-25)
