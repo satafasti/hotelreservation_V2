@@ -45,7 +45,7 @@ ist es die Anwendungsentwicklung mit Python in einem praxisnahen Szenario zu erl
 
 Für dieses Projekt wird den Autoren eine SQLite Datenkbank mit realistischen Beispieldaten zu zum Beispiel Hotels, Räumen und Gästen zur Verfügung gestellt. 
 Diese soll als Basis dienen die im Unterricht erlernten Konzepte zur objektorientierten Entwicklung mit Python anhand eines realistischen Beispieles umzusetzen. 
-Die im Rahmen des Projektes entwickelten UserStories sind die Folgenden. 
+Die im Rahmen des Projektes entwickelten UserStories sind die Folgenden.
 
 ## User Stories
 
@@ -101,18 +101,19 @@ Die allgemeine Dokumentation / ReadMe haben wir zu Beginn gemeinsam geführt, di
 
 ## Reflexion
 
-„Keep it simple, stupid“ sollte das Motto eines jeden angehenden Programmierers sein – und ist es wahrscheinlich auch.
-Auch für viele Erfahrene. Dies hat sich schnell als gute Leitidee gezeigt, um das Projekt in einem für unseren Wissensstand übersichtlichen Mass umsetzen zu können.
-Unser Ziel war es, zum ersten Mal Computersprache zu sprechen. Wir wollten dem PC sagen, was und wie er etwas machen sollte, ohne eine hübsche Benutzeroberfläche bedienen zu müssen.
+„Keep it simple, stupid“ sollte das Motto eines jeden angehenden Programmierers sein und ist es wahrscheinlich auch für viele Erfahrene. 
+Dies hat sich schnell als gute Leitidee gezeigt, um das Projekt in einem für unseren Wissensstand übersichtlichen Mass umsetzen zu können.
+Unser Ziel war es, zum ersten Mal Computersprache zu sprechen. Wir wollten dem PC sagen, was und wie er etwas machen sollte, 
+ohne eine hübsche Benutzeroberfläche bedienen zu müssen.
 
 
 Angefangen mit einfachen Eingaben und Variablen hat uns die Reise zu Klassen, Funktionen und Listen gebracht.
 Mit diesem Wissen konnten wir unsere ersten Zeilen Code in der Modellklasse schreiben. Hier sind die ersten
-Probleme einer Gruppenarbeit sind aufgetaucht. Vier Personen verstehen nicht immer alles gleich schnell.
+Probleme einer Gruppenarbeit aufgetaucht. Vier Personen verstehen nicht immer alles gleich schnell.
 Es wäre hilfreich gewesen, die Aufgaben aus dem Unterricht gemeinsam zu lösen, um die Theorie gleich zu verstehen wie die anderen Teamkollegen.
 Einige von uns hätten es hilfreich gefunden, beim User Interface anzufangen, um einen groben Überblick zu bekommen.
 Was eigentlich von uns erwartet wurde. Jeder hat seinen Ansatz umgesetzt, ohne zu überprüfen, was die anderen gemacht haben.
-gemacht hat. Hier waren das Beispielprojekt, das Kanban-Board und GitHub eine grosse Hilfe, um einen gemeinsamen Nenner zu finden.
+Hier waren das Beispielprojekt, das Kanban-Board und GitHub eine grosse Hilfe, um einen gemeinsamen Nenner zu finden.
 Die Zusammenarbeit im Team war hervorragend, jeder konnte seinen Teil beitragen und sich gegenseitig helfen.
 Wie die einzelnen Schichten zusammenhingen, war uns lange Zeit ein Rätsel, bis wir die Datenbank anbinden konnten.
 Sobald wir Daten erhalten konnten, wurden schon fleissig die ersten User Stories zum Laufen gebracht.
@@ -124,14 +125,14 @@ Der Erfolg, einen Code selbstständig zu schreiben und diesen nach Trial and Err
 Unser Zeitmanagement war leider nicht optimal, was auch daran lag, dass wir nicht wussten, wie wir selbstständig vorankommen. 
 Dies führte dazu, dass wir keine zusätzlichen User Stories umsetzen konnten.
 Es hat sich massiv gelohnt, beim Coach Hilfe zu holen, um den Endspurt zu meistern. 
-Ein neues GitHub aufzusetzen ist keine gute Lösung, weil dabei die Historie verloren geht. 
+Ein neues GitHub aufzusetzen ist zwar keine gute Lösung, weil dabei die Historie verloren geht. 
 Aber es hat uns motiviert, den Code von Grund auf noch einmal anzuschauen und zu korrigieren. 
 Weitere Verbesserungen wären in den Klassen „Manager”, „UI” und „Data Access” möglich. Die Funktionen sind
-nicht immer korrekt getrennt worden. Manchmal wurden die Daten aus der Datenbank auch direkt mit SQL-Funktionen wie Joins und Group By geholt.
+nicht immer korrekt getrennt worden. Manchmal wurden die Daten aus der Datenbank direkt mit SQL-Funktionen wie Joins und Group By geholt.
 Anstatt diese als Objekte der Modellklassen zu laden und nachher weiterzuverarbeiten. 
 Den gelernten Stoff werden wir in Zukunft sicher im Studium und bei der Arbeit anwenden können.
 Besonders nützlich waren die Datenbankanbindung sowie die Möglichkeit, Daten zu verarbeiten und zu visualisieren, um verschiedene Analysen durchzuführen.
 Die Fähigkeit, die Logik eines Programms nur anhand des Codes zu verstehen, ist sehr wertvoll.
 GitHub ist beim Programmieren unerlässlich, um einen Versionsverlauf zu haben und die Zusammenarbeit des Teams zu ermöglichen.
-Unsere erste Erfahrung mit einer IDE, die wir mit PyCharm gemacht haben, war sehr positiv und hat bei allen die Arbeit erleichtert. 
-Diese Tools packen wir gerne in unseren wachsenden Werkzeugkoffer.
+Unsere erste Erfahrung mit einer IDE war sehr positiv und hat bei allen die Arbeit erleichtert. 
+All diese Tools und Fähigkeiten packen wir gerne in unseren wachsenden Werkzeugkoffer.
