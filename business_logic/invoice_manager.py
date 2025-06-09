@@ -39,11 +39,11 @@ class InvoiceManager:
         if booking_id is None:
             raise ValueError("booking_id wird benötigt.")
 
-        # Prüfen, ob bereits eine Rechnung existiert
+
         if self.__invoice_dal.invoice_exists_for_booking(booking_id):
             raise Exception(f"Für Buchung {booking_id} existiert bereits eine Rechnung.")
 
-        # Buchung abrufen (für total_amount und Check-out-Datum)
+
         booking = self.__booking_dal.read_booking_by_id(booking_id)
         if booking is None:
             raise LookupError(f"Buchung mit ID {booking_id} wurde nicht gefunden.")
@@ -51,11 +51,11 @@ class InvoiceManager:
         if booking.is_cancelled:
             raise ValueError("Für stornierte Buchungen wird keine Rechnung erstellt.")
 
-        # Rechnung erstellen
+
         invoice = Invoice(
-            invoice_id=None,  # wird durch Auto-Increment vergeben
+            invoice_id=None,
             booking_id=booking.booking_id,
-            issue_date=booking.check_out_date,  # Ausgabe am Tag des Check-outs
+            issue_date=booking.check_out_date,
             total_amount=booking.total_amount
         )
 

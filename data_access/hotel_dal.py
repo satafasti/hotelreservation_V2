@@ -189,10 +189,10 @@ class HotelDataAccess(BaseDataAccess):
                 is_cancelled, total_amount
             ) = row
 
-            # Adresse
+
             address = model.Address(address_id=address_id, street=street, city=city, zip_code=zip_code)
 
-            # Hotel initialisieren
+
             if hotel_id not in hotels:
                 hotels[hotel_id] = model.Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id)
                 hotels[hotel_id].address = address
@@ -200,7 +200,7 @@ class HotelDataAccess(BaseDataAccess):
 
             hotel = hotels[hotel_id]
 
-            # Room anlegen (nur wenn nicht None)
+
             if room_id is not None:
                 room = next((r for r in hotel.rooms if r.room_id == room_id), None)
                 if not room:
@@ -214,7 +214,7 @@ class HotelDataAccess(BaseDataAccess):
                     )
                     room.bookings = []
 
-                    # Ausstattung (Facilities) abrufen
+
                     with self._connect() as conn:
                         facility_rows = conn.execute("""
                                                      SELECT DISTINCT f.facility_name
@@ -226,7 +226,7 @@ class HotelDataAccess(BaseDataAccess):
 
                     hotel.rooms.append(room)
 
-                # Buchung hinzufügen (nur wenn eindeutig)
+
                 if booking_id is not None:
                     is_cancelled = bool(is_cancelled) if is_cancelled is not None else False
                     existing_booking_ids = [b.booking_id for b in room.bookings]
