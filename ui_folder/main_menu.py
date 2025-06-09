@@ -23,6 +23,7 @@ def show_menu(options):
 def guest_menu():
     options = [
         ("Hotels suchen", guest_ui.user_search_hotels_from_data),
+        ("Verfügbarkeit prüfen", guest_ui.show_room_type_details_for_selected_hotel),
         ("Buchung inkl. Zahlung", guest_ui.create_booking_and_pay_ui),
         ("Rechnung erstellen", guest_ui.create_invoice_for_guest_ui),
         ("Buchung stornieren", guest_ui.cancel_booking_ui),
@@ -39,9 +40,11 @@ def admin_menu():
         ("Hotel erstellen", admin_ui.admin_create_hotel_ui),
         ("Hotel löschen", admin_ui.admin_delete_hotel_ui),
         ("Hotelinformationen aktualisieren", admin_ui.update_hotel_details_ui),
+        ("Hotelinformationen aktualisiseren mit Adresse", admin_ui.update_hotel_details_without_address_ui),
         ("Alle Buchungen anzeigen", admin_ui.read_all_bookings_ui),
         ("Zimmer mit Ausstattung anzeigen", admin_ui.show_rooms_with_facilities_by_hotel_ui),
         ("Stammdaten verwalten", admin_ui.admin_main_menu_ui),
+        ("Demografische Asuwertung der Gäste", admin_ui.demographics_ui)
     ]
     print("\nAdmin-Menü:")
     show_menu(options)

@@ -37,7 +37,7 @@ def user_search_hotels_from_data():
     guests = input("Mindestens wie viele Gäste sollen im Zimmer Platz haben?: ").strip()
     check_in = input("Check-in Datum (YYYY-MM-DD): ").strip()
     check_out = input("Check-out Datum (YYYY-MM-DD): ").strip()
-    details = input("Möchten Sie nur die Hotelinfos oder auch die Zimmerdetails sehen? (hotel / full): ").strip().lower()
+    details = input("Möchten Sie nur die Hotelinfos oder auch die Zimmerdetails sehen? (hotel / vollständig): ").strip().lower()
 
     city = city if city else None
     stars = int(stars) if stars else None
@@ -47,7 +47,7 @@ def user_search_hotels_from_data():
     if check_in and check_out and check_out <= check_in:
         print("Ungültiger Zeitraum: Check-out muss nach dem Check-in liegen.")
         return
-    if details not in ["hotel", "full"]:
+    if details not in ["hotel", "vollständig"]:
         print("Keine Eingabe, es werden nur Hotelinfos angezeigt.")
         details = "hotel"
 
@@ -95,14 +95,14 @@ def user_search_hotels_from_data():
             matching_hotels.append(hotel_copy)
 
     if not matching_hotels:
-        print("\n Keine passenden Hotels gefunden.")
+        print("\nKeine passenden Hotels gefunden.")
     else:
         print("\nGefundene Hotels:\n")
         for idx, hotel in enumerate(matching_hotels, start=1):
             address = hotel.address
             full_address = f"{address.street}, {address.zip_code} {address.city}"
             print(f" {idx}. Hotel: {hotel.name}, Adresse: {full_address} ({hotel.stars} Sterne)")
-            if details == "full":
+            if details == "vollständig":
                 for room in hotel.rooms:
                     print(f"  - Zimmer {room.room_number}, max. Gäste: {room.room_type.max_guests}, Preis: {room.price_per_night:.2f} CHF")
 
@@ -112,41 +112,17 @@ def user_search_hotels_from_data():
 
 # 2. Als Gast möchte ich Details zu verschiedenen Zimmertypen (Single, Double, Suite usw.), die in einem Hotel verfügbar sind, sehen, einschliesslich der maximalen Anzahl von Gästen für dieses Zimmer, Beschreibung, Preis und Ausstattung, um eine fundierte Entscheidung zu treffen.
 # 2.1. Ich möchte die folgenden Informationen pro Zimmer sehen: Zimmertyp, max. Anzahl der Gäste, Beschreibung, Ausstattung, Preis pro Nacht und Gesamtpreis.
-def read_rooms_by_hotel(self, hotel: Hotel) -> list[Room]:
-    sql = """
-    SELECT room_id, room_number, type_id, price_per_night
-    FROM Room
-    WHERE hotel_id = ?
-    """
-    if hotel is None:
-        raise ValueError("hotel kann nicht leer sein.")
-
-    params = tuple([hotel.hotel_id])
-    rooms = self.fetchall(sql, params)
-    return [
-        Room(row[0], hotel)
-        for row in rooms
-    ]
-
-
-def read_hotels_like_name(self, name: str) -> list[Hotel]:
-    sql = """
-    SELECT hotel_id, name, stars, address_id FROM Hotel WHERE name LIKE ?
-    """
-    params = (f"%{name}%",)
-    hotels = self.fetchall(sql, params)
-    return [Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id)
-            for hotel_id, name, stars, address_id in hotels]
-
-
 # 2.2. Ich möchte nur die verfügbaren Zimmer sehen, sofern ich meinen Aufenthalt (von - bis) spezifiziert habe.
+from datetime import datetime
+from business_logic.hotel_manager import HotelManager
+
 def show_room_type_details_for_selected_hotel(matching_hotels: list, check_in=None, check_out=None):
     if not matching_hotels:
         print("Es sind keine passenden Hotels vorhanden.")
         return
 
     try:
-        hotel_choice = int(input("\nBitte geben Sie die Nummer des gewünschten Hotels ein (z. B. 1): ").strip())
+        hotel_choice = int(input("\nBitte geben Sie die Nummer des gewünschten Hotels ein (z.B. 1): ").strip())
         if not (1 <= hotel_choice <= len(matching_hotels)):
             print("Ungültige Auswahl.")
             return
@@ -186,8 +162,14 @@ def show_room_type_details_for_selected_hotel(matching_hotels: list, check_in=No
 
 # 4. Als Gast möchte ich ein Zimmer in einem bestimmten Hotel buchen, um meinen Urlaub zu planen.
 # 6.(DB mit Schemaänderung) Als Gast möchte ich meine Buchung mit der von mir bevorzugten Zahlungsmethode bezahlen, damit ich meine Reservierung abschliessen kann.
+def parse_date(prompt: str) -> date:
+    while True:
+        try:
+            return datetime.strptime(input(prompt), "%Y-%m-%d").date()
+        except ValueError:
+            print("Bitte gib das Datum im Format YYYY-MM-DD ein.")
+
 def create_booking_and_pay_ui():
-    """Kombinierter Ablauf für Buchung und Bezahlung."""
     booking_manager = BookingManager()
     hotel_dal = HotelDataAccess()
     room_dal = RoomDataAccess()
@@ -255,14 +237,6 @@ def create_booking_and_pay_ui():
         zip_code = input("PLZ: ")
         city = input("Ort: ")
 
-        def parse_date(prompt: str) -> datetime:
-            while True:
-                value = input(prompt).strip()
-                try:
-                    return datetime.strptime(value, "%Y-%m-%d")
-                except ValueError:
-                    print("Ungültiges Datum, bitte im Format YYYY-MM-DD eingeben.")
-
         check_in_dt = parse_date("Check-in Datum (YYYY-MM-DD): ")
         check_out_dt = parse_date("Check-out Datum (YYYY-MM-DD): ")
 
@@ -284,19 +258,15 @@ def create_booking_and_pay_ui():
         booking = booking_manager.create_booking(
             guest_id=guest.guest_id,
             room_id=selected_room.room_id,
-            check_in_date=check_in_dt.strftime("%Y-%m-%d"),
-            check_out_date=check_out_dt.strftime("%Y-%m-%d"),
+            check_in_date=check_in_dt,
+            check_out_date=check_out_dt,
             price_per_night=selected_room.price_per_night,
         )
-
-        print("\nBuchung erfolgreich!")
-        print(f"- Gast: {first_name} {last_name}")
-        print(f"- Hotel: {hotel.name}")
-        print(f"- Zimmernummer: {selected_room.room_number}")
-        print(f"- Zeitraum: {check_in_dt.date()} bis {check_out_dt.date()} ({nights} Nächte)")
+        print("\nReservation für!")
+        print(f"- Zeitraum: {check_in_dt} bis {check_out_dt} ({nights} Nächte)")
         print(f"- Gesamtpreis: {booking.total_amount:.2f} CHF\n")
 
-        # Zahlung
+          # Zahlung
         print("Wählen Sie die Zahlungsmethode:")
         print("1 - Kreditkarte")
         print("2 - PayPal")
@@ -310,7 +280,14 @@ def create_booking_and_pay_ui():
 
         payment_manager.create_payment(booking.booking_id, booking.total_amount, method)
 
-        print("Vielen Dank für Ihre erfolgreiche Buchung. Wir freuen uns auf Ihren Besuch!\n")
+        print("\nBuchung erfolgreich!")
+        print("Vielen Dank für Ihre Buchung. Wir freuen uns auf Ihren Besuch!\n")
+        print(f"- Gast: {first_name} {last_name}")
+        print(f"- Hotel: {hotel.name}")
+        print(f"- Zimmernummer: {selected_room.room_number}")
+        print(f"- Buchungsnummer: {booking.booking_id}")
+        print(f"- Zeitraum: {check_in_dt} bis {check_out_dt} ({nights} Nächte)")
+        print(f"- Gesamtpreis: {booking.total_amount:.2f} CHF\n")
         print("Wichtiger Hinweis:")
         print("Kostenfreie Stornierung bis 48 Stunden vor Anreise möglich. Danach fällt eine Gebühr von 50% an.")
 
@@ -351,7 +328,7 @@ def create_invoice_for_guest_ui():
             print("\nDie Rechnung liegt bereits vor:")
         else:
             invoice = manager.create_invoice_if_not_exists(booking_id)
-            print("\n Die Rechnung wurde erfolgreich erstellt:")
+            print("\nDie Rechnung wurde erfolgreich erstellt:")
 
         # Rechnung anzeigen
         print(f"Rechnungsnummer: {invoice.invoice_id}")
@@ -401,18 +378,23 @@ def cancel_booking_ui():
 
 # 7. Als Gast möchte ich eine dynamische Preisgestaltung auf der Grundlage der Nachfrage sehen, damit ich ein Zimmer zum besten Preis buchen kann.
 
-def choose_hotel_ui():
-    hotel_name = input("Gib den Namen ein des Hotels, dass du buchen möchtest: ")
+def choose_hotel_ui(check_in=None, check_out=None):
+    hotel_name = input("Geben Sie den Hotelnamen ein, dass Sie buchen möchten: ")
     if not hotel_name:
         print("Kein Hotelname eingegeben.")
         return None
 
-    check_in_input = input("Geben Sie Ihr geplantes Check-in Datum ein (YYYY-MM-DD): ")
-    try:
-        check_in_date = datetime.strptime(check_in_input, "%Y-%m-%d")
-    except ValueError:
-        print("Ungültiges Datumsformat. Verwende heutige Preise.")
-        check_in_date = datetime.now()
+    if check_in is None:
+        print(
+            "Damit Ihnen nur verfügbare Zimmer angezeiget werden, können Sie ein gewünschtes Check-in Datum eingeben.")
+        check_in_input = input("Gewünschtes Check-in Datum (YYYY-MM-DD): ")
+        try:
+            check_in = datetime.strptime(check_in_input, "%Y-%m-%d").date()
+        except ValueError:
+            print("Ungültiges Datumsformat. Format muss (YYYY-MM-DD) sein.")
+            check_in = datetime.now().date()
+    else:
+        print(f"Check-in Datum bereits gesetzt: {check_in.strftime('%d.%m.%Y')}")
 
     manager = HotelManager()
     booking_manager = BookingManager()
@@ -424,13 +406,13 @@ def choose_hotel_ui():
             found_hotels.append(hotel)
 
     if not found_hotels:
-        print(f"Kein Hotel mit dem Namen '{hotel_name}' gefunden.")
+        print(f"Kein Hotel mit dem Namen {hotel_name} gefunden.")
         return None
     elif len(found_hotels) == 1:
         selected_hotel = found_hotels[0]
         print(f"Hotel gefunden: {selected_hotel.name}")
     else:
-        print(f"Mehrere Hotels gefunden mit '{hotel_name}':")
+        print(f"Mehrere Hotels gefunden mit {hotel_name}:")
         for i, hotel in enumerate(found_hotels, 1):
             print(f"{i}. {hotel.name} in {hotel.address.city}")
 
@@ -445,21 +427,13 @@ def choose_hotel_ui():
             except ValueError:
                 print("Bitte geben Sie eine gültige Zahl ein.")
 
-    month = check_in_date.month
-    if month in [6, 7, 8, 12]:
-        season_info = "Hochsaison (+30%)"
-        season_factor = 1.3
-    elif month in [1, 2, 3, 11]:
-        season_info = "Nebensaison (-10%)"
-        season_factor = 0.9
-    else:
-        season_info = "Normale Saison"
-        season_factor = 1.0
+    # Nutzen der existierenden calculate_dynamic_price Funktion
+    season_factor = booking_manager.calculate_dynamic_price(1.0, check_in)
 
     print(f"\n--- {selected_hotel.name} ---")
     print(f"Adresse: {selected_hotel.address.street}, {selected_hotel.address.zip_code} {selected_hotel.address.city}")
     print(f"Sterne: {selected_hotel.stars}")
-    print(f"Check-in: {check_in_date.strftime('%d.%m.%Y')} ({season_info})")
+    print(f"Check-in: {check_in.strftime('%d.%m.%Y')}")
     print(f"Verfügbare Zimmer: {len(selected_hotel.rooms)}")
 
     if selected_hotel.rooms:
@@ -469,8 +443,7 @@ def choose_hotel_ui():
 
         for room in selected_hotel.rooms:
             base_price = room.price_per_night
-            check_in_str = check_in_date.strftime("%Y-%m-%d")  # datetime zu String konvertieren
-            dynamic_price = booking_manager.calculate_dynamic_price(base_price, check_in_str)
+            dynamic_price = booking_manager.calculate_dynamic_price(base_price, check_in)
 
             if dynamic_price != base_price:
                 price_diff = dynamic_price - base_price
@@ -493,37 +466,69 @@ def choose_hotel_ui():
         else:
             print(f"\nDynamischer Preisbereich: {total_min_price:.2f} - {total_max_price:.2f} CHF pro Nacht")
 
-        calculate_total = input(
-            "\nMöchten Sie den Gesamtpreis für einen bestimmten Zeitraum berechnen? (j/n): ").strip().lower()
-        if calculate_total == 'j':
-            try:
-                nights = int(input("Wie viele Nächte möchten Sie bleiben?: "))
-                if nights > 0:
-                    print(f"\nGesamtpreis für {nights} Nächte (mit {season_info}):")
-                    print(f"  Günstigstes Zimmer: {total_min_price * nights:.2f} CHF")
-                    if total_min_price != total_max_price:
-                        print(f"  Teuerstes Zimmer: {total_max_price * nights:.2f} CHF")
+        if check_out is not None:
+            nights = (check_out - check_in).days
+            if nights > 0:
+                print(f"\nGesamtpreis für {nights} Nächte:")
+                print(f"  Günstigstes Zimmer: {total_min_price * nights:.2f} CHF")
+                if total_min_price != total_max_price:
+                    print(f"  Teuerstes Zimmer: {total_max_price * nights:.2f} CHF")
 
-                    base_min = total_min_price / season_factor
-                    base_max = total_max_price / season_factor
-                    total_base_min = base_min * nights
-                    total_base_max = base_max * nights
-                    savings_min = (total_min_price * nights) - total_base_min
-                    savings_max = (total_max_price * nights) - total_base_max
+                base_min = total_min_price / season_factor
+                base_max = total_max_price / season_factor
+                total_base_min = base_min * nights
+                total_base_max = base_max * nights
+                savings_min = (total_min_price * nights) - total_base_min
+                savings_max = (total_max_price * nights) - total_base_max
 
-                    if savings_min != 0:
-                        if savings_min > 0:
-                            print(f"  Saison-Aufschlag: +{savings_min:.2f} CHF bis +{savings_max:.2f} CHF")
-                        else:
-                            print(f"  Saison-Ersparnis: {abs(savings_min):.2f} CHF bis {abs(savings_max):.2f} CHF")
-                else:
-                    print("Anzahl Nächte muss größer als 0 sein.")
-            except ValueError:
-                print("Bitte geben Sie eine gültige Zahl ein.")
+                if savings_min != 0:
+                    if savings_min > 0:
+                        print(f"  Saison-Aufschlag: +{savings_min:.2f} CHF bis +{savings_max:.2f} CHF")
+                    else:
+                        print(f"  Saison-Ersparnis: {abs(savings_min):.2f} CHF bis {abs(savings_max):.2f} CHF")
+        else:
+            calculate_total = input(
+                "\nMöchten Sie den Gesamtpreis für einen bestimmten Zeitraum berechnen? (ja/nein): ").strip().lower()
+            if calculate_total == "ja":
+                try:
+                    nights = int(input("Wie viele Nächte möchten Sie bleiben?: "))
+                    if nights > 0:
+                        print(f"\nGesamtpreis für {nights} Nächte:")
+                        print(f"  Günstigstes Zimmer: {total_min_price * nights:.2f} CHF")
+                        if total_min_price != total_max_price:
+                            print(f"  Teuerstes Zimmer: {total_max_price * nights:.2f} CHF")
+
+                        base_min = total_min_price / season_factor
+                        base_max = total_max_price / season_factor
+                        total_base_min = base_min * nights
+                        total_base_max = base_max * nights
+                        savings_min = (total_min_price * nights) - total_base_min
+                        savings_max = (total_max_price * nights) - total_base_max
+
+                        if savings_min != 0:
+                            if savings_min > 0:
+                                print(f"  Saison-Aufschlag: +{savings_min:.2f} CHF bis +{savings_max:.2f} CHF")
+                            else:
+                                print(f"  Saison-Ersparnis: {abs(savings_min):.2f} CHF bis {abs(savings_max):.2f} CHF")
+                    else:
+                        print("Anzahl Nächte muss grösser als 0 sein.")
+                except ValueError:
+                    print("Bitte geben Sie eine gültige Zahl ein.")
     else:
         print("Keine verfügbaren Zimmer in diesem Hotel.")
 
     return selected_hotel
+
+
+results = user_search_hotels_from_data()
+matching_hotels, check_in_date, check_out_date = results
+
+if check_in_date is not None and check_out_date is not None:
+    choose_hotel_ui(check_in_date, check_out_date)
+elif check_in_date is not None:
+    choose_hotel_ui(check_in_date)
+else:
+    choose_hotel_ui()
 
 
 
@@ -543,7 +548,6 @@ def hotel_review_ui():
             print("Keine Hotels verfügbar.")
             return
 
-        # Hotel auswählen
         hotel_id = int(input("\nHotel-ID für Bewertung: "))
         selected_hotel = hotel_dal.read_hotel_by_id(hotel_id)
 
@@ -551,10 +555,8 @@ def hotel_review_ui():
             print("Hotel nicht gefunden.")
             return
 
-        # Buchungs-ID eingeben
         booking_id = int(input("Ihre Buchungs-ID: "))
 
-        # Bewertung eingeben (1-5 Sterne)
         while True:
             try:
                 print("Sie können das Hotel mit 1-5 Sternen bewerten.")
@@ -566,13 +568,11 @@ def hotel_review_ui():
             except ValueError:
                 print("Bitte eine gültige Zahl eingeben.")
 
-        # Optional: Kommentar
         print("Sie können einen Kommentar für andere Interessierte hinterlassen.")
         comment = input("Kommentar (optional): ").strip()
         if not comment:
             comment = None
 
-        # Bewertung erstellen und speichern
         hotel_review = HotelReview(
             guest_id=guest_id,
             hotel_id=hotel_id,
@@ -631,14 +631,12 @@ def view_hotel_reviews_ui():
             print(f"Noch keine Bewertungen für {selected_hotel.name} vorhanden.")
             return
 
-        # Durchschnittsbewertung berechnen
         total_rating = sum(review.rating for review in reviews)
         avg_rating = total_rating / len(reviews)
 
         print(f"Durchschnittliche Bewertung: {avg_rating:.1f}/5 ({len(reviews)} Bewertungen)")
         print("-" * 50)
 
-        # Einzelne Bewertungen anzeigen
         for review in reviews:
             stars = "*" * review.rating
             print(f"{stars} ({review.rating}/5) | {review.review_date}")
