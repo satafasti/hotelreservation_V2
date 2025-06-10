@@ -7,22 +7,6 @@ class RoomTypeDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):
         super().__init__(db_path)
 
-    def create_new_room_type(self, type_id: int, description: str, max_guests: int) -> model.Room_Type:
-        #if type_id is None:
-           # raise ValueError("Room type ID wird benötigt") -> sollte nicht passieren da autoincrement
-        if not description:
-            raise ValueError("Room type description wird benötigt")
-        if max_guests is None:
-            raise ValueError("Max guests wird benötigt")
-
-        sql = """
-        INSERT INTO Room_Type (type_id, description, max_guests)
-        VALUES (?, ?, ?)
-        """
-        params = (type_id, description, max_guests)
-        self.execute(sql, params)
-
-        return model.Room_Type(type_id=type_id, description=description, max_guests=max_guests)
 
     def read_room_type_by_id(self, type_id: int) -> Optional[model.Room_Type]:
         if type_id is None:
@@ -63,12 +47,37 @@ class RoomTypeDataAccess(BaseDataAccess):
         params = (description, max_guests, type_id)
         self.execute(sql, params)
 
-    def delete_room_type(self, type_id: int):
-        if type_id is None:
-            raise ValueError("Room type ID wird benötigt")
+# Die beiden Funktionen create_new_room_type und delete_room_type sind zwar im Data‑Access-Layer
+# definiert, werden jedoch im restlichen# Projekt nirgends aufgerufen. Auch im User‑Interface (ui_folder) und in der Business-Logic gibt es
+# keine Verweise darauf (Suche nach den Funktionsnamen liefert keine weiteren Treffer).
+#
+# Im README wird beschrieben, dass bei der erneuten Repository-Erstellung einige Methoden zwar
+# implementiert, später aber nicht mehr genutzt wurden. Aus Zeitgründen hat man diese Methoden
+# im Code belassen, um mögliche versehentliche Löschungen zu vermeiden.
 
-        sql = """
-        DELETE FROM Room_Type
-        WHERE type_id = ?
-        """
-        self.execute(sql, (type_id,))
+
+# def delete_room_type(self, type_id: int):
+#     if type_id is None:
+#         raise ValueError("Room type ID wird benötigt")
+#
+#     sql = """
+#     DELETE FROM Room_Type
+#     WHERE type_id = ?
+#     """
+
+# def create_new_room_type(self, type_id: int, description: str, max_guests: int) -> model.Room_Type:
+#     # if type_id is None:
+#     #     raise ValueError("Room type ID wird benötigt") -> sollte nicht passieren da autoincrement
+#     if not description:
+#         raise ValueError("Room type description wird benötigt")
+#     if max_guests is None:
+#         raise ValueError("Max guests wird benötigt")
+#
+#     sql = """
+#     INSERT INTO Room_Type (type_id, description, max_guests)
+#     VALUES (?, ?, ?)
+#     """
+#     params = (type_id, description, max_guests)
+#     self.execute(sql, params)
+#
+#     return model.Room_Type(type_id=type_id, description=description, max_guests=max_guests)

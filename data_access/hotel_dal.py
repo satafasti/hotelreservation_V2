@@ -81,11 +81,6 @@ class HotelDataAccess(BaseDataAccess):
                 for hotel_id, name, stars, address_id in hotels]
 
 
-    #def read_all_hotels_as_df(self) -> pd.DataFrame:
-    #    sql = """
-    #    SELECT hotel_id = ?, name = ?, stars = ?, address_id = ? FROM Hotel
-    #    """
-    #    return pd.read_sql(sql, self.get_connection(), index_col='hotel_id')
 
     def read_hotels_like_name(self, name: str) -> list[model.Hotel]:
         sql = """
@@ -96,12 +91,6 @@ class HotelDataAccess(BaseDataAccess):
         return [model.Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id)
                 for hotel_id, name, stars, address_id in hotels]
 
-    #def read_hotels_like_name_as_df(self, name: str) -> pd.DataFrame:
-    #    sql = """
-    #            SELECT hotel_id = ?, name = ? FROM Hotel WHERE name LIKE ?
-    #            """
-    #    params = tuple([f"%{name}%"])
-    #    return pd.read_sql(sql, self.get_connection(), params=params, index_col='hotel_id')
 
     def update_hotel(self, hotel: model.Hotel) -> None:
         if hotel is None:
@@ -143,8 +132,6 @@ class HotelDataAccess(BaseDataAccess):
             print(f"Fehler beim Löschen des Hotels: {e}")
             raise
 
-    def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
-        return []
 
     def read_all_hotels_extended_info(self) -> list[model.Hotel]:
         sql = """
@@ -300,3 +287,18 @@ class HotelDataAccess(BaseDataAccess):
 
 
         print(f"Zimmer {room_number} ({description}, {price_per_night}/Nacht) hinzugefügt.")
+
+        # def read_hotels_like_name_as_df(self, name: str) -> pd.DataFrame:
+        #    sql = """
+        #            SELECT hotel_id = ?, name = ? FROM Hotel WHERE name LIKE ?
+        #            """
+        #    params = tuple([f"%{name}%"])
+        #    return pd.read_sql(sql, self.get_connection(), params=params, index_col='hotel_id')
+
+        # def read_all_hotels_as_df(self) -> pd.DataFrame:
+        #    sql = """
+        #    SELECT hotel_id = ?, name = ?, stars = ?, address_id = ? FROM Hotel
+        #    """
+        #    return pd.read_sql(sql, self.get_connection(), index_col='hotel_id')
+        #def search_hotel(self, hotel: model.Hotel) -> list[model.Hotel]:
+            #return []

@@ -13,12 +13,6 @@ class RoomFacilitiesDataAccess(BaseDataAccess):
         params = (room.room_id, facilities.facility_id)
         self.execute(sql, params)
 
-    def delete_facility_from_room(self, room: model.Room, facilities: model.Facilities):
-        sql = """
-              DELETE FROM Room_Facilities WHERE room_id = ? AND facility_id = ?
-              """
-        params = (room.room_id, facilities.facility_id)
-        self.execute(sql, params)
 
     def read_facilities_by_room_id(self, room: model.Room):
         sql = """
@@ -38,39 +32,47 @@ class RoomFacilitiesDataAccess(BaseDataAccess):
 
         return facilities
 
-    def read_rooms_by_facility_id(self, facilities: model.facilities):
-        sql = """
-              SELECT room.room_id, room.room_number, room.price_per_night FROM Room room JOIN Room_Facilities roomfacilities ON room.room_id = roomfacilities.room_id JOIN Room_Type rt ON room.type_id = rt.type_id
-              WHERE roomfacilities.facility_id = ?
-              """
-        params = (facilities.facility_id,)
-        results = self.fetchall(sql, params)
-
-        rooms = []
-        if results:
-            for row in results:
-                room_id, room_number, price_per_night, description = row
-                rooms.append(model.Room(room_id, room_number, price_per_night, description))
-
-        return rooms
-
-    def has_facility(self, room: model.room, facilities: model.facilities):
-        sql = """
-              SELECT COUNT(*) FROM Room_Facilities WHERE room_id = ? AND facility_id = ?
-              """
-        params = (room.room_id, facilities.facility_id)
-        result = self.fetchone(sql, params)
-
-        return result[0] > 0 if result else False
-
-    def delete_room_facilities(self, room: model.Room):
-        sql = """
-              DELETE FROM Room_Facilities WHERE room_id = ?
-              """
-        params = (room.room_id,)
-        self.execute(sql, params)
 
     def read_all_facilities(self) -> list[model.Facilities]:
         sql = "SELECT facility_id, facility_name FROM Facilities ORDER BY facility_name"
         results = self.fetchall(sql)
         return [model.Facilities(facility_id, facility_name) for facility_id, facility_name in results]
+
+# def delete_facility_from_room(self, room: model.Room, facilities: model.Facilities):
+#     sql = """
+#           DELETE FROM Room_Facilities WHERE room_id = ? AND facility_id = ?
+#           """
+#     params = (room.room_id, facilities.facility_id)
+#     self.execute(sql, params)
+
+# def read_rooms_by_facility_id(self, facilities: model.facilities):
+#     sql = """
+#           SELECT room.room_id, room.room_number, room.price_per_night FROM Room room JOIN Room_Facilities roomfacilities ON room.room_id = roomfacilities.room_id JOIN Room_Type rt ON room.type_id = rt.type_id
+#           WHERE roomfacilities.facility_id = ?
+#           """
+#     params = (facilities.facility_id,)
+#     results = self.fetchall(sql, params)
+#
+#     rooms = []
+#     if results:
+#         for row in results:
+#             room_id, room_number, price_per_night, description = row
+#             rooms.append(model.Room(room_id, room_number, price_per_night, description))
+#
+#     return rooms
+
+# def has_facility(self, room: model.room, facilities: model.facilities):
+#     sql = """
+#           SELECT COUNT(*) FROM Room_Facilities WHERE room_id = ? AND facility_id = ?
+#           """
+#     params = (room.room_id, facilities.facility_id)
+#     result = self.fetchone(sql, params)
+#
+#     return result[0] > 0 if result else False
+
+# def delete_room_facilities(self, room: model.Room):
+#     sql = """
+#           DELETE FROM Room_Facilities WHERE room_id = ?
+#           """
+#     params = (room.room_id,)
+#     self.execute(sql, params)

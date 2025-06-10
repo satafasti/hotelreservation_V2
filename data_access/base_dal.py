@@ -2,7 +2,7 @@ import os
 import sqlite3
 
 class BaseDataAccess:
-    def __init__(self, db_connection_str: str = None):
+    def __init__(self, db_connection_str: str = None) -> None:
         if db_connection_str is None:
             self.__db_connection_str = os.environ.get("DB_FILE")
             if self.__db_connection_str is None:
