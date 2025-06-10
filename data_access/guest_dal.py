@@ -58,19 +58,6 @@ class GuestDataAccess(BaseDataAccess):
         return [model.Guest(*row) for row in results]
 
     def get_all_guest_details_by_hotel(self, hotel_id: int) -> list[dict]:
-        """
-        Holt alle Gästedetails für ein bestimmtes Hotel
-
-        Args:
-            hotel_id: ID des Hotels
-
-        Returns:
-            Liste von Dictionaries mit Gästedetails
-
-        Raises:
-            ValueError: Wenn hotel_id None ist
-            TypeError: Wenn hotel_id kein Integer ist
-        """
         if hotel_id is None:
             raise ValueError("hotel_id ist erforderlich")
         if not isinstance(hotel_id, int):
@@ -93,11 +80,7 @@ class GuestDataAccess(BaseDataAccess):
         WHERE h.hotel_id = ?
         ORDER BY g.guest_id
         """
-
-        # HIER WAR DER FEHLER: params war nicht definiert
-        # KORREKTUR: Direkt das Tupel mit hotel_id verwenden
         results = self.fetchall(sql, (hotel_id,))
-
         guest_details = []
         for row in results:
             guest_id, city, nationality, birthdate, gender, marital_status = row
@@ -109,5 +92,4 @@ class GuestDataAccess(BaseDataAccess):
                 'gender': gender,
                 'marital_status': marital_status
             })
-
         return guest_details
