@@ -27,20 +27,6 @@ class AddressDataAccess(BaseDataAccess):
             return model.Address(address_id, street, city, zip_code)
         return None
 
-    def read_address_by_city(self, city: str) -> list[model.Address]:
-        if city is None:
-            raise ValueError("city cannot be None")
-
-        sql = """
-        SELECT address_id, street, city, zip_code FROM Address WHERE city = ?
-        """
-        params = (city,)
-        results = self.fetchall(sql, params)
-
-        return [
-            model.Address(address_id, street, city, zip_code)
-            for address_id, street, city, zip_code in results
-        ]
 
     def update_address(self, address: model.Address) -> None:
         if address is None:
@@ -50,4 +36,4 @@ class AddressDataAccess(BaseDataAccess):
               UPDATE Address SET street   = ?, city     = ?, zip_code = ? WHERE address_id = ? 
               """
         params = (address.street, address.city, address.zip_code, address.address_id)
-        last_row_id, row_count = self.execute(sql, params)
+        _, row_count = self.execute(sql, params)

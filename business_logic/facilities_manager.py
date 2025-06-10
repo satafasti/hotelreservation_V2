@@ -6,11 +6,10 @@ class FacilitiesManager:
     def __init__(self, facilities_dal: FacilityDataAccess):
         self._dal = facilities_dal
 
-    def get_all_facilities(self) -> list[model.Facilities]:
-        return self._dal.read_all_facilities()
+
 
     # Die folgenden Facility-Methoden sind aktuell nicht im Einsatz,
-    # werden jedoch fuer moegliche Erweiterungen (z.B. ein Admin-Panel)
+    # werden jedoch fuer mögliche Erweiterungen (z.B. ein Admin-Panel)
     # im Code belassen.
 
     # def create_facility(self, facility_id: int, facility_name: str) -> model.Facilities:
@@ -38,3 +37,6 @@ class FacilitiesManager:
     # def is_name_unique(self, facility_name: str) -> bool:
     #     all_facilities = self.get_all_facilities()
     #     return all(f.facility_name != facility_name for f in all_facilities)
+
+    #  def get_all_facilities(self) -> list[model.Facilities]:
+    #    return self._dal.read_all_facilities()

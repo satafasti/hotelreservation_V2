@@ -8,6 +8,7 @@ class RoomTypeManager:
     def __init__(self, room_type_dal: RoomTypeDataAccess):
         self._dal = room_type_dal
 
+    # Aktuell sind diese Methoden nicht im Einsatz, werden aber für potenzielle Systemerweiterungen bereitgehalten.
     # def create_room(self, hotel_id: int, room_number: str, type_id: int, price_per_night: float, hotel: model.Hotel = None) -> model.Room:
     #     return self.__room_dal.create_room(hotel_id, room_number, type_id, price_per_night, hotel)
 
