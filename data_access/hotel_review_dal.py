@@ -1,6 +1,3 @@
-from tkinter.constants import INSERT
-
-import model
 from data_access.base_dal import BaseDataAccess
 from model.hotel_review import HotelReview
 

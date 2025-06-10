@@ -1,9 +1,8 @@
-from datetime import date
 from model import Invoice
 from model import Booking
 from data_access.invoice_dal import InvoiceDataAccess
 from data_access.booking_dal import BookingDataAccess
-from typing import Optional, List
+from typing import Optional
 
 
 class InvoiceManager:

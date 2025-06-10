@@ -1,6 +1,4 @@
 from data_access.facilities_dal import FacilityDataAccess
-import model
-
 
 class FacilitiesManager:
     def __init__(self, facilities_dal: FacilityDataAccess):

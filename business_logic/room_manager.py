@@ -1,8 +1,6 @@
-import model
 import data_access
-from typing import List
 
-class RoomManager():
+class RoomManager:
     def __init__(self) -> None:
         self.__room_dal = data_access.RoomDataAccess()
 

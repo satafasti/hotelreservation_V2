@@ -23,9 +23,6 @@ class PaymentDataAccess(BaseDataAccess):
         payment._Payment__payment_id = payment_id
         return payment
 
-#Die drei Methoden wurden im PaymentManager auskommentiert, weil sie nach einer Überarbeitung des Projekts aktuell nicht benötigt werden.
-# In payment_manager.py steht hierzu direkt ein Kommentar.
-
 # def read_payments_by_booking_id(self, booking_id: int) -> List[model.Payment]:
 #     sql = """
 #     SELECT payment_id, booking_id, payment_date, amount, payment_method

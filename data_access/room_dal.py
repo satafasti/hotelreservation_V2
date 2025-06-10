@@ -1,15 +1,13 @@
 from __future__ import annotations
 import model
 from data_access.base_dal import BaseDataAccess
-from model.room import Room
-from typing import List
 
 
 
 class RoomDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None): super().__init__(db_path)
 
-   def read_room_by_id(self, room_id: int) -> model.Room | None:
+    def read_room_by_id(self, room_id: int) -> model.Room | None:
         sql = """
             SELECT r.room_id, r.room_number, r.price_per_night,
                    rt.type_id, rt.description, rt.max_guests,
@@ -20,7 +18,8 @@ class RoomDataAccess(BaseDataAccess):
             WHERE r.room_id = ?
         """
         result = self.fetchone(sql, (room_id,))
-        return model.Room(result[0], model.Hotel(result[6], result[7], result[8], result[9]), result[1], model.Room_Type(result[3], result[4], result[5]), result[2]) if result else None
+        return model.Room(result[0], model.Hotel(result[6], result[7], result[8], result[9]), result[1],
+                          model.Room_Type(result[3], result[4], result[5]), result[2]) if result else None
 
 # Aktuell sind diese Methoden nicht im Einsatz, werden aber für potenzielle Systemerweiterungen bereitgehalten.
 

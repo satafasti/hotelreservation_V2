@@ -1,5 +1,4 @@
 import model
-
 from data_access.room_type_dal import RoomTypeDataAccess
 from typing import Optional
 

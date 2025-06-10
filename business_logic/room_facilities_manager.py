@@ -1,7 +1,4 @@
 from data_access.room_facilities_dal import RoomFacilitiesDataAccess
-from model.room import Room
-from model.facilities import Facilities
-from typing import List
 
 class RoomFacilitiesManager:
     def __init__(self, db_path: str = None):

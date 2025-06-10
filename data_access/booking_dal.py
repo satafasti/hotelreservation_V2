@@ -1,9 +1,6 @@
 import model
-import sqlite3
-from typing import Optional, List
-from model.room import Room
 from model.booking import Booking
-from datetime import date
+
 
 
 from data_access.base_dal import BaseDataAccess

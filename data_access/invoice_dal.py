@@ -1,6 +1,6 @@
 import model
 from data_access.base_dal import BaseDataAccess
-from typing import Optional, List
+from typing import Optional
 
 class InvoiceDataAccess(BaseDataAccess):
     def __init__(self, db_path: str = None):

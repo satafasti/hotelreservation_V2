@@ -5,15 +5,15 @@ class Booking:
 
     def __init__(
         self,
-        booking_id: int,
-        guest_id: int,
-        room_id: int,
-        check_in_date: date,
-        check_out_date: date,
-        is_cancelled: bool,
-        total_amount: float,
+            booking_id: int,
+            guest_id: int,
+            room_id: int,
+            check_in_date: date,
+            check_out_date: date,
+            is_cancelled: bool,
+            total_amount: float,
 
-    ):
+    ) -> None:
         if booking_id is not None:
             if not isinstance(booking_id, int):
                 raise ValueError("booking_id muss eine Ganzzahl sein")

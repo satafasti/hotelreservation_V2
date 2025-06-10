@@ -1,6 +1,3 @@
-import os
-#import pandas as pd
-from model.hotel_review import HotelReview
 from data_access.hotel_review_dal import HotelReviewDataAccess
 
 class HotelReviewManager:
