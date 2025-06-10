@@ -87,8 +87,6 @@ class Hotel:
         self.__rooms = new_rooms
 
     def add_room(self, room: Room) -> None:
-        from model import Room
-
         if not room:
             raise ValueError("room is required.")
         if not self._is_room(room):

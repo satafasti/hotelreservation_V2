@@ -68,8 +68,6 @@ class Booking:
     def booking_id(self) -> int:
         return self.__booking_id
 
-
-
     @property
     def check_in_date(self) -> date:
         return self.__check_in_date
@@ -93,7 +91,6 @@ class Booking:
     @property
     def is_cancelled(self) -> bool:
         return self.__is_cancelled
-
 
 
     @is_cancelled.setter
