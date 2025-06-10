@@ -25,14 +25,8 @@ class GuestManager:
     def calculate_age_and_convert_to_dataframe(self, guest_details: list[dict]) -> pd.DataFrame:
         if not guest_details:
             return pd.DataFrame()
-
-
         df = pd.DataFrame(guest_details)
-
-
         df['age'] = df['birthdate'].apply(self.calculate_age)
-
-
         return df
 
     def calculate_age(self, birthdate) -> int:
@@ -41,10 +35,8 @@ class GuestManager:
         try:
             if isinstance(birthdate, str):
                 birthdate = datetime.strptime(birthdate, '%Y-%m-%d').date()
-
             today = date.today()
             return today.year - birthdate.year - ((today.month, today.day) < (birthdate.month, birthdate.day))
-
         except:
             return None
 
@@ -89,7 +81,6 @@ class GuestManager:
         if df.empty or 'age' not in df.columns:
             return pd.DataFrame(columns=['category', 'count'])
 
-        # Altersgruppen definieren
         def get_age_group(age):
             if pd.isna(age):
                 return 'Unbekannt'
