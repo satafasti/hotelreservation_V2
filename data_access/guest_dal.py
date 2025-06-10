@@ -42,21 +42,6 @@ class GuestDataAccess(BaseDataAccess):
         params = ( guest.first_name, guest.last_name, guest.email, guest.address_id, guest.guest_id)
         self.execute(sql, params)
 
-    def delete_guest(self, guest: model.Guest):
-        sql = """
-        DELETE FROM Guest WHERE guest_id = ?
-        """
-        params = (guest.guest_id,)
-        self.execute(sql, params)
-        _, rowcount = self.execute(sql, params)
-        if rowcount == 0:
-            raise LookupError(f"No guest found with id {guest.guest_id}")
-
-    def read_all_guests(self) -> list[model.Guest]:
-        sql = """SELECT guest_id, first_name, last_name, email, address_id FROM Guest"""
-        results = self.fetchall(sql)
-        return [model.Guest(*row) for row in results]
-
     def get_all_guest_details_by_hotel(self, hotel_id: int) -> list[dict]:
         if hotel_id is None:
             raise ValueError("hotel_id ist erforderlich")
@@ -93,3 +78,18 @@ class GuestDataAccess(BaseDataAccess):
                 'marital_status': marital_status
             })
         return guest_details
+
+    # def delete_guest(self, guest: model.Guest):
+    #     sql = """
+    #     DELETE FROM Guest WHERE guest_id = ?
+    #     """
+    #     params = (guest.guest_id,)
+    #     self.execute(sql, params)
+    #     _, rowcount = self.execute(sql, params)
+    #     if rowcount == 0:
+    #         raise LookupError(f"No guest found with id {guest.guest_id}")
+
+    # def read_all_guests(self) -> list[model.Guest]:
+    #     sql = """SELECT guest_id, first_name, last_name, email, address_id FROM Guest"""
+    #     results = self.fetchall(sql)
+    #     return [model.Guest(*row) for row in results]
