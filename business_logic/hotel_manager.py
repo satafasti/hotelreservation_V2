@@ -148,6 +148,23 @@ class HotelManager:
         print(f"Sterne: {hotel.stars}")
         print(f"Verfügbare Zimmer: {len(hotel.rooms)}")
 
+    def get_hotel_choice(self, matching_hotels):
+        if not matching_hotels:
+            print("Keine passenden Hotels vorhanden.")
+            return None
+
+        try:
+            choice = int(input(f"\nHotel-Nummer eingeben (1-{len(matching_hotels)}): "))
+            if 1 <= choice <= len(matching_hotels):
+                return matching_hotels[choice - 1]
+            else:
+                print("Ungültige Auswahl.")
+                return None
+        except ValueError:
+            print("Ungültige Eingabe.")
+            return None
+
+
 
 #Das Projekt enthält im Modul HotelManager Methoden wie read_hotel, read_all_hotels oder update_hotel. Diese Methoden leiten im Wesentlichen nur an die Data‑Access‑Schicht (HotelDataAccess) weiter.
 #Im User Interface wird jedoch direkt HotelDataAccess verwendet. So werden Hotels z.B. im Gast-UI eingelesen und ausgewählt,
