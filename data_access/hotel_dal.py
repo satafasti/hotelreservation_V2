@@ -182,7 +182,7 @@ class HotelDataAccess(BaseDataAccess):
 
             if hotel_id not in hotels:
                 hotels[hotel_id] = model.Hotel(hotel_id=hotel_id, name=name, stars=stars, address_id=address_id)
-                hotels[hotel_id].address_id = address
+                hotels[hotel_id].address = address
                 hotels[hotel_id].rooms = []
 
             hotel = hotels[hotel_id]
