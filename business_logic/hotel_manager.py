@@ -1,13 +1,15 @@
 import model
+
 from business_logic import BookingManager
 from data_access.hotel_dal import HotelDataAccess
 from data_access.room_facilities_dal import RoomFacilitiesDataAccess  # Neu hinzufügen
-
+from data_access.address_dal import AddressDataAccess
 
 class HotelManager:
     def __init__(self, db_path: str = None):
         self.__hotel_dal = HotelDataAccess(db_path)
         self.__facilities_dal = RoomFacilitiesDataAccess(db_path)
+        self.__address_dal = AddressDataAccess(db_path)
         self.__booking_manager = BookingManager(db_path)
 
     def create_hotel(self, hotel: model.Hotel, address: model.Address, room: model.Room):
@@ -53,8 +55,17 @@ class HotelManager:
     def read_all_hotels(self) -> list[model.Hotel]:
         return self.__hotel_dal.read_all_hotels()
 
-    def update_hotel(self, hotel: model.Hotel) -> None:
+    def find_hotels(self, name):
+        return self.__hotel_dal.read_hotels_like_name(name)
+
+    def get_hotel_and_address(self, hotel_id):
+        hotel = self.__hotel_dal.read_hotel_by_id(hotel_id)
+        address = self.__address_dal.read_address_by_id(hotel.address_id)
+        return hotel, address
+
+    def save_hotel_and_address(self, hotel, address):
         self.__hotel_dal.update_hotel(hotel)
+        self.__address_dal.update_address(address)
 
     def remove_duplicate_rooms(self, hotel):
         seen_room_ids = set()
