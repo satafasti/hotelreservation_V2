@@ -45,3 +45,11 @@ class RoomManager:
         features = ', '.join(room.features) if hasattr(room, "features") and room.features else "Keine Angaben"
         print(f"    Ausstattung: {features}")
         print()
+
+    def get_room_input(self):
+        room_number = input("Gib eine Zimmernummer ein: ")
+        description = input(
+            "Gib den Zimmertyp an (Single (max.1), Double (max.2), Suite (max.4), Family Room (max.5), Penthouse (max.6)): ")
+        max_guests = int(input("Maximale Anzahl Gäste für das Zimmer: "))
+        price_per_night = float(input("Gib den Preis pro Nacht für das Zimmer an: "))
+        return room_number, description, max_guests, price_per_night
