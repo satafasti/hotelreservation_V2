@@ -17,6 +17,9 @@ class HotelManager:
     def read_all_hotels_extended_info(self):
         return self.__hotel_dal.read_all_hotels_extended_info()
 
+    def add_room_to_hotel(self, hotel_id, room_number, description, max_guests, price_per_night, selected_facility_ids):
+        return self.__hotel_dal.add_room_to_hotel(hotel_id, room_number, description, max_guests, price_per_night, selected_facility_ids)
+
 
 #Das Projekt enthält im Modul HotelManager Methoden wie read_hotel, read_all_hotels oder update_hotel. Diese Methoden leiten im Wesentlichen nur an die Data‑Access‑Schicht (HotelDataAccess) weiter.
 #Im User Interface wird jedoch direkt HotelDataAccess verwendet. So werden Hotels z.B. im Gast-UI eingelesen und ausgewählt,
