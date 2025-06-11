@@ -1,6 +1,7 @@
 from __future__ import annotations
 import model
 from data_access.base_dal import BaseDataAccess
+from typing import List
 
 
 
@@ -51,7 +52,7 @@ def read_room_details(self, type_id: int) -> List[model.Room]:
          JOIN Hotel h ON r.hotel_id = h.hotel_id
          WHERE r.type_id = ?
      """
-     return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1], model.Room_Type(row[3], row[4], row[5]), row[2]) for row in self.fetchall(sql, (type_id,))]
+    return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1], model.Room_Type(row[3], row[4], row[5]), row[2]) for row in self.fetchall(sql, (type_id,))]
 
 # def read_all_rooms(self) -> list[Room]:
 #     sql = "SELECT room_id FROM Room"
