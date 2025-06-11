@@ -88,6 +88,30 @@ Details zu den Modellverknüpfungen lassen sich direkt in der Dokumentation im A
 
 Diese Struktur ermöglicht ein robustes, erweiterbares System mit klaren Verantwortlichkeiten pro Schicht und hoher Datenkonsistenz.
 
+## Schritt-für-Schritt-Anleitung
+
+Damit unsere Anwendung korrekt funktioniert, müssen zu Beginn im Deepnote-Notebook "Showcase User Stories" die Imports und die Datenbankverbindung initialisiert werden. Das passiert im ersten Codeblock, wo zentrale Module wie os, shutil, pandas, sqlite3 und alle Projekt-Module (model, data_access, business_logic) geladen werden. Gleichzeitig wird die Datenbankdatei kopiert und über die Umgebungsvariable DB_FILE registriert.
+
+Im zweiten Schritt werden zusätzlich die Klassen (2. - 4. Codeblock) aus den drei Layern (Business Logic, Data Access und Model) einzeln importiert. Dieser Schritt ist notwendig, damit man die Klassen direkt verwenden kann (z. B. HotelManager statt business_logic.hotel_manager.HotelManager).
+
+Diese Schritte sind zwingend notwendig, da spätere Funktionen – insbesondere alle Abfragen und Änderungen an der Datenbank – nur funktionieren, wenn die Datenbank korrekt initialisiert wurde und die Module geladen sind. Ohne diesen Schritt würden viele Teile der Applikation ins Leere laufen, da keine Verbindung zur Datenquelle besteht.
+
+Nach der Initialisierung kann man die Logik anhand einzelner User Stories nachvollziehen. Dazu sollte man im Notebook Block für Block ausführen. So lassen sich die einzelnen Use Cases wie Hotels suchen, Zimmer buchen, Rechnungen erstellen oder Hotels verwalten systematisch durchgehen. Zu diesen Blöcken sind Kommentare enthalten, die unsere Überlegungen und Entscheidungen bei der Implementierung dokumentieren.
+
+Alternativ kann man die Anwendung auch direkt über das Notebook "UI - Menü" starten. Dazu reicht es, wie im ersten Notebook, den Block mit den Imports und der Datenbankverbindung zu initialisieren und zusätzlich den Block mit den Imports aus dem Verzeichnis ui_folder auszuführen.
+
+Sobald diese geladen sind, lassen sich über die Benutzeroberfläche "Hauptmenü" alle Funktionen direkt nutzen. In diesem Fall ist es nicht notwendig, weitere Blöcke manuell auszuführen. Es fehlen dabei jedoch die erklärenden Kommentare und Zwischenschritte. Diese Variante eignet sich daher eher für reine Funktionstests oder eine kurze Demonstration.
+
+### Ablauf in Kürze:
+
+1. Notebook "Showcase User Storeis" Import-Block ausführen (Initialisierung der Datenbank und aller Module) - Zwingend: Codeblöcke 1 - 4 ausführen 
+
+2. Notebook blockweise durchgehen - Reihenfolge ist nicht entscheidend
+
+3. Alternativ Notebook "UI- Menü": Import Block ausführen und UI-Module laden (admin_ui, guest_ui) für direkten Zugriff
+
+4. Funktionen direkt im UI testen (z. B. Hotels anzeigen, Zimmer buchen, stornieren etc.)
+
 ## Zusammenarbeit und Projektaufbau
 
 Zu Beginn des Projektes haben wir uns für eine Aufteilung des Aufbau der Klassen (über alle Layers hinweg) entschieden und dabei ein KANBAN-Board direkt in GitHub verwendet zwecks Tracking der Aufgaben.
@@ -121,6 +145,7 @@ durch Tanja Lüscher und Stirling Mulholland sichergestellt.
 Zum Aufbau des Projektes ist speziell zu erwähnen, dass wir bis ca. Mitte Mai etwas "festgefahren" waren und die Implementierung der UserStories nicht gut voranschritt. Wir haben uns daher nach einem intensiven Coaching dazu entschieden noch einmal ein neues GitHub Repository zu erstellen um einen "Neustart" zu simulieren. Für den Neuaufbau der Klassen haben wir uns dazu stark am Beispiel-Projekt orientiert. Dies hat uns tatsächlich geholfen einen "Durchbruch" im Verständnis 
 zu erreichen, zog allerdings in der Folge auch nach sich, dass wir teilweise viel des geschriebenen Codes nicht mehr weiterverwendet haben, weil uns plötzlich klar wurde, wie wir die für unser Projekt nötigen Methoden selbst optimiert schreiben können. Aus zeitlichen Gründen haben wir die nicht verwendeten Code-Blöcke in den Klassen auskommentiert. Im Sinne einer sauberen Codeführung hätten wir mit etwas mehr Zeit diese aber vermutlich komplett bereinigt und entfernt. Da wir
 zum jetzigen sehr fortgeschrittenen Projektverlauf allerdings nicht riskieren wollten, versehentlich Methoden zu löschen, welche doch irgendwo verwendet werden, oder welche man idealerweise bei der weiteren Implementierung von zusätzlichen UserStories gut hätte verwenden können, haben wir dies unterlassen.
+
 
 ## Reflexion
 
