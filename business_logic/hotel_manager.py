@@ -131,6 +131,13 @@ class HotelManager:
             'has_adjustment': abs(total_min - base_total_min) > 0.01
         }
 
+    def show_hotel_info(self, hotel):
+        print(f"\n--- {hotel.name} ---")
+        print(f"Adresse: {hotel.address.street}, {hotel.address.zip_code} {hotel.address.city}")
+        print(f"Sterne: {hotel.stars}")
+        print(f"Verfügbare Zimmer: {len(hotel.rooms)}")
+
+
 #Das Projekt enthält im Modul HotelManager Methoden wie read_hotel, read_all_hotels oder update_hotel. Diese Methoden leiten im Wesentlichen nur an die Data‑Access‑Schicht (HotelDataAccess) weiter.
 #Im User Interface wird jedoch direkt HotelDataAccess verwendet. So werden Hotels z.B. im Gast-UI eingelesen und ausgewählt,
 

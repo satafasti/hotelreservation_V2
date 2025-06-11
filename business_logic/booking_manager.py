@@ -46,6 +46,53 @@ class BookingManager:
         booking.is_cancelled = True
         return booking
 
+    def get_checkin_date_if_missing(self):
+        print(
+            "Damit Ihnen die aktuellen Preise mit Saison-Aufschlägen angezeigt werden, geben Sie bitte ein Check-in Datum ein.")
+        check_in_input = input("Gewünschtes Check-in Datum (YYYY-MM-DD) oder Enter für Basispreise: ").strip()
+        if check_in_input:
+            try:
+                from datetime import datetime
+                check_in = datetime.strptime(check_in_input, "%Y-%m-%d").date()
+                print(f"Check-in Datum gesetzt: {check_in.strftime('%d.%m.%Y')}")
+                return check_in
+            except ValueError:
+                print("Ungültiges Datumsformat. Basispreise werden angezeigt.")
+                return None
+        else:
+            print("Kein Datum eingegeben. Basispreise werden angezeigt.")
+            return None
+
+    def get_checkout_date_if_missing(self):
+        print("Bitte geben Sie bitte ein Check-Out Datum ein.")
+        check_out_input = input("Gewünschtes Check-Out Datum (YYYY-MM-DD) oder Enter für Basispreise: ").strip()
+        if check_out_input:
+            try:
+                from datetime import datetime
+                check_out = datetime.strptime(check_out_input, "%Y-%m-%d").date()
+                print(f"Check-Out Datum gesetzt: {check_out.strftime('%d.%m.%Y')}")
+                return check_out
+            except ValueError:
+                print("Ungültiges Datumsformat. Basispreise werden angezeigt.")
+                return None
+        else:
+            print("Kein Datum eingegeben. Basispreise werden angezeigt.")
+            return None
+
+    def show_total_pricing_summary(self, price_summary):
+        if not price_summary or not price_summary['total_days']:
+            return
+
+        days = price_summary['total_days']
+        print(f"\nPreisübersicht:")
+        print(f"Günstigstes Zimmer: {price_summary['min_total']:.2f} CHF")
+        if price_summary['min_total'] != price_summary['max_total']:
+            print(f"Teuerstes Zimmer: {price_summary['max_total']:.2f} CHF")
+        print(f"Preisspanne pro Nacht: {price_summary['min_price']:.2f} - {price_summary['max_price']:.2f} CHF")
+
+
+
+
 #Im Projekt wurde zwar im BookingManager ein ganzer Satz von Methoden definiert – darunter read_booking_by_id, read_all_bookings, update_booking, delete_booking und find_available_room.
 #Allerdings greifen die übrigen Komponenten des Systems nicht auf diese Manager-Methoden zu.
 

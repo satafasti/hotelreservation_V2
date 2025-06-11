@@ -19,3 +19,29 @@ class RoomManager:
 
     def read_room_details(self, type_id: int) -> List[model.Room]:
         return self.__room_dal.read_room_details(type_id)
+
+    def show_room_info(self, room, price_info, check_in=None, check_out=None):
+        print(f"  - Zimmer {room.room_number}")
+        print(f"    Typ: {room.room_type.description}")
+        print(f"    Basispreis: {price_info['base_price']:.2f} CHF/Nacht")
+        print(f"    Aktueller Preis: {price_info['dynamic_price']:.2f} CHF/Nacht")
+
+        if price_info['has_seasonal_adjustment']:
+            price_diff = price_info['price_difference']
+            if price_diff > 0:
+                print(f"    Saison-Aufschlag: +{price_diff:.2f} CHF")
+            else:
+                print(f"    Saison-Rabatt: {price_diff:.2f} CHF")
+        else:
+            print(f"    Keine Saison-Anpassung")
+
+        if check_in:
+            print(f"    Check-in Datum: {check_in}")
+            if check_out:
+                print(f"    Check-out Datum: {check_out}")
+        else:
+            print(f"    Kein Check-in Datum verfügbar")
+
+        features = ', '.join(room.features) if hasattr(room, "features") and room.features else "Keine Angaben"
+        print(f"    Ausstattung: {features}")
+        print()

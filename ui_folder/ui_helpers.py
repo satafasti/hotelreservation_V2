@@ -34,3 +34,35 @@ def get_room_input():
     max_guests = int(input("Maximale Anzahl Gäste für das Zimmer: "))
     price_per_night = float(input("Gib den Preis pro Nacht für das Zimmer an: "))
     return room_number, description, max_guests, price_per_night
+
+
+def get_hotel_choice(matching_hotels):
+    if not matching_hotels:
+        print("Keine passenden Hotels vorhanden.")
+        return None
+
+    try:
+        choice = int(input(f"\nHotel-Nummer eingeben (1-{len(matching_hotels)}): "))
+        if 1 <= choice <= len(matching_hotels):
+            return matching_hotels[choice - 1]
+        else:
+            print("Ungültige Auswahl.")
+            return None
+    except ValueError:
+        print("Ungültige Eingabe.")
+        return None
+
+
+def show_hotel_info(hotel):
+    print(f"\n--- {hotel.name} ---")
+    print(f"Adresse: {hotel.address.street}, {hotel.address.zip_code} {hotel.address.city}")
+    print(f"Sterne: {hotel.stars}")
+    print(f"Verfügbare Zimmer: {len(hotel.rooms)}")
+
+
+def show_room_info(room, price):
+    print(f"  - Zimmer {room.room_number}")
+    print(f"    Typ: {room.room_type.description}")
+    print(f"    Preis: {price:.2f} CHF/Nacht")
+    features = ', '.join(room.features) if hasattr(room, "features") and room.features else "Keine Angaben"
+    print(f"    Ausstattung: {features}")
