@@ -20,6 +20,7 @@ class HotelManager:
     def read_all_hotels_extended_info(self):
         return self.__hotel_dal.read_all_hotels_extended_info()
 
+#neu ergänzter Code 11.06.2025
     def add_room_to_hotel(self, hotel_id, room_number, description, max_guests, price_per_night, selected_facility_ids):
         return self.__hotel_dal.add_room_to_hotel(hotel_id, room_number, description, max_guests, price_per_night, selected_facility_ids)
 
@@ -43,6 +44,7 @@ class HotelManager:
             return len(selected_facility_ids)
         return 0
 
+#neu aktivierter Code 11.06.2025
     def read_hotel(self, hotel_id: int):
         return self.__hotel_dal.read_hotel_by_id(hotel_id)
 
