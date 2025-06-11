@@ -41,17 +41,17 @@ class RoomDataAccess(BaseDataAccess):
 #     """
 #     return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1], model.Room_Type(row[3], row[4], row[5]), row[2]) for row in self.fetchall(sql, (hotel.hotel_id,))]
 
-# def read_room_details(self, type_id: int) -> List[model.Room]:
-#     sql = """
-#         SELECT r.room_id, r.room_number, r.price_per_night,
-#                rt.type_id, rt.description, rt.max_guests,
-#                h.hotel_id, h.name, h.address_id, h.stars
-#         FROM Room r
-#         JOIN Room_Type rt ON r.type_id = rt.type_id
-#         JOIN Hotel h ON r.hotel_id = h.hotel_id
-#         WHERE r.type_id = ?
-#     """
-#     return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1], model.Room_Type(row[3], row[4], row[5]), row[2]) for row in self.fetchall(sql, (type_id,))]
+def read_room_details(self, type_id: int) -> List[model.Room]:
+    sql = """
+        SELECT r.room_id, r.room_number, r.price_per_night,
+                rt.type_id, rt.description, rt.max_guests,
+                h.hotel_id, h.name, h.address_id, h.stars
+         FROM Room r
+         JOIN Room_Type rt ON r.type_id = rt.type_id
+         JOIN Hotel h ON r.hotel_id = h.hotel_id
+         WHERE r.type_id = ?
+     """
+     return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1], model.Room_Type(row[3], row[4], row[5]), row[2]) for row in self.fetchall(sql, (type_id,))]
 
 # def read_all_rooms(self) -> list[Room]:
 #     sql = "SELECT room_id FROM Room"
