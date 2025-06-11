@@ -27,7 +27,7 @@ def guest_menu():
         ("Buchung inkl. Zahlung", guest_ui.create_booking_and_pay_ui),
         ("Rechnung erstellen", guest_ui.create_invoice_for_guest_ui),
         ("Buchung stornieren", guest_ui.cancel_booking_ui),
-        ("Hotel wählen mit Preisinformation", guest_ui.choose_hotel_ui),
+        ("Hotel wählen mit Preisinformation", guest_ui.calculate_saison_room_price),
         ("Hotel bewerten", guest_ui.hotel_review_ui),
         ("Hotelbewertungen ansehen", guest_ui.view_hotel_reviews_ui),
     ]
