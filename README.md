@@ -75,8 +75,8 @@ Unser Projekt basiert auf einer klassischen Mehrschichtenarchitektur, bestehend 
 - UI-Schicht: Dient der Benutzereingabe und Ausgabe. Sie ist vollständig getrennt von der Logik. Die Ergebnisse werden strukturiert formatiert und mögliche Mehrfachausgaben durch Korrekturen im Manager- und DAL-Bereich vermieden.
 
 2. Warum wir die Manager so gestaltet haben
-- Manager bündeln zusammengehörige Operationen (z. B. create_invoice, read_invoice, cancel_invoice im InvoiceManager).
-- Die Manager prüfen Eingaben zusätzlich zur DAL-Validierung (z. B. ob eine Buchung storniert wurde oder ob bereits eine Rechnung existiert).
+- Manager bündeln zusammengehörige Operationen (z.B. create_invoice, read_invoice, cancel_invoice im InvoiceManager).
+- Die Manager prüfen Eingaben zusätzlich zur DAL-Validierung (z.B. ob eine Buchung storniert wurde oder ob bereits eine Rechnung existiert).
 - Manager verwenden jeweils nur die DALs, die sie wirklich benötigen (InvoiceManager nutzt z. B. zusätzlich BookingDataAccess, um Buchungsdaten zu lesen).
 
 3. Modellverknüpfungen
@@ -128,7 +128,6 @@ zum jetzigen sehr fortgeschrittenen Projektverlauf allerdings nicht riskieren wo
 Dies hat sich schnell als gute Leitidee gezeigt, um das Projekt in einem für unseren Wissensstand übersichtlichen Mass umsetzen zu können.
 Unser Ziel war es, zum ersten Mal Computersprache zu sprechen. Wir wollten dem PC sagen, was und wie er etwas machen sollte, 
 ohne eine hübsche Benutzeroberfläche bedienen zu müssen.
-
 
 Angefangen mit einfachen Eingaben und Variablen hat uns die Reise zu Klassen, Funktionen und Listen gebracht.
 Mit diesem Wissen konnten wir unsere ersten Zeilen Code in der Modellklasse schreiben. Hier sind die ersten
