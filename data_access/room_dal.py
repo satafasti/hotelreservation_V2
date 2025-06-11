@@ -42,6 +42,21 @@ class RoomDataAccess(BaseDataAccess):
         return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1],
                            model.Room_Type(row[3], row[4], row[5]), row[2]) for row in self.fetchall(sql, (type_id,))]
 
+    def read_rooms_by_hotel(self, hotel: model.Hotel) -> list[model.Room]:
+        if hotel is None: raise ValueError("hotel kann nicht leer sein.")
+        sql = """
+            SELECT r.room_id, r.room_number, r.price_per_night,
+                   rt.type_id, rt.description, rt.max_guests,
+                   h.hotel_id, h.name, h.address_id, h.stars
+            FROM Room r
+            JOIN Room_Type rt ON r.type_id = rt.type_id
+            JOIN Hotel h ON r.hotel_id = h.hotel_id
+            WHERE r.hotel_id = ?
+        """
+        return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1],
+                           model.Room_Type(row[3], row[4], row[5]), row[2]) for row in
+                self.fetchall(sql, (hotel.hotel_id,))]
+
 # Aktuell sind diese Methoden nicht im Einsatz, werden aber für potenzielle Systemerweiterungen bereitgehalten.
 
 # def create_new_room(self, hotel_id: int, room_number: int, type_id: int, price_per_night: float) -> model.Room:
@@ -49,18 +64,6 @@ class RoomDataAccess(BaseDataAccess):
 #     last_row_id, _ = self.execute(sql, (hotel_id, room_number, type_id, price_per_night))
 #     return model.Room(last_row_id, model.Hotel(hotel_id, "", 0, 0), room_number, model.Room_Type(type_id, "", 0), price_per_night)
 
-# def read_rooms_by_hotel(self, hotel: model.Hotel) -> list[model.Room]:
-#     if hotel is None: raise ValueError("hotel kann nicht leer sein.")
-#     sql = """
-#         SELECT r.room_id, r.room_number, r.price_per_night,
-#                rt.type_id, rt.description, rt.max_guests,
-#                h.hotel_id, h.name, h.address_id, h.stars
-#         FROM Room r
-#         JOIN Room_Type rt ON r.type_id = rt.type_id
-#         JOIN Hotel h ON r.hotel_id = h.hotel_id
-#         WHERE r.hotel_id = ?
-#     """
-#     return [model.Room(row[0], model.Hotel(row[6], row[7], row[8], row[9]), row[1], model.Room_Type(row[3], row[4], row[5]), row[2]) for row in self.fetchall(sql, (hotel.hotel_id,))]
 
 # def read_all_rooms(self) -> list[Room]:
 #     sql = "SELECT room_id FROM Room"
