@@ -57,6 +57,15 @@ class RoomDataAccess(BaseDataAccess):
                            model.Room_Type(row[3], row[4], row[5]), row[2]) for row in
                 self.fetchall(sql, (hotel.hotel_id,))]
 
+    def update_room(self, room: Room) -> None:
+        sql = """
+            UPDATE Room
+            SET room_number = ?, price_per_night = ?
+            WHERE room_id = ?
+        """
+        params = (room.room_number, room.price_per_night, room.room_id)
+        self.execute(sql, params)
+
 # Aktuell sind diese Methoden nicht im Einsatz, werden aber für potenzielle Systemerweiterungen bereitgehalten.
 
 # def create_new_room(self, hotel_id: int, room_number: int, type_id: int, price_per_night: float) -> model.Room:
@@ -70,11 +79,4 @@ class RoomDataAccess(BaseDataAccess):
 #     rows = self.fetchall(sql)
 #     return [self.read_room_by_id(row[0]) for row in rows]
 
-# def update_room(self, room: Room) -> None:
-#     sql = """
-#         UPDATE Room
-#         SET room_number = ?, price_per_night = ?
-#         WHERE room_id = ?
-#     """
-#     params = (room.room_number, room.price_per_night, room.room_id)
-#     self.execute(sql, params)
+
