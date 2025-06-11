@@ -67,15 +67,15 @@ class HotelManager:
         self.__hotel_dal.update_hotel(hotel)
         self.__address_dal.update_address(address)
 
-    def remove_duplicate_rooms(self, hotel):
-        seen_room_ids = set()
-        unique_rooms = []
-        for room in hotel.rooms:
-            if room.room_id not in seen_room_ids:
-                unique_rooms.append(room)
-                seen_room_ids.add(room.room_id)
-        hotel.rooms = unique_rooms
-        return hotel
+    #def remove_duplicate_rooms(self, hotel):
+    #    seen_room_ids = set()
+    #    unique_rooms = []
+    #    for room in hotel.rooms:
+    #        if room.room_id not in seen_room_ids:
+    #           unique_rooms.append(room)
+    #           seen_room_ids.add(room.room_id)
+    #    hotel.rooms = unique_rooms
+    #    return hotel
 
     def get_available_rooms_for_period(self, hotel, check_in=None, check_out=None):
         if not check_in or not check_out:
