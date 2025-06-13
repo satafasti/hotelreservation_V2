@@ -10,11 +10,6 @@ from business_logic.room_type_manager import RoomTypeManager
 from business_logic.hotel_review_manager import HotelReviewManager
 from business_logic.payment_manager import PaymentManager
 
-from data_access.hotel_dal import HotelDataAccess
-from data_access.room_dal import RoomDataAccess
-from data_access.room_type_dal import RoomTypeDataAccess
-from data_access.hotel_review_dal import HotelReviewDataAccess
-from model import Room
 
 from datetime import datetime
 from business_logic.hotel_manager import HotelManager
@@ -40,7 +35,7 @@ class GuestUI:
         self.__invoice_manager = InvoiceManager(db_path)
         self.__payment_manager = PaymentManager(db_path)
         self.__booking_manager = BookingManager(db_path)
-        self.__room_manager = RoomDataAccess(db_path)
+        self.__room_manager = RoomManager(db_path)
         self.__room_type_manager = RoomTypeManager(db_path)
         self.__room_facility_manger = RoomFacilitiesManager(db_path)
         self.__hotel_review_manager = HotelReviewManager(db_path)
@@ -540,15 +535,15 @@ def choose_hotel_ui(check_in=None, check_out=None):
     return selected_hotel
 
 
-results = user_search_hotels_from_data()
-matching_hotels, check_in_date, check_out_date = results
+    #results = user_search_hotels_from_data()
+    #matching_hotels, check_in_date, check_out_date = results
 
-if check_in_date is not None and check_out_date is not None:
-    choose_hotel_ui(check_in_date, check_out_date)
-elif check_in_date is not None:
-    choose_hotel_ui(check_in_date)
-else:
-    choose_hotel_ui()
+    #if check_in_date is not None and check_out_date is not None:
+    #    choose_hotel_ui(check_in_date, check_out_date)
+    #elif check_in_date is not None:
+    #    choose_hotel_ui(check_in_date)
+    #else:
+    #   choose_hotel_ui()
 
 
 
@@ -557,19 +552,19 @@ else:
 #3. Als Gast möchte ich nach meinem Aufenthalt eine Bewertung für ein Hotel abgeben, damit ich meine Erfahrungen teilen kann.
 def hotel_review_ui():
     print("Geben Sie Ihre Bewertung für Ihr Hotel ab. \n")
-    hotel_dal = HotelDataAccess()
-    hotel_review_dal = HotelReviewDataAccess()
+    hotel_manager = HotelManager()
+    hotel_review_manager = HotelReviewManager()
 
     try:
         guest_id = int(
             input("Ihre Gast-ID: "))  # Annahme, dass diese Information auf der Buchungsbestätigung enthalten ist.
-        hotels = hotel_dal.read_all_hotels()
+        hotels = hotel_manager.read_all_hotels()
         if not hotels:
             print("Keine Hotels verfügbar.")
             return
 
         hotel_id = int(input("\nHotel-ID für Bewertung: "))
-        selected_hotel = hotel_dal.read_hotel_by_id(hotel_id)
+        selected_hotel = hotel_manager.read_hotel(hotel_id)
 
         if selected_hotel is None:
             print("Hotel nicht gefunden.")
@@ -602,7 +597,7 @@ def hotel_review_ui():
             review_date=datetime.now().strftime("%Y-%m-%d")
         )
 
-        hotel_review_dal.create_hotel_review(hotel_review)
+        hotel_review_manager.create_hotel_review(hotel_review)
 
         print("\n" + "-" * 30)
         print("Bewertung erfolgreich gespeichert.")
@@ -624,13 +619,13 @@ def hotel_review_ui():
 def view_hotel_reviews_ui():
     print("Hotelbewertungen anzeigen:")
 
-    hotel_dal = HotelDataAccess()
-    review_dal = HotelReviewDataAccess()
+    hotel_manager = HotelManager()
+    review_manager = HotelReviewManager()
 
     try:
         hotel_name = input("Gib den Namen des Hotels an, von dem du Bewertungen sehen möchtest: ")
         manager = HotelManager()
-        found_hotels = manager.read_hotels_by_similar_name(hotel_name)
+        found_hotels = hotel_manager.read_hotels_by_similar_name(hotel_name)
 
         if found_hotels is None:
             print("Hotel nicht gefunden.")
@@ -645,7 +640,7 @@ def view_hotel_reviews_ui():
         print(f"\nBewertungen für das Hotel: {selected_hotel.name}")
         print("-" * 50)
 
-        reviews = review_dal.read_reviews_by_hotel_id(selected_hotel.hotel_id)
+        reviews = review_manager.read_reviews_by_hotel_id(selected_hotel.hotel_id)
 
         if not reviews:
             print(f"Noch keine Bewertungen für {selected_hotel.name} vorhanden.")
