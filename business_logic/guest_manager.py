@@ -134,7 +134,7 @@ class GuestManager:
         fig.show()
 
     #In business_logic/guest_manager.py sind die Funktionen zur Verwaltung von Gästen zwar implementiert, aber sie werden nirgendwo aufgerufen.
-    #m UI-Bereich werden dagegen die Methoden des Data-Access-Layers direkt genutzt. Beispielsweise ruft admin_ui.py beim Aktualisieren eines Gastes guest_dal.update_guest(guest) auf, ohne den GuestManager zu verwenden.
+    #m UI-Bereich werden dagegen die Methoden des Data-Access-Layers direkt genutzt. Beispielsweise ruft oldadmin_ui.py beim Aktualisieren eines Gastes guest_dal.update_guest(guest) auf, ohne den GuestManager zu verwenden.
     #Da in den vorhandenen UI-Modulen keine Aufrufe an get_guest_by_id, get_all_guests, update_guest oder delete_guest erfolgen und stattdessen direkt mit dem GuestDataAccess gearbeitet wird, bleiben diese Funktionen im GuestManager ungenutzt.
     #Sie wurden als Schnittstelle vorgesehen, um Datenbankzugriffe zu kapseln, doch die Implementierung greift an vielen Stellen direkt auf den DAL zu.
     #Dadurch kommen die genannten Methoden schlicht nicht zum Einsatz.
