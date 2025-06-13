@@ -412,11 +412,6 @@ def calculate_saison_room_price(check_in=None, check_out=None, matching_hotels=N
     return None
 
 
-results = user_search_hotels_from_data()
-matching_hotels, check_in_date, check_out_date = results
-calculate_saison_room_price(check_in_date, check_out_date, matching_hotels)
-
-
 
 ## User Stories mit DB-Schemaänderung
 
