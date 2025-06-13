@@ -25,6 +25,40 @@ import sqlite3
 import plotly.express as px
 import matplotlib.pyplot as plt
 
+class Admin:
+    def __init__(self, db_path: str | None = None) -> None:
+        self.__hotel_manager = HotelManager(db_path)
+        self.__booking_manager = BookingManager(db_path)
+        self.__guest_manager = GuestManager(db_path)
+        self.__room_manager = RoomManager()
+        self.__room_facilities_manager = RoomFacilitiesManager(db_path)
+        self.__room_type_manager = RoomTypeManager(RoomTypeDataAccess())
+        self.__facilities_manager = FacilitiesManager(FacilityDataAccess())
+        self.__address_manager = AddressManager(db_path)
+
+    def create_hotel(self) -> None:
+        admin_create_hotel_ui()
+
+    def delete_hotel(self) -> None:
+        admin_delete_hotel_ui()
+
+    def update_hotel_details(self) -> None:
+        update_hotel_details_ui()
+
+    def update_hotel_details_without_address(self) -> None:
+        update_hotel_details_without_address_ui()
+
+    def read_all_bookings(self) -> None:
+        read_all_bookings_ui()
+
+    def show_rooms_with_facilities_by_hotel(self) -> None:
+        show_rooms_with_facilities_by_hotel_ui()
+
+    def main_menu(self) -> None:
+        admin_main_menu_ui()
+
+    def demographics(self) -> None:
+        demographics_ui()
 
 #3. Als Admin des Buchungssystems möchte ich die Möglichkeit haben, Hotelinformationen zu pflegen, um aktuelle Informationen im System zu haben.
 #3.1. Ich möchte neue Hotels zum System hinzufügen
@@ -139,7 +173,7 @@ def admin_create_hotel_ui():
 
 
 # 3.2. Ich möchte Hotels aus dem System entfernen
-def admin_delete_hotel_ui():
+def admin_delete_hotel_ui(self):
     manager = HotelManager()
     while True:
         hotel_name = input("Gib den Namen des Hotels an, dass du löschen möchtest: ")
@@ -176,7 +210,7 @@ def admin_delete_hotel_ui():
 
 # 3.3. Ich möchte die Informationen bestimmter Hotels aktualisieren, z. B. den Namen, die Sterne usw.
 #Szenario 1
-def update_hotel_details_ui():
+def update_hotel_details_ui(self):
     manager = HotelManager()
     while True:
         hotel_name = input("Gib den Namen des Hotels an, dass du aktualisieren möchtest: ")
