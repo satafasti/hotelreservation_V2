@@ -53,3 +53,12 @@ class RoomManager:
         max_guests = int(input("Maximale Anzahl Gäste für das Zimmer (Single (max.1), Double (max.2), Suite (max.4), Family Room (max.5), Penthouse (max.6): "))
         price_per_night = float(input("Gib den Preis pro Nacht für das Zimmer an: "))
         return room_number, description, max_guests, price_per_night
+
+    def read_room_by_id(self, room_id: int) -> model.Room | None:
+        return self.__room_dal.read_room_by_id(room_id)
+
+    def read_rooms_by_hotel(self, hotel: model.Hotel) -> list[model.Room]:
+        return self.__room_dal.read_rooms_by_hotel(hotel)
+
+    def update_room(self, room: model.Room) -> None:
+        self.__room_dal.update_room(room)
