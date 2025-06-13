@@ -311,7 +311,7 @@ class GuestUI:
         print("Kostenfreie Stornierung bis 48 Stunden vor Anreise möglich. Danach fällt eine Gebühr von 50% an.")
 
 #5. Als Gast möchte ich nach meinem Aufenthalt eine Rechnung erhalten, damit ich einen Zahlungsnachweis habe. Hint: Fügt einen Eintrag in der «Invoice» Tabelle hinzu.
-def create_invoice_for_guest_ui():
+def create_invoice_for_guest_ui(self):
     from business_logic.invoice_manager import InvoiceManager
     from datetime import datetime
 
@@ -358,7 +358,7 @@ def create_invoice_for_guest_ui():
 
 
 #6. Als Gast möchte ich meine Buchung stornieren, damit ich nicht belastet werde, wenn ich das Zimmer nicht mehr benötige. Hint: Sorgt für die entsprechende Invoice.
-def cancel_booking_ui():
+def cancel_booking_ui(self):
     print("Buchung stornieren")
 
     try:
@@ -393,7 +393,7 @@ def cancel_booking_ui():
 
 # 7. Als Gast möchte ich eine dynamische Preisgestaltung auf der Grundlage der Nachfrage sehen, damit ich ein Zimmer zum besten Preis buchen kann.
 
-def choose_hotel_ui(check_in=None, check_out=None):
+def choose_hotel_ui(self, check_in=None, check_out=None):
     hotel_name = input("Geben Sie den Hotelnamen ein, dass Sie buchen möchten: ")
     if not hotel_name:
         print("Kein Hotelname eingegeben.")
@@ -550,7 +550,7 @@ def choose_hotel_ui(check_in=None, check_out=None):
 ## User Stories mit DB-Schemaänderung
 
 #3. Als Gast möchte ich nach meinem Aufenthalt eine Bewertung für ein Hotel abgeben, damit ich meine Erfahrungen teilen kann.
-def hotel_review_ui():
+def hotel_review_ui(self):
     print("Geben Sie Ihre Bewertung für Ihr Hotel ab. \n")
     hotel_manager = HotelManager()
     hotel_review_manager = HotelReviewManager()
