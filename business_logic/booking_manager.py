@@ -1,6 +1,7 @@
 from data_access.booking_dal import BookingDataAccess
 from model.booking import Booking
 from datetime import date
+from typing import List
 
 
 class BookingManager:
@@ -23,6 +24,9 @@ class BookingManager:
         )
 
         return self.__dal.create_booking(booking)
+
+    def read_all_bookings(self) -> List[Booking]:
+        return self.__dal.read_all_bookings()
 
     def calculate_dynamic_price(self, base_price: float, check_in: date) -> float:
         month = check_in.month
@@ -107,9 +111,6 @@ class BookingManager:
 
     #def read_booking_by_id(self, booking_id: int) -> Optional[Booking]:
         #return self.__dal.read_booking_by_id(booking_id)
-
-    #def read_all_bookings(self) -> List[Booking]:
-        #return self.__dal.read_all_bookings()
 
     #def update_booking(self, booking: Booking):
         #self.__dal.update_booking(Booking)
