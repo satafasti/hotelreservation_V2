@@ -17,6 +17,11 @@ class GuestManager:
     def get_guest_by_email(self, email: str) -> Optional[Guest]:
         return self.__dal.read_guest_by_email(email)
 
+    def update_guest(self, guest: Guest) -> None:
+         self.__dal.update_guest(guest)
+
+    def get_guest_by_id(self, guest_id: int) -> Optional[Guest]:
+        return self.__dal.read_guest_by_id(guest_id)
 
     def get_all_guest_details_for_hotel(self, hotel_id: int) -> list[dict]:
 
@@ -134,14 +139,9 @@ class GuestManager:
     #Sie wurden als Schnittstelle vorgesehen, um Datenbankzugriffe zu kapseln, doch die Implementierung greift an vielen Stellen direkt auf den DAL zu.
     #Dadurch kommen die genannten Methoden schlicht nicht zum Einsatz.
 
-    #def get_guest_by_id(self, guest_id: int) -> Optional[Guest]:
-        #return self.__dal.read_guest_by_id(guest_id)
 
     #def get_all_guests(self) -> List[Guest]:
         #return self.__dal.read_all_guests()
-
-    #def update_guest(self, guest: Guest) -> None:
-         #self.__dal.update_guest(guest)
 
     #def delete_guest(self, guest: Guest) -> None:
         #self.__dal.delete_guest(guest)
