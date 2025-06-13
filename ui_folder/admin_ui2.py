@@ -173,7 +173,7 @@ def admin_create_hotel_ui():
 
 
 # 3.2. Ich möchte Hotels aus dem System entfernen
-def admin_delete_hotel_ui(self):
+def admin_delete_hotel_ui():
     manager = HotelManager()
     while True:
         hotel_name = input("Gib den Namen des Hotels an, dass du löschen möchtest: ")
@@ -210,7 +210,7 @@ def admin_delete_hotel_ui(self):
 
 # 3.3. Ich möchte die Informationen bestimmter Hotels aktualisieren, z. B. den Namen, die Sterne usw.
 #Szenario 1
-def update_hotel_details_ui(self):
+def update_hotel_details_ui():
     manager = HotelManager()
     while True:
         hotel_name = input("Gib den Namen des Hotels an, dass du aktualisieren möchtest: ")
