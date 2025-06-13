@@ -4,6 +4,13 @@ class FacilitiesManager:
     def __init__(self, facilities_dal: FacilityDataAccess):
         self._dal = facilities_dal
 
+    def read_facility_by_id(self, facility_id: int):
+        return self._dal.read_facility_by_id(facility_id)
+
+    def update_facility(self, facility_id: int, facility_name: str):
+         if not facility_name:
+             raise ValueError("Facility name wird benoetigt")
+         self._dal.update_facility(facility_id, facility_name)
 
 
     # Die folgenden Facility-Methoden sind aktuell nicht im Einsatz,
@@ -20,11 +27,6 @@ class FacilitiesManager:
 
     # def get_all_facilities(self) -> list[model.Facilities]:
     #     return self._dal.read_all_facilities()
-
-    # def update_facility(self, facility_id: int, facility_name: str):
-    #     if not facility_name:
-    #         raise ValueError("Facility name wird benoetigt")
-    #     self._dal.update_facility(facility_id, facility_name)
 
     # def delete_facility(self, facility_id: int):
     #     self._dal.delete_facility(facility_id)
