@@ -24,7 +24,6 @@ class RoomManager:
     def read_rooms_by_hotel(self, hotel: model.Hotel) -> List[model.Room]:
         return self.__room_dal.read_rooms_by_hotel(hotel.hotel_id)
 
-
     def show_room_info(self, room, price_info, check_in=None, check_out=None):
         print(f"  - Zimmer {room.room_number}")
         print(f"    Typ: {room.room_type.description}")
@@ -60,7 +59,5 @@ class RoomManager:
         return room_number, description, max_guests, price_per_night
 
  
-
-
     def update_room(self, room: model.Room) -> None:
         self.__room_dal.update_room(room)
