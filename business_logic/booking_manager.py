@@ -1,12 +1,17 @@
 from data_access.booking_dal import BookingDataAccess
+from data_access.room_dal import RoomDataAccess
+from data_access.guest_dal import GuestDataAccess
+import pandas as pd
 from model.booking import Booking
-from datetime import date
+from datetime import datetime, date
 from typing import List
 
 
 class BookingManager:
     def __init__(self, db_path: str = None):
         self.__dal = BookingDataAccess(db_path)
+        self.__room_dal = RoomDataAccess(db_path)
+        self.__guest_dal = GuestDataAccess(db_path)
 
     def create_booking(self, guest_id: int, room_id: int, check_in_date: date, check_out_date: date, price_per_night: float):
         num_nights = (check_out_date - check_in_date).days
@@ -111,6 +116,43 @@ class BookingManager:
                 return input_date
             except ValueError:
                 print("Bitte Datum im Format YYYY-MM-DD eingeben.")
+
+    def get_all_bookings_as_dataframe(self) -> pd.DataFrame:
+        """Gibt alle Buchungen als strukturierten DataFrame zurück"""
+        bookings = self.__dal.read_all_bookings()
+
+        if not bookings:
+            return pd.DataFrame()
+
+        booking_data = []
+
+        for booking in bookings:
+            # Gast-Informationen laden
+            guest = self.__guest_dal.read_guest_by_id(booking.guest_id)
+            guest_name = f"{guest.first_name} {guest.last_name}" if guest else "Unbekannt"
+
+            # Zimmer- und Hotel-Informationen laden
+            room = self.__room_dal.read_room_by_id(booking.room_id)
+            hotel_name = room.hotel.name if room and room.hotel else "Unbekanntes Hotel"
+            room_number = room.room_number if room else "Unbekannt"
+            room_type = room.room_type.description if room and room.room_type else "Unbekannt"
+
+            # Status
+            status = "Storniert" if booking.is_cancelled else "Aktiv"
+
+            booking_data.append({
+                'booking_id': booking.booking_id,
+                'guest_name': guest_name,
+                'hotel_name': hotel_name,
+                'room_number': room_number,
+                'room_type': room_type,
+                'check_in': booking.check_in_date,
+                'check_out': booking.check_out_date,
+                'total_amount': booking.total_amount,
+                'status': status
+            })
+
+        return pd.DataFrame(booking_data)
 
 
 #Im Projekt wurde zwar im BookingManager ein ganzer Satz von Methoden definiert – darunter read_booking_by_id, read_all_bookings, update_booking, delete_booking und find_available_room.
