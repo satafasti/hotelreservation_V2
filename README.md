@@ -30,7 +30,7 @@ Stirling Mulholland
 
 - Link zum Präsentationsvideo 
 
-	[Demo Video]()
+	[Demo Video](https://fhnw365.sharepoint.com/:v:/r/teams/E-FS25_BSc_BAI_AEP_M365-B-Team12/Freigegebene%20Dokumente/B-Team12/B-Team12_Demovideo.mp4?csf=1&web=1&e=CXb0Yf)
 
 Unser Deepnote-Projekt ist wie folgt aufgebaut:
 
@@ -77,12 +77,12 @@ Unser Projekt basiert auf einer klassischen Mehrschichtenarchitektur, bestehend 
 2. Warum wir die Manager so gestaltet haben
 - Manager bündeln zusammengehörige Operationen (z.B. create_invoice, read_invoice, cancel_invoice im InvoiceManager).
 - Die Manager prüfen Eingaben zusätzlich zur DAL-Validierung (z.B. ob eine Buchung storniert wurde oder ob bereits eine Rechnung existiert).
-- Manager verwenden jeweils nur die DALs, die sie wirklich benötigen (InvoiceManager nutzt z. B. zusätzlich BookingDataAccess, um Buchungsdaten zu lesen).
+- Manager verwenden jeweils nur die DALs, die sie wirklich benötigen (InvoiceManager nutzt z.B. zusätzlich BookingDataAccess, um Buchungsdaten zu lesen).
 
 3. Modellverknüpfungen
-- Verknüpfungen sind objektorientiert modelliert, z. B. referenziert ein Room sein Hotel-Objekt direkt, nicht nur dessen ID.
+- Verknüpfungen sind objektorientiert modelliert, z.B. referenziert ein Room sein Hotel-Objekt direkt, nicht nur dessen ID.
 - Komposition wird verwendet (ein Hotel enthält Räume; ein Raum enthält Ausstattung).
-- Bidirektionale Beziehungen wie Room ↔ Hotel werden gepflegt, indem z. B. beim Setzen eines Hotels im Room automatisch das Hotel den Room ergänzt (hotel.add_room(self)).
+- Bidirektionale Beziehungen wie Room ↔ Hotel werden gepflegt, indem z.B. beim Setzen eines Hotels im Room automatisch das Hotel den Room ergänzt (hotel.add_room(self)).
 Details zu den Modellverknüpfungen lassen sich direkt in der Dokumentation im Abschnitt "Modell Schicht" finden: 
 [Deepnote Dokumentation](https://deepnote.com/workspace/FHNW-98157d3c-c139-4c9e-a143-1cabfe774ad5/project/B-Team-12-Hotelreservation-Dokumentation-46c1a4c2-95b4-485b-8dd0-e1e655bdad30/notebook/Dokumentation-4f84071aa5d042e99ec482fafed1425f?utm_content=46c1a4c2-95b4-485b-8dd0-e1e655bdad30)
 
@@ -110,11 +110,11 @@ Sobald diese geladen sind, lassen sich über die Benutzeroberfläche "Hauptmenü
 
 3. Alternativ Notebook "UI- Menü": Import Block ausführen und UI-Module laden (admin_ui, guest_ui) für direkten Zugriff
 
-4. Funktionen direkt im UI testen (z. B. Hotels anzeigen, Zimmer buchen, stornieren etc.)
+4. Funktionen direkt im UI testen (z.B. Hotels anzeigen, Zimmer buchen, stornieren etc.)
 
 ## Zusammenarbeit und Projektaufbau
 
-Zu Beginn des Projektes haben wir uns für eine Aufteilung des Aufbau der Klassen (über alle Layers hinweg) entschieden und dabei ein KANBAN-Board direkt in GitHub verwendet zwecks Tracking der Aufgaben.
+Zu Beginn des Projektes haben wir uns für eine Aufteilung des Aufbaus der Klassen (über alle Layers hinweg) entschieden und dabei ein KANBAN-Board direkt in GitHub verwendet zwecks Tracking der Aufgaben.
 
 Initial wurden die Klassen wie folgt aufgeteilt:
 
@@ -149,7 +149,7 @@ zum jetzigen sehr fortgeschrittenen Projektverlauf allerdings nicht riskieren wo
 
 ## Reflexion
 
-„Keep it simple, stupid“ sollte das Motto eines jeden angehenden Programmierers sein und ist es wahrscheinlich auch für viele Erfahrene. 
+"Keep it simple, stupid" sollte das Motto eines jeden angehenden Programmierers sein und ist es wahrscheinlich auch für viele Erfahrene. 
 Dies hat sich schnell als gute Leitidee gezeigt, um das Projekt in einem für unseren Wissensstand übersichtlichen Mass umsetzen zu können.
 Unser Ziel war es, zum ersten Mal Computersprache zu sprechen. Wir wollten dem PC sagen, was und wie er etwas machen sollte, 
 ohne eine hübsche Benutzeroberfläche bedienen zu müssen.
@@ -166,15 +166,15 @@ Wie die einzelnen Schichten zusammenhingen, war uns lange Zeit ein Rätsel, bis 
 Sobald wir Daten erhalten konnten, wurden schon fleissig die ersten User Stories zum Laufen gebracht.
 Eureka! Ein Erfolgserlebnis nach dem anderen!
 
-Nach jeder Gruppenarbeit sollte es heissen: „Ich bin teamfähiger geworden.”
-Insbesondere bei dieser komplexen Arbeit, denn das Resultat wurde durch die  Zusammenarbeit und gegenseitige Unterstützung im Team ermöglicht.
+Nach jeder Gruppenarbeit sollte es heissen: "Ich bin teamfähiger geworden."
+Insbesondere bei dieser komplexen Arbeit, denn das Resultat wurde durch die Zusammenarbeit und gegenseitige Unterstützung im Team ermöglicht.
 Der Erfolg, einen Code selbstständig zu schreiben und diesen nach Trial and Error zum Laufen zu bringen, ist unbeschreiblich.
 Unser Zeitmanagement war leider nicht optimal, was auch daran lag, dass wir nicht wussten, wie wir selbstständig vorankommen. 
 Dies führte dazu, dass wir keine zusätzlichen User Stories umsetzen konnten.
 Es hat sich massiv gelohnt, bei den Coaches Hilfe zu holen, um den Endspurt zu meistern. 
 Ein neues GitHub aufzusetzen ist zwar keine gute Lösung, weil dabei die Historie verloren geht. 
 Aber es hat uns motiviert, den Code von Grund auf noch einmal anzuschauen und zu korrigieren. 
-Weitere Verbesserungen wären in den Klassen „Manager”, „UI” und „Data Access” möglich. Die Funktionen sind
+Weitere Verbesserungen wären in den Klassen "Manager", "UI" und "Data Access" möglich. Die Funktionen sind
 nicht immer korrekt getrennt worden. Manchmal wurden die Daten aus der Datenbank direkt mit SQL-Funktionen wie Joins und Group By geholt.
 Anstatt diese als Objekte der Modellklassen zu laden und nachher weiterzuverarbeiten. 
 Den gelernten Stoff werden wir in Zukunft sicher im Studium und bei der Arbeit anwenden können.
