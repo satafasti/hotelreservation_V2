@@ -324,48 +324,34 @@ class AdminUI:
 
 
     #8. Als Admin des Buchungssystems möchte ich alle Buchungen aller Hotels sehen können, um eine Übersicht zu erhalten.
-    def read_all_bookings_ui (self) -> None:
-        booking_manager = BookingManager()
-        guest_manager = GuestManager()
-        room_manager = RoomManager()
-        bookings: List[Booking] = booking_manager.read_all_bookings()
 
-        print("Übersicht aller Buchungen:")
-        if not bookings:
+    def show_all_bookings_ui(self) -> None:
+
+        df = self.__booking_manager.get_all_bookings_as_dataframe()
+
+        print("\n=== ÜBERSICHT ALLER BUCHUNGEN ===")
+
+        if df.empty:
             print("Keine Buchungen gefunden.")
             return
 
-        for b in bookings:
-            status = "storniert" if b.is_cancelled else "aktiv"
-            guest = guest_manager.get_guest_by_id(b.guest_id)
-            if guest:
-                guest_info = f"{guest.first_name} {guest.last_name} (ID: {b.guest_id})"
-            else:
-                guest_info = f"ID: {b.guest_id}"
+        print(f"Insgesamt {len(df)} Buchungen gefunden:\n")
 
-            room = room_manager.read_room_by_id(b.room_id)
-            if room and room.hotel:
-                hotel_info = f"{room.hotel.name} (ID: {room.hotel.hotel_id})"
-            else:
-                hotel_info = "Unbekanntes Hotel"
 
-            print(
-                f"  - Buchung ID: {b.booking_id}, Gast ID: {b.guest_id}, "
-                f"Zimmer ID: {b.room_id}, "
-                f"  - Buchung ID: {b.booking_id}, Gast: {guest_info}, "
-                f"Hotel: {hotel_info}, Zimmer ID: {b.room_id}, "
-                f"von {b.check_in_date} bis {b.check_out_date}, "
-                f"Betrag: {b.total_amount:.2f} CHF, Status: {status}"
-            )
+        display_df = df.copy()
+        display_df.columns = ['ID', 'Gast', 'Hotel', 'Zimmer', 'Typ', 'Check-in', 'Check-out', 'Betrag (CHF)', 'Status']
 
+
+        display_df['Betrag (CHF)'] = display_df['Betrag (CHF)'].apply(lambda x: f"{x:.2f}")
+
+        print(display_df.to_string(index=False, max_colwidth=20))
+        print(f"\nGesamtanzahl: {len(df)} Buchungen")
 
     #9. Als Admin möchte ich eine Liste der Zimmer mit ihrer Ausstattung sehen, damit ich sie besser bewerben kann.
-    def show_rooms_with_facilities_by_hotel_ui(self) -> None:
-        hotel_manager = HotelManager()
-        room_manager = RoomManager()
-        room_fac_manager = RoomFacilitiesManager()
 
-        hotels = hotel_manager.read_all_hotels()
+    def show_rooms_with_facilities_by_hotel_ui(self) -> None:
+
+        hotels = self.__hotel_manager.read_all_hotels()
         if not hotels:
             print("Keine Hotels gefunden.")
             return
@@ -380,23 +366,22 @@ class AdminUI:
             print("Ungültige Eingabe.")
             return
 
-        hotel = hotel_manager.read_hotel(hotel_id)
+        hotel = self.__hotel_manager.read_hotel(hotel_id)
         if not hotel:
             print("Hotel nicht gefunden.")
             return
 
-        rooms = room_manager.read_rooms_by_hotel(hotel)
+        rooms = self.__room_manager.read_rooms_by_hotel(hotel)
         if not rooms:
             print("Keine Zimmer für dieses Hotel gefunden.")
             return
 
         print(f"Zimmer im Hotel '{hotel.name}':")
         for room in rooms:
-            facilities = room_fac_manager.read_facilities_by_room(room)
+            facilities = self.__room_facilities_manager.read_facilities_by_room(room)
             names = [f.facility_name for f in facilities]
             ausstattung = ", ".join(names) if names else "Keine Ausstattung"
             print(f"- Zimmernummer: {room.room_number}, Zimmer-ID: {room.room_id}, Ausstattung: {ausstattung}")
-
 
 
     #10. Als Admin möchte ich in der Lage sein, Stammdaten zu verwalten, z.B. Zimmertypen, Einrichtungen, und Preise in Echtzeit zu aktualisieren, damit das Backend-System aktuelle Informationen hat.
