@@ -448,9 +448,8 @@ class AdminUI:
                     if new_name.strip():
                         facility_manager.update_facility(facility_id, new_name)
                     else:
-                        new_name = facility.facility_name
-                    updated = facility_manager.read_facility_by_id(facility_id)
-                    print(f"Ausstattung aktualisiert: {updated.facility_name}")
+                        updated = facility_manager.read_facility_by_id(facility_id)
+                        print(f"Ausstattung aktualisiert: {updated.facility_name}")
                 except Exception as e:
                     print("Fehler:", e)
 
