@@ -36,33 +36,10 @@ class Admin:
         self.__facilities_manager = FacilitiesManager(FacilityDataAccess())
         self.__address_manager = AddressManager(db_path)
 
-    def create_hotel(self) -> None:
-        admin_create_hotel_ui()
-
-    def delete_hotel(self) -> None:
-        admin_delete_hotel_ui()
-
-    def update_hotel_details(self) -> None:
-        update_hotel_details_ui()
-
-    def update_hotel_details_without_address(self) -> None:
-        update_hotel_details_without_address_ui()
-
-    def read_all_bookings(self) -> None:
-        read_all_bookings_ui()
-
-    def show_rooms_with_facilities_by_hotel(self) -> None:
-        show_rooms_with_facilities_by_hotel_ui()
-
-    def main_menu(self) -> None:
-        admin_main_menu_ui()
-
-    def demographics(self) -> None:
-        demographics_ui()
 
 #3. Als Admin des Buchungssystems möchte ich die Möglichkeit haben, Hotelinformationen zu pflegen, um aktuelle Informationen im System zu haben.
 #3.1. Ich möchte neue Hotels zum System hinzufügen
-def admin_create_hotel_ui():
+def admin_create_hotel_ui(self) -> None:
     print("Hallo - Bitte erstellen Sie ein neues Hotel.")
     street = input("Gib die Strasse des Hotels ein: ")
     city = input("Gib den Ort des Hotels ein: ")
@@ -171,9 +148,8 @@ def admin_create_hotel_ui():
     print(f"\nHotel '{result.name}' mit allen Zimmern erfolgreich erstellt.")
 
 
-
 # 3.2. Ich möchte Hotels aus dem System entfernen
-def admin_delete_hotel_ui():
+def admin_delete_hotel_ui(self) -> None:
     manager = HotelManager()
     while True:
         hotel_name = input("Gib den Namen des Hotels an, dass du löschen möchtest: ")
@@ -210,7 +186,7 @@ def admin_delete_hotel_ui():
 
 # 3.3. Ich möchte die Informationen bestimmter Hotels aktualisieren, z. B. den Namen, die Sterne usw.
 #Szenario 1
-def update_hotel_details_ui():
+def update_hotel_details_ui(self) -> None:
     manager = HotelManager()
     while True:
         hotel_name = input("Gib den Namen des Hotels an, dass du aktualisieren möchtest: ")
@@ -291,7 +267,7 @@ def update_hotel_details_ui():
 
 
 #Szenario 2
-def update_hotel_details_without_address_ui():
+def update_hotel_details_without_address_ui(self) -> None:
     manager = HotelManager()
     while True:
         hotel_name = input("Gib den Namen des Hotels an, dass du aktualisieren möchtest: ")
@@ -348,7 +324,7 @@ def update_hotel_details_without_address_ui():
 
 
 #8. Als Admin des Buchungssystems möchte ich alle Buchungen aller Hotels sehen können, um eine Übersicht zu erhalten.
-def read_all_bookings_ui ():
+def read_all_bookings_ui (self) -> None:
     booking_manager = BookingManager()
     guest_manager = GuestManager()
     room_manager = RoomManager()
@@ -384,7 +360,7 @@ def read_all_bookings_ui ():
 
 
 #9. Als Admin möchte ich eine Liste der Zimmer mit ihrer Ausstattung sehen, damit ich sie besser bewerben kann.
-def show_rooms_with_facilities_by_hotel_ui():
+def show_rooms_with_facilities_by_hotel_ui(self) -> None:
     hotel_manager = HotelManager()
     room_manager = RoomManager()
     room_fac_manager = RoomFacilitiesManager()
@@ -424,7 +400,7 @@ def show_rooms_with_facilities_by_hotel_ui():
 
 
 #10. Als Admin möchte ich in der Lage sein, Stammdaten zu verwalten, z.B. Zimmertypen, Einrichtungen, und Preise in Echtzeit zu aktualisieren, damit das Backend-System aktuelle Informationen hat.
-def admin_main_menu_ui():
+def admin_main_menu_ui(self) -> None:
     room_type_manager = RoomTypeManager(RoomTypeDataAccess())
     facility_manager = FacilitiesManager(FacilityDataAccess())
     room_manager = RoomManager()
@@ -585,7 +561,7 @@ def admin_main_menu_ui():
 # User Stories mit Datenvisualisierung
 # 2. Als Admin möchte ich eine Aufschlüsselung der demografischen Merkmale meiner Gäste sehen, damit ich gezieltes Marketing planen kann. Hint: Wählt ein geeignetes Diagramm, um die Verteilung der Gäste nach verschiedenen Merkmalen darzustellen (z. B. Altersspanne, Nationalität, wiederkehrende Gäste). Möglicherweise müssen Sie der Tabelle „Gäste“ einige Spalten hinzufügen.
 
-def demographics_ui():
+def demographics_ui(self) -> None:
 
     print("DEMOGRAFISCHE ANALYSE")
     print("-" * 30)
