@@ -9,7 +9,7 @@ from business_logic.room_manager import RoomManager
 from business_logic.room_type_manager import RoomTypeManager
 from business_logic.hotel_review_manager import HotelReviewManager
 from business_logic.payment_manager import PaymentManager
-
+from data_access.room_type_dal import RoomTypeDataAccess
 
 from datetime import datetime
 from business_logic.hotel_manager import HotelManager
@@ -37,6 +37,7 @@ class GuestUI:
         self.__booking_manager = BookingManager(db_path)
         self.__room_manager = RoomManager(db_path)
         self.__room_type_manager = RoomTypeManager(db_path)
+        self.__room_type_manager = RoomTypeManager(RoomTypeDataAccess(db_path))
         self.__room_facility_manger = RoomFacilitiesManager(db_path)
         self.__hotel_review_manager = HotelReviewManager(db_path)
 
