@@ -1,3 +1,20 @@
+import os
+import shutil
+import pandas as pd
+import model
+import data_access
+import business_logic
+import sqlite3
+from contextlib import closing
+
+db_path = "./database/hotelreservation_DB_9.6.2025.db"
+working_db = "./database/working.db"
+
+shutil.copyfile(db_path, working_db)
+
+os.environ["DB_FILE"] = working_db
+1
+
 from ui_folder.admin_ui import AdminUI
 from ui_folder.guest_ui import GuestUI
 
