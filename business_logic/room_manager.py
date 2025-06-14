@@ -4,8 +4,8 @@ import model
 
 
 class RoomManager:
-    def __init__(self) -> None:
-        self.__room_dal = data_access.RoomDataAccess()
+    def __init__(self, db_path: str = None) -> None:
+        self.__room_dal = data_access.RoomDataAccess(db_path)
 
     # Aktuell sind diese Methoden nicht im Einsatz, werden aber für potenzielle Systemerweiterungen bereitgehalten.
     # def create_room(self, hotel_id: int, room_number: str, type_id: int, price_per_night: float, hotel: model.Hotel = None) -> model.Room:

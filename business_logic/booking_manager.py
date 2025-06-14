@@ -95,6 +95,22 @@ class BookingManager:
         print(f"Preisspanne pro Nacht: {price_summary['min_price']:.2f} - {price_summary['max_price']:.2f} CHF")
 
 
+    def parse_date(self, prompt: str) -> date:
+        """Hilfsfunktion für Datumseingabe mit Validierung"""
+        while True:
+            try:
+                input_date = datetime.strptime(input(prompt), "%Y-%m-%d").date()
+
+                # Prüfen ob Datum in der Vergangenheit liegt
+                today = date.today()
+                if input_date < today:
+                    print(f"Datum liegt in der Vergangenheit! Heutiges Datum: {today}")
+                    print("Bitte geben Sie ein Datum ab heute ein.")
+                    continue
+
+                return input_date
+            except ValueError:
+                print("Bitte Datum im Format YYYY-MM-DD eingeben.")
 
 
 #Im Projekt wurde zwar im BookingManager ein ganzer Satz von Methoden definiert – darunter read_booking_by_id, read_all_bookings, update_booking, delete_booking und find_available_room.

@@ -203,464 +203,490 @@ class GuestUI:
 
 # 4. Als Gast möchte ich ein Zimmer in einem bestimmten Hotel buchen, um meinen Urlaub zu planen.
 # 6.(DB mit Schemaänderung) Als Gast möchte ich meine Buchung mit der von mir bevorzugten Zahlungsmethode bezahlen, damit ich meine Reservierung abschliessen kann.
-    def parse_date(self, prompt: str) -> date:
-        while True:
-            try:
-                return datetime.strptime(input(prompt), "%Y-%m-%d").date()
-            except ValueError:
-                print("Bitte gib das Datum im Format YYYY-MM-DD ein.")
-
-
     def create_booking_and_pay_ui(self):
         try:
+            # 1. Hotel und Zimmer suchen
+            print("=== Hotel- und Zimmersuche ===")
+            results = self.user_search_hotels_from_data()
 
-            matching_hotels, check_in, check_out, available_rooms = self.show_room_type_details_for_selected_hotel()
-
-            if not available_rooms:
-                print("Keine verfügbaren Zimmer gefunden.")
+            if not results:
+                print("Keine Suchergebnisse erhalten.")
                 return
 
-            print("\nVerfügbare Zimmer:")
-            for i, room in enumerate(available_rooms, 1):
-                print(
-                    f"{i}. ID: {room['id']} - Zimmer {room['room_number']} - {room['room_type']} - {room['price_per_night']:.2f} CHF/Nacht")
+            matching_hotels, check_in_dt, check_out_dt = results
+
+            if not matching_hotels:
+                print("Keine passenden Hotels gefunden.")
+                return
+
+            # 2. Hotel auswählen
+            print("\n=== Hotel auswählen ===")
+            print("Gefundene Hotels:")
+            for i, hotel in enumerate(matching_hotels, 1):
+                print(f"{i}. {hotel.name} - {hotel.address.city} ({hotel.stars} Sterne)")
 
             while True:
                 try:
-                    room_choice = int(input("Wählen Sie ein Zimmer (Nummer): ")) - 1
-                    if 0 <= room_choice < len(available_rooms):
-                        selected_room_info = available_rooms[room_choice]
+                    hotel_choice = int(input(f"Wählen Sie ein Hotel (1-{len(matching_hotels)}): "))
+                    if 1 <= hotel_choice <= len(matching_hotels):
+                        selected_hotel = matching_hotels[hotel_choice - 1]
                         break
                     print("Ungültige Auswahl.")
                 except ValueError:
                     print("Bitte eine gültige Nummer eingeben.")
 
-            print(
-                f"\nGewähltes Zimmer: {selected_room_info['room_type']} - {selected_room_info['price_per_night']:.2f} CHF pro Nacht")
-            if selected_room_info['total_price']:
-                print(f"Gesamtpreis: {selected_room_info['total_price']:.2f} CHF")
+            # 3. Zimmer auswählen
+            print(f"\n=== Zimmer in {selected_hotel.name} auswählen ===")
+            available_rooms = selected_hotel.rooms
 
-            confirm = input("Möchten Sie dieses Zimmer buchen? (ja/nein): ").strip().lower()
+            if not available_rooms:
+                print("Keine verfügbaren Zimmer.")
+                return
+
+            print("Verfügbare Zimmer:")
+            for i, room in enumerate(available_rooms, 1):
+                nights = (check_out_dt - check_in_dt).days if check_in_dt and check_out_dt else 0
+                total_price = room.price_per_night * nights if nights > 0 else room.price_per_night
+
+                print(f"{i}. Zimmer {room.room_number}")
+                print(f"   Typ: {room.room_type.description} (max. {room.room_type.max_guests} Gäste)")
+                print(f"   Preis: {room.price_per_night:.2f} CHF/Nacht")
+                if nights > 0:
+                    print(f"   Gesamtpreis für {nights} Nächte: {total_price:.2f} CHF")
+                print()
+
+            while True:
+                try:
+                    room_choice = int(input(f"Wählen Sie ein Zimmer (1-{len(available_rooms)}): "))
+                    if 1 <= room_choice <= len(available_rooms):
+                        selected_room = available_rooms[room_choice - 1]
+                        break
+                    print("Ungültige Auswahl.")
+                except ValueError:
+                    print("Bitte eine gültige Nummer eingeben.")
+
+            # 4. Datum eingeben falls nicht vorhanden
+            if not check_in_dt:
+                check_in_dt = self.__booking_manager.parse_date("Check-in Datum (YYYY-MM-DD): ")
+            if not check_out_dt:
+                check_out_dt = self.__booking_manager.parse_date("Check-out Datum (YYYY-MM-DD): ")
+
+            # Datumsvalidierung
+            today = date.today()
+            if check_in_dt < today:
+                print(f"Fehler: Check-in Datum ({check_in_dt}) liegt in der Vergangenheit.")
+                print(f"Heutiges Datum: {today}")
+                return
+
+            if check_out_dt <= check_in_dt:
+                print("Fehler: Check-out muss nach Check-in liegen.")
+                return
+
+            nights = (check_out_dt - check_in_dt).days
+
+            # 5. Buchungsbestätigung anzeigen
+            print(f"\n=== Buchungsbestätigung ===")
+            print(f"Hotel: {selected_hotel.name}")
+            print(f"Zimmer: {selected_room.room_number} ({selected_room.room_type.description})")
+            print(f"Zeitraum: {check_in_dt} bis {check_out_dt} ({nights} Nächte)")
+            print(f"Gesamtpreis: {selected_room.price_per_night * nights:.2f} CHF")
+
+            confirm = input("\nMöchten Sie diese Buchung bestätigen? (ja/nein): ").strip().lower()
             if confirm != "ja":
                 print("Buchung abgebrochen.")
                 return
 
-            guest_data = self.collect_guest_data()
+            # 6. Gastdaten erfassen
+            print("\n=== Gastdaten ===")
+            first_name = input("Vorname: ")
+            last_name = input("Nachname: ")
+            email = input("E-Mail: ")
+            street = input("Straße: ")
+            zip_code = input("PLZ: ")
+            city = input("Ort: ")
 
-            booking = self.booking_manager.process_booking_with_payment(
-                guest_data=guest_data,
-                room_id=selected_room_info['id'],
-                check_in_date=check_in,
-                check_out_date=check_out,
-                price_per_night=selected_room_info['price_per_night']
+            # 7. Gast erstellen oder finden
+            guest = self.__guest_manager.get_guest_by_email(email)
+            if guest:
+                print("Bestehender Gast gefunden.")
+            else:
+                address = Address(0, street, city, zip_code)
+                address = self.__address_manager.create_address(address)
+                guest = self.__guest_manager.create_guest(first_name, last_name, email, address.address_id)
+
+            # 8. Zahlungsmethode wählen
+            print("\n=== Zahlungsmethode ===")
+            print("1 - Kreditkarte")
+            print("2 - PayPal")
+            print("3 - Banküberweisung")
+
+            while True:
+                method_choice = input("Zahlungsmethode wählen (1-3): ").strip()
+                methods = {"1": "Kreditkarte", "2": "PayPal", "3": "Banküberweisung"}
+                payment_method = methods.get(method_choice)
+                if payment_method:
+                    break
+                print("Ungültige Auswahl.")
+
+            # 9. Buchung erstellen
+            booking = self.__booking_manager.create_booking(
+                guest_id=guest.guest_id,
+                room_id=selected_room.room_id,
+                check_in_date=check_in_dt,
+                check_out_date=check_out_dt,
+                price_per_night=selected_room.price_per_night
             )
 
-            if booking:
-                self.display_booking_confirmation(booking, guest_data, selected_room_info, check_in, check_out)
-            else:
-                print("Fehler bei der Buchung.")
+            # 10. Zahlung erstellen
+            self.__payment_manager.create_payment(booking.booking_id, booking.total_amount, payment_method)
+
+            # 11. Erfolgreiche Buchung anzeigen
+            print("\n" + "=" * 50)
+            print("BUCHUNG ERFOLGREICH!")
+            print("=" * 50)
+            print(f"Buchungsnummer: {booking.booking_id}")
+            print(f"Gast: {first_name} {last_name}")
+            print(f"Hotel: {selected_hotel.name}")
+            print(f"Zimmer: {selected_room.room_number}")
+            print(f"Zeitraum: {check_in_dt} bis {check_out_dt}")
+            print(f"Gesamtpreis: {booking.total_amount:.2f} CHF")
+            print(f"Zahlungsmethode: {payment_method}")
+            print("\nVielen Dank für Ihre Buchung!")
+            print("=" * 50)
 
         except Exception as e:
-            print("Fehler bei der Buchung:", e)
-
-    def collect_guest_data(self):
-
-        first_name = input("Vorname: ")
-        last_name = input("Nachname: ")
-        email = input("E-Mail-Adresse: ")
-        street = input("Strasse: ")
-        zip_code = input("PLZ: ")
-        city = input("Ort: ")
-
-
-        print("\nWählen Sie die Zahlungsmethode:")
-        print("1 - Kreditkarte")
-        print("2 - PayPal")
-        print("3 - Banküberweisung")
-        method_choice = input("Bitte wählen (1-3): ").strip()
-        methods = {"1": "Kreditkarte", "2": "PayPal", "3": "Banküberweisung"}
-        payment_method = methods.get(method_choice)
-
-        if payment_method is None:
-            raise ValueError("Ungültige Zahlungsmethode gewählt")
-
-        return {
-            'first_name': first_name,
-            'last_name': last_name,
-            'email': email,
-            'street': street,
-            'zip_code': zip_code,
-            'city': city,
-            'payment_method': payment_method
-        }
-
-    def display_booking_confirmation(self, booking, guest_data, room_info, check_in, check_out):
-
-        nights = (check_out - check_in).days
-
-        print("\nBuchung erfolgreich!")
-        print("Vielen Dank für Ihre Buchung. Wir freuen uns auf Ihren Besuch!\n")
-        print(f"- Gast: {guest_data['first_name']} {guest_data['last_name']}")
-        print(f"- Zimmertyp: {room_info['room_type']}")
-        print(f"- Zimmernummer: {room_info['room_number']}")
-        print(f"- Buchungsnummer: {booking.booking_id}")
-        print(f"- Zeitraum: {check_in} bis {check_out} ({nights} Nächte)")
-        print(f"- Gesamtpreis: {booking.total_amount:.2f} CHF")
-        print(f"- Zahlungsmethode: {guest_data['payment_method']}\n")
-        print("Wichtiger Hinweis:")
-        print("Kostenfreie Stornierung bis 48 Stunden vor Anreise möglich. Danach fällt eine Gebühr von 50% an.")
+            print(f"Fehler bei der Buchung: {e}")
 
 #5. Als Gast möchte ich nach meinem Aufenthalt eine Rechnung erhalten, damit ich einen Zahlungsnachweis habe. Hint: Fügt einen Eintrag in der «Invoice» Tabelle hinzu.
-def create_invoice_for_guest_ui(self):
-    from business_logic.invoice_manager import InvoiceManager
-    from datetime import datetime
 
-    try:
-        booking_id_input = input("Bitte geben Sie die Buchungs-ID ein: ").strip()
-        booking_id = int(booking_id_input)
+    def create_invoice_for_guest_ui(self):
+        """Rechnung für Gast erstellen"""
+        from datetime import datetime
 
-        manager = InvoiceManager()
-        booking = manager.get_booking_by_id(booking_id)
+        try:
+            booking_id_input = input("Bitte geben Sie die Buchungs-ID ein: ").strip()
+            booking_id = int(booking_id_input)
 
-        if not booking:
+            booking = self.__invoice_manager.get_booking_by_id(booking_id)
+
+            if not booking:
+                print("Buchung nicht gefunden.")
+                return
+
+            if booking.is_cancelled:
+                print("Für stornierte Buchungen kann keine Rechnung erstellt werden.")
+                return
+
+            # Prüfen, ob Aufenthalt abgeschlossen
+            today = datetime.now().date()
+            check_out = booking.check_out_date
+            if today < check_out:
+                print("Die Rechnung kann erst nach abgeschlossenem Aufenthalt erstellt werden.")
+                return
+
+            # Rechnung erstellen, falls nicht vorhanden
+            if self.__invoice_manager.invoice_exists(booking_id):
+                invoice = self.__invoice_manager.get_invoice_by_booking_id(booking_id)
+                print("\nDie Rechnung liegt bereits vor:")
+            else:
+                invoice = self.__invoice_manager.create_invoice_if_not_exists(booking_id)
+                print("\nDie Rechnung wurde erfolgreich erstellt:")
+
+            # Rechnung anzeigen
+            print(f"Rechnungsnummer: {invoice.invoice_id}")
+            print(f"Buchungsnummer:  {invoice.booking_id}")
+            print(f"Ausgestellt am:  {invoice.issue_date}")
+            print(f"Gesamtbetrag:    {invoice.total_amount:.2f} CHF")
+
+        except ValueError:
+            print("Ungültige Eingabe. Bitte geben Sie eine gültige Buchungs-ID ein.")
+
+    def cancel_booking_ui(self):
+        """Buchung stornieren"""
+        print("Buchung stornieren")
+
+        try:
+            booking_id = int(input("Buchungs-ID eingeben: "))
+
+            cancelled_booking = self.__booking_manager.cancel_booking(booking_id)
+
+            # Buchungsdaten anzeigen
+            print(f"\nStornierte Buchung:")
+            print(f"Buchungs-ID: {cancelled_booking.booking_id}")
+            print(f"Gast-ID: {cancelled_booking.guest_id}")
+            print(f"Zimmer-ID: {cancelled_booking.room_id}")
+            print(f"Check-in: {cancelled_booking.check_in_date}")
+            print(f"Check-out: {cancelled_booking.check_out_date}")
+            print(f"Betrag: {cancelled_booking.total_amount:.2f}")
+            print(f"Status: {'Storniert' if cancelled_booking.is_cancelled else 'Aktiv'}")
+
+            try:
+                cancelled_invoice = self.__invoice_manager.cancel_invoice_by_booking(booking_id)
+                print(f"Rechnung wurde ebenfalls storniert (ID: {cancelled_invoice.invoice_id})")
+            except ValueError:
+                print("Keine Rechnung vorhanden.")
+
+        except ValueError:
             print("Buchung nicht gefunden.")
-            return
+        except Exception as e:
+            print(f"Fehler: {e}")
 
-        if booking.is_cancelled:
-            print("Für stornierte Buchungen kann keine Rechnung erstellt werden.")
-            return
+    def create_invoice_for_guest_ui(self):
+        """Rechnung für Gast erstellen"""
+        from datetime import datetime
 
-        # Prüfen, ob Aufenthalt abgeschlossen
-        today = datetime.now().date()
-        check_out = booking.check_out_date
-        if today < check_out:
-            print("Die Rechnung kann erst nach abgeschlossenem Aufenthalt erstellt werden.")
-            return
+        try:
+            booking_id_input = input("Bitte geben Sie die Buchungs-ID ein: ").strip()
+            booking_id = int(booking_id_input)
 
-        # Rechnung erstellen, falls nicht vorhanden
-        if manager.invoice_exists(booking_id):
-            invoice = manager.get_invoice_by_booking_id(booking_id)
-            print("\nDie Rechnung liegt bereits vor:")
-        else:
-            invoice = manager.create_invoice_if_not_exists(booking_id)
-            print("\nDie Rechnung wurde erfolgreich erstellt:")
+            booking = self.__invoice_manager.get_booking_by_id(booking_id)
 
-        # Rechnung anzeigen
-        print(f"Rechnungsnummer: {invoice.invoice_id}")
-        print(f"Buchungsnummer:  {invoice.booking_id}")
-        print(f"Ausgestellt am:  {invoice.issue_date}")
-        print(f"Gesamtbetrag:    {invoice.total_amount:.2f} CHF")
+            if not booking:
+                print("Buchung nicht gefunden.")
+                return
+
+            if booking.is_cancelled:
+                print("Für stornierte Buchungen kann keine Rechnung erstellt werden.")
+                return
+
+            # Prüfen, ob Aufenthalt abgeschlossen
+            today = datetime.now().date()
+            check_out = booking.check_out_date
+            if today < check_out:
+                print("Die Rechnung kann erst nach abgeschlossenem Aufenthalt erstellt werden.")
+                return
+
+            # Rechnung erstellen, falls nicht vorhanden
+            if self.__invoice_manager.invoice_exists(booking_id):
+                invoice = self.__invoice_manager.get_invoice_by_booking_id(booking_id)
+                print("\nDie Rechnung liegt bereits vor:")
+            else:
+                invoice = self.__invoice_manager.create_invoice_if_not_exists(booking_id)
+                print("\nDie Rechnung wurde erfolgreich erstellt:")
+
+            # Rechnung anzeigen
+            print(f"Rechnungsnummer: {invoice.invoice_id}")
+            print(f"Buchungsnummer:  {invoice.booking_id}")
+            print(f"Ausgestellt am:  {invoice.issue_date}")
+            print(f"Gesamtbetrag:    {invoice.total_amount:.2f} CHF")
+
+        except ValueError:
+            print("Ungültige Eingabe. Bitte geben Sie eine gültige Buchungs-ID ein.")
 
 
-    except ValueError:
-        print("Ungültige Eingabe. Bitte geben Sie eine gültige Buchungs-ID ein.")
 
 
 
 #6. Als Gast möchte ich meine Buchung stornieren, damit ich nicht belastet werde, wenn ich das Zimmer nicht mehr benötige. Hint: Sorgt für die entsprechende Invoice.
-def cancel_booking_ui(self):
-    print("Buchung stornieren")
-
-    try:
-        booking_id = int(input("Buchungs-ID eingeben: "))
-
-        booking_manager = BookingManager()
-        invoice_manager = InvoiceManager()
-
-        cancelled_booking = booking_manager.cancel_booking(booking_id)
-
-        # Buchungsdaten anzeigen
-        print(f"\nStornierte Buchung:")
-        print(f"Buchungs-ID: {cancelled_booking.booking_id}")
-        print(f"Gast-ID: {cancelled_booking.guest_id}")
-        print(f"Zimmer-ID: {cancelled_booking.room_id}")
-        print(f"Check-in: {cancelled_booking.check_in_date}")
-        print(f"Check-out: {cancelled_booking.check_out_date}")
-        print(f"Betrag: {cancelled_booking.total_amount:.2f}")
-        print(f"Status: {'Storniert' if cancelled_booking.is_cancelled else 'Aktiv'}")
+    def cancel_booking_ui(self):
+        """Buchung stornieren"""
+        print("Buchung stornieren")
 
         try:
-            cancelled_invoice = invoice_manager.cancel_invoice_by_booking(booking_id)
-            print(f"Rechnung wurde ebenfalls storniert (ID: {cancelled_invoice.invoice_id})")
-        except ValueError:
-            print("Keine Rechnung vorhanden.")
+            booking_id = int(input("Buchungs-ID eingeben: "))
 
-    except ValueError:
-        print("Buchung nicht gefunden.")
-    except Exception as e:
-        print(f"Fehler: {e}")
+            cancelled_booking = self.__booking_manager.cancel_booking(booking_id)
+
+            # Buchungsdaten anzeigen
+            print(f"\nStornierte Buchung:")
+            print(f"Buchungs-ID: {cancelled_booking.booking_id}")
+            print(f"Gast-ID: {cancelled_booking.guest_id}")
+            print(f"Zimmer-ID: {cancelled_booking.room_id}")
+            print(f"Check-in: {cancelled_booking.check_in_date}")
+            print(f"Check-out: {cancelled_booking.check_out_date}")
+            print(f"Betrag: {cancelled_booking.total_amount:.2f}")
+            print(f"Status: {'Storniert' if cancelled_booking.is_cancelled else 'Aktiv'}")
+
+            try:
+                cancelled_invoice = self.__invoice_manager.cancel_invoice_by_booking(booking_id)
+                print(f"Rechnung wurde ebenfalls storniert (ID: {cancelled_invoice.invoice_id})")
+            except ValueError:
+                print("Keine Rechnung vorhanden.")
+
+        except ValueError:
+            print("Buchung nicht gefunden.")
+        except Exception as e:
+            print(f"Fehler: {e}")
+
 
 
 # 7. Als Gast möchte ich eine dynamische Preisgestaltung auf der Grundlage der Nachfrage sehen, damit ich ein Zimmer zum besten Preis buchen kann.
+    def calculate_saison_room_price(self, check_in=None, check_out=None, matching_hotels=None):
 
-def choose_hotel_ui(self, check_in=None, check_out=None):
-    hotel_name = input("Geben Sie den Hotelnamen ein, dass Sie buchen möchten: ")
-    if not hotel_name:
-        print("Kein Hotelname eingegeben.")
-        return None
 
-    if check_in is None:
-        print(
-            "Damit Ihnen nur verfügbare Zimmer angezeiget werden, können Sie ein gewünschtes Check-in Datum eingeben.")
-        check_in_input = input("Gewünschtes Check-in Datum (YYYY-MM-DD): ")
-        try:
-            check_in = datetime.strptime(check_in_input, "%Y-%m-%d").date()
-        except ValueError:
-            print("Ungültiges Datumsformat. Format muss (YYYY-MM-DD) sein.")
-            check_in = datetime.now().date()
-    else:
-        print(f"Check-in Datum bereits gesetzt: {check_in.strftime('%d.%m.%Y')}")
+        # Falls keine Hotels übergeben wurden, führe erst eine Suche durch
+        if matching_hotels is None:
+            results = self.user_search_hotels_from_data()
+            matching_hotels, check_in, check_out = results
 
-    manager = HotelManager()
-    booking_manager = BookingManager()
-    all_hotels = manager.read_all_hotels_extended_info()
+        # Hotel auswählen
+        hotel = self.__hotel_manager.get_hotel_choice(matching_hotels)
+        if not hotel:
+            return None
 
-    found_hotels = []
-    for hotel in all_hotels:
-        if hotel_name.lower() in hotel.name.lower():
-            found_hotels.append(hotel)
+        # Check-in Datum erfragen falls nicht vorhanden
+        if check_in is None:
+            print("\n" + "-" * 15 + "Reisezeitraum" + "-" * 15)
+            check_in = self.__booking_manager.get_checkin_date_if_missing()
 
-    if not found_hotels:
-        print(f"Kein Hotel mit dem Namen {hotel_name} gefunden.")
-        return None
-    elif len(found_hotels) == 1:
-        selected_hotel = found_hotels[0]
-        print(f"Hotel gefunden: {selected_hotel.name}")
-    else:
-        print(f"Mehrere Hotels gefunden mit {hotel_name}:")
-        for i, hotel in enumerate(found_hotels, 1):
-            print(f"{i}. {hotel.name} in {hotel.address.city}")
+        # Check-out Datum erfragen falls nicht vorhanden
+        if check_out is None:
+            check_out = self.__booking_manager.get_checkout_date_if_missing()
 
-        while True:
-            try:
-                choice = int(input(f"Welches Hotel möchten Sie? (1-{len(found_hotels)}): "))
-                if 1 <= choice <= len(found_hotels):
-                    selected_hotel = found_hotels[choice - 1]
-                    break
-                else:
-                    print(f"Bitte geben Sie eine Zahl zwischen 1 und {len(found_hotels)} ein.")
-            except ValueError:
-                print("Bitte geben Sie eine gültige Zahl ein.")
+        # Verfügbare Zimmer für den Zeitraum ermitteln
+        available_rooms = self.__hotel_manager.get_available_rooms_for_period(hotel, check_in, check_out)
 
-    # Nutzen der existierenden calculate_dynamic_price Funktion
-    season_factor = booking_manager.calculate_dynamic_price(1.0, check_in)
+        # Hotel-Informationen anzeigen
+        self.__hotel_manager.show_hotel_info(hotel)
 
-    print(f"\n--- {selected_hotel.name} ---")
-    print(f"Adresse: {selected_hotel.address.street}, {selected_hotel.address.zip_code} {selected_hotel.address.city}")
-    print(f"Sterne: {selected_hotel.stars}")
-    print(f"Check-in: {check_in.strftime('%d.%m.%Y')}")
-    print(f"Verfügbare Zimmer: {len(selected_hotel.rooms)}")
+        if not available_rooms:
+            print("Keine verfügbaren Zimmer für den gewählten Zeitraum.")
+            return None
 
-    if selected_hotel.rooms:
-        print("\nVerfügbare Zimmer mit dynamischen Preisen:")
-        total_min_price = float('inf')
-        total_max_price = 0
+        # Preisübersicht berechnen
+        price_summary = self.__hotel_manager.calculate_total_pricing_summary(available_rooms, check_in, check_out)
 
-        for room in selected_hotel.rooms:
-            base_price = room.price_per_night
-            dynamic_price = booking_manager.calculate_dynamic_price(base_price, check_in)
+        print("\nZimmerdetails mit Saisonpreisen:")
+        print("-" * 50)
 
-            if dynamic_price != base_price:
-                price_diff = dynamic_price - base_price
-                if price_diff > 0:
-                    price_info = f"{dynamic_price:.2f} CHF/Nacht (Basis: {base_price:.2f} CHF, +{price_diff:.2f} CHF)"
-                else:
-                    price_info = f"{dynamic_price:.2f} CHF/Nacht (Basis: {base_price:.2f} CHF, {price_diff:.2f} CHF)"
-            else:
-                price_info = f"{dynamic_price:.2f} CHF/Nacht"
+        # Zimmerdetails mit Preisberechnungen anzeigen
+        for room in available_rooms:
+            price_info = self.__hotel_manager.calculate_room_pricing(room, check_in)
+            self.__room_manager.show_room_info(room, price_info, check_in, check_out)
 
-            print(f"  - Zimmer {room.room_number}: {room.room_type.max_guests} Gäste, {price_info}")
+        # Gesamtpreisübersicht anzeigen
+        self.__booking_manager.show_total_pricing_summary(price_summary)
 
-            if dynamic_price < total_min_price:
-                total_min_price = dynamic_price
-            if dynamic_price > total_max_price:
-                total_max_price = dynamic_price
-
-        if total_min_price == total_max_price:
-            print(f"\nDynamischer Preis: {total_min_price:.2f} CHF pro Nacht")
-        else:
-            print(f"\nDynamischer Preisbereich: {total_min_price:.2f} - {total_max_price:.2f} CHF pro Nacht")
-
-        if check_out is not None:
+        # Zusätzliche Saisoninformationen anzeigen falls vorhanden
+        if check_in and check_out and price_summary:
             nights = (check_out - check_in).days
-            if nights > 0:
-                print(f"\nGesamtpreis für {nights} Nächte:")
-                print(f"  Günstigstes Zimmer: {total_min_price * nights:.2f} CHF")
-                if total_min_price != total_max_price:
-                    print(f"  Teuerstes Zimmer: {total_max_price * nights:.2f} CHF")
+            seasonal_info = self.__hotel_manager.calculate_seasonal_adjustment(price_summary, check_in, nights)
 
-                base_min = total_min_price / season_factor
-                base_max = total_max_price / season_factor
-                total_base_min = base_min * nights
-                total_base_max = base_max * nights
-                savings_min = (total_min_price * nights) - total_base_min
-                savings_max = (total_max_price * nights) - total_base_max
+            if seasonal_info and seasonal_info['has_adjustment']:
+                print("\nSaisonale Preisanpassungen:")
+                print("-" * 30)
+                if seasonal_info['min_adjustment'] > 0:
+                    print(
+                        f"Aufschlag: +{seasonal_info['min_adjustment']:.2f} CHF bis +{seasonal_info['max_adjustment']:.2f} CHF")
+                elif seasonal_info['min_adjustment'] < 0:
+                    print(
+                        f"Rabatt: {abs(seasonal_info['min_adjustment']):.2f} CHF bis {abs(seasonal_info['max_adjustment']):.2f} CHF")
 
-                if savings_min != 0:
-                    if savings_min > 0:
-                        print(f"  Saison-Aufschlag: +{savings_min:.2f} CHF bis +{savings_max:.2f} CHF")
-                    else:
-                        print(f"  Saison-Ersparnis: {abs(savings_min):.2f} CHF bis {abs(savings_max):.2f} CHF")
-        else:
-            calculate_total = input(
-                "\nMöchten Sie den Gesamtpreis für einen bestimmten Zeitraum berechnen? (ja/nein): ").strip().lower()
-            if calculate_total == "ja":
-                try:
-                    nights = int(input("Wie viele Nächte möchten Sie bleiben?: "))
-                    if nights > 0:
-                        print(f"\nGesamtpreis für {nights} Nächte:")
-                        print(f"  Günstigstes Zimmer: {total_min_price * nights:.2f} CHF")
-                        if total_min_price != total_max_price:
-                            print(f"  Teuerstes Zimmer: {total_max_price * nights:.2f} CHF")
-
-                        base_min = total_min_price / season_factor
-                        base_max = total_max_price / season_factor
-                        total_base_min = base_min * nights
-                        total_base_max = base_max * nights
-                        savings_min = (total_min_price * nights) - total_base_min
-                        savings_max = (total_max_price * nights) - total_base_max
-
-                        if savings_min != 0:
-                            if savings_min > 0:
-                                print(f"  Saison-Aufschlag: +{savings_min:.2f} CHF bis +{savings_max:.2f} CHF")
-                            else:
-                                print(f"  Saison-Ersparnis: {abs(savings_min):.2f} CHF bis {abs(savings_max):.2f} CHF")
-                    else:
-                        print("Anzahl Nächte muss grösser als 0 sein.")
-                except ValueError:
-                    print("Bitte geben Sie eine gültige Zahl ein.")
-    else:
-        print("Keine verfügbaren Zimmer in diesem Hotel.")
-
-    return selected_hotel
-
-
-    #results = user_search_hotels_from_data()
-    #matching_hotels, check_in_date, check_out_date = results
-
-    #if check_in_date is not None and check_out_date is not None:
-    #    choose_hotel_ui(check_in_date, check_out_date)
-    #elif check_in_date is not None:
-    #    choose_hotel_ui(check_in_date)
-    #else:
-    #   choose_hotel_ui()
-
-
+        return None
 
 ## User Stories mit DB-Schemaänderung
 
 #3. Als Gast möchte ich nach meinem Aufenthalt eine Bewertung für ein Hotel abgeben, damit ich meine Erfahrungen teilen kann.
-def hotel_review_ui(self):
-    print("Geben Sie Ihre Bewertung für Ihr Hotel ab. \n")
-    hotel_manager = HotelManager()
-    hotel_review_manager = HotelReviewManager()
+    def hotel_review_ui(self):
+        """Hotel bewerten"""
+        from datetime import datetime
 
-    try:
-        guest_id = int(
-            input("Ihre Gast-ID: "))  # Annahme, dass diese Information auf der Buchungsbestätigung enthalten ist.
-        hotels = hotel_manager.read_all_hotels()
-        if not hotels:
-            print("Keine Hotels verfügbar.")
-            return
+        print("Geben Sie Ihre Bewertung für Ihr Hotel ab. \n")
 
-        hotel_id = int(input("\nHotel-ID für Bewertung: "))
-        selected_hotel = hotel_manager.read_hotel(hotel_id)
+        try:
+            guest_id = int(input("Ihre Gast-ID: "))
+            hotels = self.__hotel_manager.read_all_hotels()
+            if not hotels:
+                print("Keine Hotels verfügbar.")
+                return
 
-        if selected_hotel is None:
-            print("Hotel nicht gefunden.")
-            return
+            hotel_id = int(input("\nHotel-ID für Bewertung: "))
+            selected_hotel = self.__hotel_manager.read_hotel(hotel_id)
 
-        booking_id = int(input("Ihre Buchungs-ID: "))
+            if selected_hotel is None:
+                print("Hotel nicht gefunden.")
+                return
 
-        while True:
-            try:
-                print("Sie können das Hotel mit 1-5 Sternen bewerten.")
-                rating = int(input("Bewertung (1-5 Sterne): "))
-                if 1 <= rating <= 5:
-                    break
-                else:
-                    print("Bewertung muss zwischen 1 und 5 liegen.")
-            except ValueError:
-                print("Bitte eine gültige Zahl eingeben.")
+            booking_id = int(input("Ihre Buchungs-ID: "))
 
-        print("Sie können einen Kommentar für andere Interessierte hinterlassen.")
-        comment = input("Kommentar (optional): ").strip()
-        if not comment:
-            comment = None
+            while True:
+                try:
+                    print("Sie können das Hotel mit 1-5 Sternen bewerten.")
+                    rating = int(input("Bewertung (1-5 Sterne): "))
+                    if 1 <= rating <= 5:
+                        break
+                    else:
+                        print("Bewertung muss zwischen 1 und 5 liegen.")
+                except ValueError:
+                    print("Bitte eine gültige Zahl eingeben.")
 
-        hotel_review = HotelReview(
-            guest_id=guest_id,
-            hotel_id=hotel_id,
-            booking_id=booking_id,
-            rating=rating,
-            comment=comment,
-            review_date=datetime.now().strftime("%Y-%m-%d")
-        )
+            print("Sie können einen Kommentar für andere Interessierte hinterlassen.")
+            comment = input("Kommentar (optional): ").strip()
+            if not comment:
+                comment = None
 
-        hotel_review_manager.create_hotel_review(hotel_review)
+            hotel_review = HotelReview(
+                guest_id=guest_id,
+                hotel_id=hotel_id,
+                booking_id=booking_id,
+                rating=rating,
+                comment=comment,
+                review_date=datetime.now().strftime("%Y-%m-%d")
+            )
 
-        print("\n" + "-" * 30)
-        print("Bewertung erfolgreich gespeichert.")
-        print(f"Hotel: {selected_hotel.name}")
-        print(f"Bewertung: {rating}/5 Sterne")
-        if comment:
-            print(f"Kommentar: {comment}")
-        print(f"Datum der Bewertung: {hotel_review.review_date}")
-        print("-" * 30)
+            self.__hotel_review_manager.create_hotel_review(hotel_review)
 
-    except ValueError:
-        print("Ungültige Eingabe. Bitte Zahlen für IDs verwenden.")
-    except Exception as e:
-        print(f"Fehler beim Speichern der Bewertung: {e}")
+            print("\n" + "-" * 30)
+            print("Bewertung erfolgreich gespeichert.")
+            print(f"Hotel: {selected_hotel.name}")
+            print(f"Bewertung: {rating}/5 Sterne")
+            if comment:
+                print(f"Kommentar: {comment}")
+            print(f"Datum der Bewertung: {hotel_review.review_date}")
+            print("-" * 30)
+
+        except ValueError:
+            print("Ungültige Eingabe. Bitte Zahlen für IDs verwenden.")
+        except Exception as e:
+            print(f"Fehler beim Speichern der Bewertung: {e}")
+
+
+
 
 
 
 #4. Als Gast möchte ich vor der Buchung Hotelbewertungen lesen, damit ich das beste Hotel auswählen kann.
-def view_hotel_reviews_ui():
-    print("Hotelbewertungen anzeigen:")
+    def view_hotel_reviews_ui(self):
+        """Hotelbewertungen anzeigen"""
+        print("Hotelbewertungen anzeigen:")
 
-    hotel_manager = HotelManager()
-    review_manager = HotelReviewManager()
+        try:
+            hotel_name = input("Gib den Namen des Hotels an, von dem du Bewertungen sehen möchtest: ")
+            found_hotels = self.__hotel_manager.read_hotels_by_similar_name(hotel_name)
 
-    try:
-        hotel_name = input("Gib den Namen des Hotels an, von dem du Bewertungen sehen möchtest: ")
-        manager = HotelManager()
-        found_hotels = hotel_manager.read_hotels_by_similar_name(hotel_name)
+            if not found_hotels:
+                print("Hotel nicht gefunden.")
+                return
 
-        if found_hotels is None:
-            print("Hotel nicht gefunden.")
-            return
+            for i, hotel in enumerate(found_hotels, 1):
+                print(f"{i}. Hotel ID: {hotel.hotel_id}, Hotelname: {hotel.name}, Address ID {hotel.address_id}")
 
-        for i, hotel in enumerate(found_hotels, 1):
-            print(f"{i}. Hotel ID: {hotel.hotel_id}, Hotelname: {hotel.name}, Address ID {hotel.address_id}")
+            choice = int(input(f"Wähle Hotel (1-{len(found_hotels)}): "))
+            selected_hotel = found_hotels[choice - 1]
 
-        choice = int(input(f"Wähle Hotel (1-{len(found_hotels)}): "))
-        selected_hotel = found_hotels[choice - 1]
-
-        print(f"\nBewertungen für das Hotel: {selected_hotel.name}")
-        print("-" * 50)
-
-        reviews = review_manager.read_reviews_by_hotel_id(selected_hotel.hotel_id)
-
-        if not reviews:
-            print(f"Noch keine Bewertungen für {selected_hotel.name} vorhanden.")
-            return
-
-        total_rating = sum(review.rating for review in reviews)
-        avg_rating = total_rating / len(reviews)
-
-        print(f"Durchschnittliche Bewertung: {avg_rating:.1f}/5 ({len(reviews)} Bewertungen)")
-        print("-" * 50)
-
-        for review in reviews:
-            stars = "*" * review.rating
-            print(f"{stars} ({review.rating}/5) | {review.review_date}")
-            if review.comment:
-                print(f"Kommentar: {review.comment}")
+            print(f"\nBewertungen für das Hotel: {selected_hotel.name}")
             print("-" * 50)
 
-    except ValueError:
-        print("Ungültige Eingabe.")
-    except Exception as e:
-        print(f"Fehler beim Laden der Bewertungen: {e}")
+            reviews = self.__hotel_review_manager.read_reviews_by_hotel_id(selected_hotel.hotel_id)
 
+            if not reviews:
+                print(f"Noch keine Bewertungen für {selected_hotel.name} vorhanden.")
+                return
+
+            total_rating = sum(review.rating for review in reviews)
+            avg_rating = total_rating / len(reviews)
+
+            print(f"Durchschnittliche Bewertung: {avg_rating:.1f}/5 ({len(reviews)} Bewertungen)")
+            print("-" * 50)
+
+            for review in reviews:
+                stars = "*" * review.rating
+                print(f"{stars} ({review.rating}/5) | {review.review_date}")
+                if review.comment:
+                    print(f"Kommentar: {review.comment}")
+                print("-" * 50)
+
+        except ValueError:
+            print("Ungültige Eingabe.")
+        except Exception as e:
+            print(f"Fehler beim Laden der Bewertungen: {e}")
