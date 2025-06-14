@@ -4,6 +4,7 @@ import model
 
 
 class RoomManager:
+
     def __init__(self, db_path: str = None) -> None:
         self.__room_dal = data_access.RoomDataAccess(db_path)
 
@@ -18,11 +19,10 @@ class RoomManager:
     #     return self.__room_dal.read_room_by_id(room_id)
 
     def read_room_details(self, type_id: int) -> List[model.Room]:
-        return self._room_dal.read_room_details(type_id)
+        return self.__room_dal.read_room_details(type_id)
 
     def read_rooms_by_hotel(self, hotel: model.Hotel) -> List[model.Room]:
-        return self._dal.read_rooms_by_hotel(hotel.hotel_id)
-
+        return self.__room_dal.read_rooms_by_hotel(hotel.hotel_id)
 
     def show_room_info(self, room, price_info, check_in=None, check_out=None):
         print(f"  - Zimmer {room.room_number}")
