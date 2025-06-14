@@ -566,6 +566,10 @@ class AdminUI:
         print("-" * 30)
 
         guest_manager = GuestManager()
+        hotel_manager = HotelManager()
+        allhotels = hotel_manager.read_all_hotels()
+        for hotel in allhotels:
+            print(f"• {hotel.name} ({hotel.stars} stars) - ID: {hotel.hotel_id}")
 
         hotel_id = int(input("Hotel-ID: "))
 
