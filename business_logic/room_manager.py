@@ -59,8 +59,5 @@ class RoomManager:
         return room_number, description, max_guests, price_per_night
 
  
-    def read_rooms_by_hotel(self, hotel: model.Hotel) -> List[model.Room]:
-        return self._dal.read_rooms_by_hotel(hotel.hotel_id)
-
     def update_room(self, room: model.Room) -> None:
         self.__room_dal.update_room(room)
