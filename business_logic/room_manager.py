@@ -5,8 +5,6 @@ import model
 
 class RoomManager:
     def __init__(self, db_path: str = None) -> None:
-        self._dal = None
-        self._room_dal = None
         self.__room_dal = data_access.RoomDataAccess(db_path)
 
     # Aktuell sind diese Methoden nicht im Einsatz, werden aber für potenzielle Systemerweiterungen bereitgehalten.
