@@ -4,7 +4,11 @@ import model
 
 
 class RoomManager:
+    _room_dal: None
+
     def __init__(self, db_path: str = None) -> None:
+        self._dal = None
+        self._room_dal = None
         self.__room_dal = data_access.RoomDataAccess(db_path)
 
     # Aktuell sind diese Methoden nicht im Einsatz, werden aber für potenzielle Systemerweiterungen bereitgehalten.
@@ -18,7 +22,10 @@ class RoomManager:
     #     return self.__room_dal.read_room_by_id(room_id)
 
     def read_room_details(self, type_id: int) -> List[model.Room]:
-        return self.__room_dal.read_room_details(type_id)
+        return self._room_dal.read_room_details(type_id)
+
+    def read_rooms_by_hotel(self, hotel: model.Hotel) -> List[model.Room]:
+        return self._dal.read_rooms_by_hotel(hotel.hotel_id)
 
     def show_room_info(self, room, price_info, check_in=None, check_out=None):
         print(f"  - Zimmer {room.room_number}")
@@ -54,11 +61,9 @@ class RoomManager:
         price_per_night = float(input("Gib den Preis pro Nacht für das Zimmer an: "))
         return room_number, description, max_guests, price_per_night
 
-    def read_room_by_id(self, room_id: int) -> model.Room | None:
-        return self.__room_dal.read_room_by_id(room_id)
-
-    def read_rooms_by_hotel(self, hotel: model.Hotel) -> list[model.Room]:
-        return self.__room_dal.read_rooms_by_hotel(hotel)
+ 
+    def read_rooms_by_hotel(self, hotel: model.Hotel) -> List[model.Room]:
+        return self._dal.read_rooms_by_hotel(hotel.hotel_id)
 
     def update_room(self, room: model.Room) -> None:
         self.__room_dal.update_room(room)
