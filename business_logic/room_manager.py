@@ -4,8 +4,6 @@ import model
 
 
 class RoomManager:
-    _room_dal: None
-
     def __init__(self, db_path: str = None) -> None:
         self._dal = None
         self._room_dal = None
@@ -26,6 +24,7 @@ class RoomManager:
 
     def read_rooms_by_hotel(self, hotel: model.Hotel) -> List[model.Room]:
         return self._dal.read_rooms_by_hotel(hotel.hotel_id)
+
 
     def show_room_info(self, room, price_info, check_in=None, check_out=None):
         print(f"  - Zimmer {room.room_number}")
