@@ -325,7 +325,7 @@ class AdminUI:
 
     #8. Als Admin des Buchungssystems möchte ich alle Buchungen aller Hotels sehen können, um eine Übersicht zu erhalten.
 
-    def show_all_bookings_ui(self) -> None:
+    def read_all_bookings_ui(self) -> None:
 
         df = self.__booking_manager.get_all_bookings_as_dataframe()
 
