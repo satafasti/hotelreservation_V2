@@ -67,6 +67,12 @@ class HotelManager:
         self.__hotel_dal.update_hotel(hotel)
         self.__address_dal.update_address(address)
 
+    def update_hotel(self, hotel: model.Hotel) -> None:
+        self.__hotel_dal.update_hotel(hotel)
+
+    def update_address(self, address: model.Address) -> None:
+        self.__address_dal.update_address(address)
+
     #def remove_duplicate_rooms(self, hotel):
     #    seen_room_ids = set()
     #    unique_rooms = []

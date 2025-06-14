@@ -1,15 +1,14 @@
+import model
 from business_logic.hotel_manager import HotelManager
-from business_logic.booking_manager import BookingManager
-from business_logic.guest_manager import GuestManager
-from business_logic.room_manager import RoomManager
-from business_logic.room_facilities_manager import RoomFacilitiesManager
-from business_logic.room_type_manager import RoomTypeManager
-from business_logic.facilities_manager import FacilitiesManager
-from business_logic.address_manager import AddressManager
 
+from data_access.address_dal import AddressDataAccess
+from data_access.booking_dal import BookingDataAccess
 from data_access.facilities_dal import FacilityDataAccess
+from data_access.guest_dal import GuestDataAccess
+from data_access.hotel_dal import HotelDataAccess
+from data_access.room_dal import RoomDataAccess
 from data_access.room_type_dal import RoomTypeDataAccess
-
+from data_access.room_facilities_dal import RoomFacilitiesDataAccess
 
 
 from model.address import Address
@@ -24,41 +23,8 @@ import pandas as pd
 import sqlite3
 import plotly.express as px
 import matplotlib.pyplot as plt
+from business_logic.guest_manager import GuestManager
 
-class Admin:
-    def __init__(self, db_path: str | None = None) -> None:
-        self.__hotel_manager = HotelManager(db_path)
-        self.__booking_manager = BookingManager(db_path)
-        self.__guest_manager = GuestManager(db_path)
-        self.__room_manager = RoomManager()
-        self.__room_facilities_manager = RoomFacilitiesManager(db_path)
-        self.__room_type_manager = RoomTypeManager(RoomTypeDataAccess())
-        self.__facilities_manager = FacilitiesManager(FacilityDataAccess())
-        self.__address_manager = AddressManager(db_path)
-
-    def create_hotel(self) -> None:
-        admin_create_hotel_ui()
-
-    def delete_hotel(self) -> None:
-        admin_delete_hotel_ui()
-
-    def update_hotel_details(self) -> None:
-        update_hotel_details_ui()
-
-    def update_hotel_details_without_address(self) -> None:
-        update_hotel_details_without_address_ui()
-
-    def read_all_bookings(self) -> None:
-        read_all_bookings_ui()
-
-    def show_rooms_with_facilities_by_hotel(self) -> None:
-        show_rooms_with_facilities_by_hotel_ui()
-
-    def main_menu(self) -> None:
-        admin_main_menu_ui()
-
-    def demographics(self) -> None:
-        demographics_ui()
 
 #3. Als Admin des Buchungssystems möchte ich die Möglichkeit haben, Hotelinformationen zu pflegen, um aktuelle Informationen im System zu haben.
 #3.1. Ich möchte neue Hotels zum System hinzufügen
@@ -78,8 +44,8 @@ def admin_create_hotel_ui():
         "Maximale Anzahl Gäste für das Zimmer (Single (max.1), Double (max.2), Suite (max.4), Family Room (max.5), Penthouse (max.6): "))
     price_per_night = float(input("Gib den Preis pro Nacht für das Zimmer an: "))
 
-    manager = HotelManager()
-    all_facilities = manager.get_all_facilities()
+    facilities_dal = RoomFacilitiesDataAccess()
+    all_facilities = facilities_dal.read_all_facilities()
 
     selected_facility_ids_first_room = []
     if all_facilities:
@@ -122,9 +88,19 @@ def admin_create_hotel_ui():
     print(f"Hotel '{result.name}' erfolgreich erstellt")
 
     if selected_facility_ids_first_room:
-        added = manager.add_facilities_to_first_room(result.hotel_id, selected_facility_ids_first_room)
-        if added:
-            print(f"{added} Facilities für erstes Zimmer hinzugefügt.")
+        room_id_sql = "SELECT room_id FROM Room WHERE hotel_id = ? ORDER BY room_id LIMIT 1"
+        room_result = facilities_dal.fetchone(room_id_sql, (result.hotel_id,))
+
+        if room_result:
+            first_room_id = room_result[0]
+
+            for facility_id in selected_facility_ids_first_room:
+                facility_insert_sql = "INSERT INTO Room_Facilities (room_id, facility_id) VALUES (?, ?)"
+                facilities_dal.execute(facility_insert_sql, (first_room_id, facility_id))
+
+            print(f"{len(selected_facility_ids_first_room)} Facilities für erstes Zimmer hinzugefügt.")
+
+    hotel_dal = HotelDataAccess()
 
     while True:
         add_more_rooms = input("\nMöchtst du ein weiteres Zimmer hinzufügen? (ja/nein): ").lower()
@@ -165,8 +141,8 @@ def admin_create_hotel_ui():
                     except ValueError:
                         print("Ungültige Eingabe - keine Ausstattung hinzugefügt")
 
-        manager.add_room_to_hotel(result.hotel_id, room_number, description, max_guests, price_per_night,
-                                  selected_facility_ids)
+        hotel_dal.add_room_to_hotel(result.hotel_id, room_number, description, max_guests, price_per_night,
+                                    selected_facility_ids)
 
     print(f"\nHotel '{result.name}' mit allen Zimmern erfolgreich erstellt.")
 
@@ -254,8 +230,9 @@ def update_hotel_details_ui():
                 else:
                     print("Keine Sterne eingegeben.")
 
-                address_manager = AddressManager()
-                current_address = address_manager.read_address_by_id(selected_hotel.address_id)
+                address_dal = AddressDataAccess()
+                hotel_dal = HotelDataAccess()
+                current_address = address_dal.read_address_by_id(selected_hotel.address_id)
 
                 new_street = input(
                     f"Gib die neue Strasse des Hotels ein oder lass es leer, wenn du '{current_address.street}' behalten möchtest: ")
@@ -278,8 +255,8 @@ def update_hotel_details_ui():
                 else:
                     print("Kein Zip Code eingegeben.")
 
-                manager.update_hotel(selected_hotel)
-                address_manager.update_address(current_address)
+                hotel_dal.update_hotel(selected_hotel)
+                address_dal.update_address(current_address)
                 print(
                     f"Hotel wurde erfolgreich aktualisiert. Hotel ID: {selected_hotel.hotel_id}, Hotelname: {selected_hotel.name}, Sterne: {selected_hotel.stars}, Address ID: {selected_hotel.address_id}")
 
@@ -335,7 +312,8 @@ def update_hotel_details_without_address_ui():
                 else:
                     print("Keine Sterne eingegeben.")
 
-                manager.update_hotel(selected_hotel)
+                hotel_dal = HotelDataAccess()
+                hotel_dal.update_hotel(selected_hotel)
                 print(
                     f"Hotel wurde erfolgreich aktualisiert. Hotel ID: {selected_hotel.hotel_id}, Hotelname: {selected_hotel.name}, Sterne: {selected_hotel.stars}")
 
@@ -349,10 +327,10 @@ def update_hotel_details_without_address_ui():
 
 #8. Als Admin des Buchungssystems möchte ich alle Buchungen aller Hotels sehen können, um eine Übersicht zu erhalten.
 def read_all_bookings_ui ():
-    booking_manager = BookingManager()
-    guest_manager = GuestManager()
-    room_manager = RoomManager()
-    bookings: List[Booking] = booking_manager.read_all_bookings()
+    booking_dal = BookingDataAccess()
+    guest_dal = GuestDataAccess()
+    room_dal = RoomDataAccess()
+    bookings: List[Booking] = booking_dal.read_all_bookings()
 
     print("Übersicht aller Buchungen:")
     if not bookings:
@@ -361,13 +339,13 @@ def read_all_bookings_ui ():
 
     for b in bookings:
         status = "storniert" if b.is_cancelled else "aktiv"
-        guest = guest_manager.get_guest_by_id(b.guest_id)
+        guest = guest_dal.read_guest_by_id(b.guest_id)
         if guest:
             guest_info = f"{guest.first_name} {guest.last_name} (ID: {b.guest_id})"
         else:
             guest_info = f"ID: {b.guest_id}"
 
-        room = room_manager.read_room_by_id(b.room_id)
+        room = room_dal.read_room_by_id(b.room_id)
         if room and room.hotel:
             hotel_info = f"{room.hotel.name} (ID: {room.hotel.hotel_id})"
         else:
@@ -385,11 +363,11 @@ def read_all_bookings_ui ():
 
 #9. Als Admin möchte ich eine Liste der Zimmer mit ihrer Ausstattung sehen, damit ich sie besser bewerben kann.
 def show_rooms_with_facilities_by_hotel_ui():
-    hotel_manager = HotelManager()
-    room_manager = RoomManager()
-    room_fac_manager = RoomFacilitiesManager()
+    hotel_dal = HotelDataAccess()
+    room_dal = RoomDataAccess()
+    room_fac_dal = RoomFacilitiesDataAccess()
 
-    hotels = hotel_manager.read_all_hotels()
+    hotels = hotel_dal.read_all_hotels()
     if not hotels:
         print("Keine Hotels gefunden.")
         return
@@ -404,19 +382,19 @@ def show_rooms_with_facilities_by_hotel_ui():
         print("Ungültige Eingabe.")
         return
 
-    hotel = hotel_manager.read_hotel(hotel_id)
+    hotel = hotel_dal.read_hotel_by_id(hotel_id)
     if not hotel:
         print("Hotel nicht gefunden.")
         return
 
-    rooms = room_manager.read_rooms_by_hotel(hotel)
+    rooms = room_dal.read_rooms_by_hotel(hotel)
     if not rooms:
         print("Keine Zimmer für dieses Hotel gefunden.")
         return
 
     print(f"Zimmer im Hotel '{hotel.name}':")
     for room in rooms:
-        facilities = room_fac_manager.read_facilities_by_room(room)
+        facilities = room_fac_dal.read_facilities_by_room_id(room)
         names = [f.facility_name for f in facilities]
         ausstattung = ", ".join(names) if names else "Keine Ausstattung"
         print(f"- Zimmernummer: {room.room_number}, Zimmer-ID: {room.room_id}, Ausstattung: {ausstattung}")
@@ -425,11 +403,11 @@ def show_rooms_with_facilities_by_hotel_ui():
 
 #10. Als Admin möchte ich in der Lage sein, Stammdaten zu verwalten, z.B. Zimmertypen, Einrichtungen, und Preise in Echtzeit zu aktualisieren, damit das Backend-System aktuelle Informationen hat.
 def admin_main_menu_ui():
-    room_type_manager = RoomTypeManager(RoomTypeDataAccess())
-    facility_manager = FacilitiesManager(FacilityDataAccess())
-    room_manager = RoomManager()
-    hotel_manager = HotelManager()
-    guest_manager = GuestManager()
+    room_type_dal = RoomTypeDataAccess()
+    facility_dal = FacilityDataAccess()
+    room_dal = RoomDataAccess()
+    hotel_dal = HotelDataAccess()
+    guest_dal = GuestDataAccess()
 
     while True:
         print("\nAdmin-Menü – Stammdaten verwalten:")
@@ -445,7 +423,7 @@ def admin_main_menu_ui():
         if auswahl == "1":
             try:
                 type_id = int(input("Zimmertyp-ID: "))
-                room_type = room_type_manager.read_room_type_by_id(type_id)
+                room_type = room_type_dal.read_room_type_by_id(type_id)
                 if not room_type:
                     print("Zimmertyp nicht gefunden.")
                     continue
@@ -454,8 +432,8 @@ def admin_main_menu_ui():
                 max_guest_input = input("Neue max. Gästeanzahl (leer lassen für keine Änderung): ")
                 description = new_description if new_description.strip() else room_type.description
                 max_guests = int(max_guest_input) if max_guest_input.strip() else room_type.max_guests
-                room_type_manager.update_room_type(type_id, description, max_guests)
-                updated = room_type_manager.read_room_type_by_id(type_id)
+                room_type_dal.update_room_type(type_id, description, max_guests)
+                updated = room_type_dal.read_room_type_by_id(type_id)
                 print(f"Zimmertyp aktualisiert: {updated.description} für max. {updated.max_guests} Gäste")
             except Exception as e:
                 print("Fehler:", e)
@@ -463,17 +441,17 @@ def admin_main_menu_ui():
         elif auswahl == "2":
             try:
                 facility_id = int(input("Ausstattungs-ID: "))
-                facility = facility_manager.read_facility_by_id(facility_id)
+                facility = facility_dal.read_facility_by_id(facility_id)
                 if not facility:
                     print("Ausstattung nicht gefunden.")
                     continue
                 print(f"Aktuell: {facility.facility_name}")
                 new_name = input("Neuer Name")
                 if new_name.strip():
-                    facility_manager.update_facility(facility_id, new_name)
+                    facility_dal.update_facility(facility_id, new_name)
                 else:
                     new_name = facility.facility_name
-                updated = facility_manager.read_facility_by_id(facility_id)
+                updated = facility_dal.read_facility_by_id(facility_id)
                 print(f"Ausstattung aktualisiert: {updated.facility_name}")
             except Exception as e:
                 print("Fehler:", e)
@@ -481,7 +459,7 @@ def admin_main_menu_ui():
         elif auswahl == "3":
             try:
                 room_id = int(input("Zimmer-ID: "))
-                room = room_manager.read_room_by_id(room_id)
+                room = room_dal.read_room_by_id(room_id)
                 if not room:
                     print("Zimmer nicht gefunden.")
                     continue
@@ -498,7 +476,7 @@ def admin_main_menu_ui():
                 if new_price_input.strip():
                     room.price_per_night = float(new_price_input)
 
-                room_manager.update_room(room)
+                room_dal.update_room(room)
                 print(f"Zimmer aktualisiert: Nummer {room.room_number}, Preis {room.price_per_night:.2f}")
 
             except Exception as e:
@@ -508,7 +486,7 @@ def admin_main_menu_ui():
         elif auswahl == "4":
             try:
                 hotel_id = int(input("Hotel-ID: "))
-                hotel = hotel_manager.read_hotel(hotel_id)
+                hotel = hotel_dal.read_hotel_by_id(hotel_id)
                 if not hotel:
                     print("Hotel nicht gefunden.")
                     continue
@@ -519,8 +497,8 @@ def admin_main_menu_ui():
                     hotel.name = new_name
                 if stars_input.strip():
                     hotel.stars = int(stars_input)
-                hotel_manager.update_hotel(hotel)
-                updated = hotel_manager.read_hotel(hotel_id)
+                hotel_dal.update_hotel(hotel)
+                updated = hotel_dal.read_hotel_by_id(hotel_id)
                 print(f"Hotel aktualisiert: {updated.name}, {updated.stars} Sterne")
             except Exception as e:
                 print("Fehler:", e)
@@ -528,7 +506,7 @@ def admin_main_menu_ui():
         elif auswahl == "5":
             try:
                 guest_id = int(input("Gast-ID: "))
-                guest = guest_manager.get_guest_by_id(guest_id)
+                guest = guest_dal.read_guest_by_id(guest_id)
                 if not guest:
                     print("Gast nicht gefunden.")
                     continue
@@ -542,8 +520,8 @@ def admin_main_menu_ui():
                     guest.last_name = new_last
                 if new_email.strip():
                     guest.email = new_email
-                guest_manager.update_guest(guest)
-                updated = guest_manager.get_guest_by_id(guest_id)
+                guest_dal.update_guest(guest)
+                updated = guest_dal.read_guest_by_id(guest_id)
                 print(f"Gast aktualisiert: {updated.first_name} {updated.last_name}, {updated.email}")
 
             except Exception as e:
@@ -552,11 +530,11 @@ def admin_main_menu_ui():
         elif auswahl == "6":
             try:
                 type_id = int(input("Zimmertyp-ID: "))
-                room_type = room_type_manager.read_room_type_by_id(type_id)
+                room_type = room_type_dal.read_room_type_by_id(type_id)
                 if not room_type:
                     print("Zimmertyp nicht gefunden.")
                     continue
-                rooms = room_manager.read_room_details(type_id)
+                rooms = room_dal.read_room_details(type_id)
                 if not rooms:
                     print("Keine Zimmer mit diesem Zimmertyp gefunden.")
                     continue
@@ -568,7 +546,7 @@ def admin_main_menu_ui():
                     new_price = float(price_input)
                     for room in rooms:
                         room.price_per_night = new_price
-                        room_manager.update_room(room)
+                        room_dal.update_room(room)
                     print(f"Preis aller Zimmer vom Typ '{room_type.description}' auf {new_price:.2f} gesetzt.")
                 else:
                     print("Keine Preisänderung vorgenommen.")

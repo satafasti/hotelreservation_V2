@@ -17,6 +17,11 @@ class GuestManager:
     def get_guest_by_email(self, email: str) -> Optional[Guest]:
         return self.__dal.read_guest_by_email(email)
 
+    def update_guest(self, guest: Guest) -> None:
+         self.__dal.update_guest(guest)
+
+    def get_guest_by_id(self, guest_id: int) -> Optional[Guest]:
+        return self.__dal.read_guest_by_id(guest_id)
 
     def get_all_guest_details_for_hotel(self, hotel_id: int) -> list[dict]:
 
@@ -129,19 +134,14 @@ class GuestManager:
         fig.show()
 
     #In business_logic/guest_manager.py sind die Funktionen zur Verwaltung von Gästen zwar implementiert, aber sie werden nirgendwo aufgerufen.
-    #m UI-Bereich werden dagegen die Methoden des Data-Access-Layers direkt genutzt. Beispielsweise ruft admin_ui.py beim Aktualisieren eines Gastes guest_dal.update_guest(guest) auf, ohne den GuestManager zu verwenden.
+    #m UI-Bereich werden dagegen die Methoden des Data-Access-Layers direkt genutzt. Beispielsweise ruft oldadmin_ui.py beim Aktualisieren eines Gastes guest_dal.update_guest(guest) auf, ohne den GuestManager zu verwenden.
     #Da in den vorhandenen UI-Modulen keine Aufrufe an get_guest_by_id, get_all_guests, update_guest oder delete_guest erfolgen und stattdessen direkt mit dem GuestDataAccess gearbeitet wird, bleiben diese Funktionen im GuestManager ungenutzt.
     #Sie wurden als Schnittstelle vorgesehen, um Datenbankzugriffe zu kapseln, doch die Implementierung greift an vielen Stellen direkt auf den DAL zu.
     #Dadurch kommen die genannten Methoden schlicht nicht zum Einsatz.
 
-    #def get_guest_by_id(self, guest_id: int) -> Optional[Guest]:
-        #return self.__dal.read_guest_by_id(guest_id)
 
     #def get_all_guests(self) -> List[Guest]:
         #return self.__dal.read_all_guests()
-
-    #def update_guest(self, guest: Guest) -> None:
-         #self.__dal.update_guest(guest)
 
     #def delete_guest(self, guest: Guest) -> None:
         #self.__dal.delete_guest(guest)

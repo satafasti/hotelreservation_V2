@@ -1,6 +1,8 @@
-from ui_folder import admin_ui
-from ui_folder import guest_ui
+from ui_folder.admin_ui import Admin
+from ui_folder.guest_ui import GuestUI
 
+admin_ui = Admin()
+guest_ui = GuestUI()
 
 def show_menu(options):
     while True:
@@ -27,7 +29,7 @@ def guest_menu():
         ("Buchung inkl. Zahlung", guest_ui.create_booking_and_pay_ui),
         ("Rechnung erstellen", guest_ui.create_invoice_for_guest_ui),
         ("Buchung stornieren", guest_ui.cancel_booking_ui),
-        ("Hotel wählen mit Preisinformation", guest_ui.calculate_saison_room_price),
+        ("Hotel wählen mit Preisinformation", guest_ui.choose_hotel_ui()),
         ("Hotel bewerten", guest_ui.hotel_review_ui),
         ("Hotelbewertungen ansehen", guest_ui.view_hotel_reviews_ui),
     ]
